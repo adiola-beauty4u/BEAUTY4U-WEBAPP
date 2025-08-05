@@ -1,0 +1,255 @@
+.cardWithShadow {
+  font-size: 13px;
+}
+
+.small-font {
+  font-size: 13px;
+}
+
+.scrollable-wrapper {
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.table-wrapper {
+  max-height: 400px;
+  overflow: auto;
+  font-size: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+table.mat-table {
+  width: 100%;
+  min-width: 600px;
+}
+
+.search-box {
+  min-width: 200px;
+  font-size: 12px;
+}
+
+.empty-message {
+  padding: 1rem;
+  text-align: center;
+  font-style: italic;
+  color: gray;
+}
+
+.button-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.valid-row {
+  background-color: #f3fff3;
+}
+
+.invalid-row {
+  background-color: #fff1f1;
+}
+
+.status-icon {
+  font-size: 20px;
+  vertical-align: middle;
+}
+
+.icon-true {
+  color: #4caf50;
+  /* Green */
+}
+
+.icon-false {
+  color: #f44336;
+  /* Red */
+}
+
+// Compact layout
+.compact-table {
+  font-size: 12px;
+}
+
+.compact-header {
+  padding: 4px 8px;
+  background-color: #f5f5f5;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  font-weight: 600;
+}
+
+.table-wrapper {
+  max-height: 400px;
+  overflow: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+.mat-cell,
+.mat-header-cell {
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+// Boolean icons
+.status-icon {
+  font-size: 18px;
+  vertical-align: middle;
+}
+
+.icon-true {
+  color: #4caf50;
+}
+
+.icon-false {
+  color: #f44336;
+}
+
+// Result column styling
+.result-cell {
+  text-align: center;
+}
+
+.result-valid {
+  color: #2e7d32;
+  background-color: #e8f5e9;
+  border-radius: 4px;
+  padding: 2px 6px;
+  display: inline-block;
+}
+
+.result-invalid {
+  color: #c62828;
+  background-color: #ffebee;
+  border-radius: 4px;
+  padding: 2px 6px;
+  display: inline-block;
+}
+
+// Row highlighting
+.valid-row {
+  background-color: #f3fff3;
+}
+
+.invalid-row {
+  background-color: #fff1f1;
+}
+
+// Truncation + Tooltip
+.truncate {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.compact-card {
+  font-size: 13px;
+}
+
+.text-sm {
+  font-size: 13px;
+}
+
+.text-muted {
+  color: #6b7280;
+}
+
+// Search box compact
+.compact-search .mat-form-field-wrapper {
+  padding-bottom: 0 !important;
+  margin-bottom: -0.5rem;
+}
+
+.search-box {
+  min-width: 160px;
+  font-size: 12px;
+}
+
+// Table compact layout
+.compact-table-wrapper {
+  max-height: 360px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 0.25rem;
+}
+
+.compact-table {
+  font-size: 12px;
+}
+
+th.mat-header-cell,
+td.mat-cell {
+  padding: 4px 6px;
+  white-space: nowrap;
+}
+
+// Sticky header
+th.mat-header-cell {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: #f5f5f5;
+  font-weight: 600;
+}
+
+// Boolean icon colors
+.status-icon {
+  font-size: 18px;
+}
+
+.icon-true {
+  color: #4caf50; // Green
+}
+
+.icon-false {
+  color: #f44336; // Red
+}
+
+// Result column readability
+.result-cell {
+  text-align: center;
+}
+
+.result-valid {
+  color: #2e7d32;
+  background-color: #e8f5e9;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-weight: bold;
+}
+
+.result-invalid {
+  color: #c62828;
+  background-color: #ffebee;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-weight: bold;
+}
+
+.compact-text {
+  display: inline-block;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+// Row styling
+.invalid-row {
+  background-color: #fff1f1;
+}
+
+.empty-message {
+  padding: 0.5rem;
+  text-align: center;
+  font-style: italic;
+  color: gray;
+}

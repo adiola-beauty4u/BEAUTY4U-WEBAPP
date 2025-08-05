@@ -1,0 +1,38 @@
+.full-width {
+    width: 100%;
+    margin-top: 16px;
+}
+
+/* Alternating row colors */
+tr.mat-row:nth-child(even) {
+    background-color: #f5f5f5;
+}
+
+tr.mat-row:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+td.mat-cell,
+th.mat-header-cell {
+    text-align: center;
+}
+
+th.mat-header-cell {
+    background-color: #e0e0e0;
+    font-weight: bold;
+}
+
+.mat-icon.green {
+    color: #4caf50;
+    /* green */
+}
+
+.mat-icon.red {
+    color: #f44336;
+    /* red */
+}

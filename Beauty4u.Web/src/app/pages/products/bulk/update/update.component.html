@@ -1,0 +1,60 @@
+<mat-card class="cardWithShadow">
+  <mat-card-header>
+    <mat-card-title>🛒 Bulk Product Update</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="scrollable-wrapper">
+      <mat-horizontal-stepper [linear]="true" #stepper class="no-click-header small-font">
+
+        <!-- Step 1: File Upload -->
+        <mat-step>
+          <ng-template matStepLabel>File Upload</ng-template>
+          <app-fileupload title="Select Bulk Product Update file" [onUpload]="handleUploaded"
+            [templatePath]="bulkUpdateTemplatePath" [templateName]="bulkUpdateTemplateName" #fileUploadRef />
+
+          <div class="m-t-20 button-row">
+            <button mat-stroked-button color="warn" (click)="clearForm()">
+              <mat-icon>cancel</mat-icon> Clear
+            </button>
+
+            <button mat-flat-button color="primary" (click)="previewFile()" [disabled]="!fileSelected()">
+              Next
+            </button>
+          </div>
+        </mat-step>
+
+        <!-- Step 2: Preview -->
+        <mat-step>
+          <ng-template matStepLabel>Preview</ng-template>
+          <mat-checkbox [(ngModel)]="showInvalidOnly" class="mb-4" *ngIf="getInvalidRowCount() > 0"
+            (change)="onInvalidFilterToggle($event)">
+            Show Invalid Rows only
+          </mat-checkbox>
+          <app-expandable-table [tableGroups]="tableGroupValues"></app-expandable-table>
+          <div class="m-t-20 button-row">
+            <button mat-stroked-button color="primary" matStepperPrevious>
+              <mat-icon>arrow_back</mat-icon> Back
+            </button>
+
+            <button mat-flat-button color="primary" (click)="confirmBulkRegister()"
+              [disabled]="getInvalidRowCount() > 0">
+              <mat-icon>check</mat-icon> Confirm Bulk Product Update
+            </button>
+          </div>
+        </mat-step>
+        <!-- Step 3: Complete -->
+        <mat-step>
+          <ng-template matStepLabel>Bulk Product Update</ng-template>
+          <app-expandable-table [tableGroups]="tableGroupValues"></app-expandable-table>
+          <div class="m-t-20 button-row">
+            <button mat-stroked-button color="primary" matStepperPrevious (click)="reset()">
+              <mat-icon>arrow_back</mat-icon> Upload Again
+            </button>
+          </div>
+        </mat-step>
+
+      </mat-horizontal-stepper>
+    </div>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,80 @@
+<mat-card class="cardWithShadow">
+  <mat-card-header>
+    <mat-card-title>🛒 Bulk Product Registration</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <mat-horizontal-stepper [linear]="true" #stepper class="no-click-header">
+      <!-- Step 1: Select Vendor -->
+      <mat-step [stepControl]="vendorControl">
+        <form [formGroup]="vendorForm">
+          <ng-template matStepLabel>Vendor</ng-template>
+
+          <div class="form-section">
+            <br />
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Select Vendor</mat-label>
+              <input matInput [matAutocomplete]="auto" formControlName="vendor"
+                placeholder="Start typing vendor name" />
+              <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayVendor" autoActiveFirstOption>
+                <mat-option *ngFor="let vendor of filteredVendors" [value]="vendor">
+                  {{ vendor.name }} ({{ vendor.code }})
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+
+            <div *ngIf="vendorControl.value" class="selected-vendor">
+              <mat-icon>info</mat-icon>
+              <span>Vendor Code: <strong>{{ vendorControl.value.code }}</strong></span>
+            </div>
+          </div>
+          <app-fileupload title="Select Bulk Product Registration file" [onUpload]="handleUploaded"
+            [templatePath]="bulkRegisterTemplatePath" [templateName]="bulkRegisterTemplateName" #fileUploadRef />
+
+          <div class="m-t-20 button-row">
+            <button mat-stroked-button color="warn" (click)="clearForm()">
+              <mat-icon>cancel</mat-icon> Clear
+            </button>
+
+            <button mat-flat-button color="primary" (click)="previewFile()"
+              [disabled]="!vendorForm.valid || !fileSelected()">
+              Next
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
+      <!-- Step 2: Upload File -->
+      <mat-step>
+        <ng-template matStepLabel>Preview</ng-template>
+        <mat-checkbox [(ngModel)]="showInvalidOnly" class="mb-4" *ngIf="invalidRowCount > 0 || !isValidFile"
+          (change)="onInvalidFilterToggle($event)">
+          Show Invalid Rows only
+        </mat-checkbox>
+        <app-expandable-table [tableGroups]="tableGroupValues"></app-expandable-table>
+        <mat-label *ngIf="!isValidFile" class="text-red-800 text-sm">
+          {{previewResult}}
+        </mat-label>
+        <div class="m-t-20 button-row">
+          <button mat-stroked-button color="primary" matStepperPrevious>
+            <mat-icon>arrow_back</mat-icon> Back
+          </button>
+
+          <button mat-flat-button color="primary" (click)="confirmBulkRegister()"
+            [disabled]="invalidRowCount > 0 || !isValidFile">
+            <mat-icon>check</mat-icon> Confirm Bulk Product Registration
+          </button>
+        </div>
+      </mat-step>
+      <mat-step>
+        <ng-template matStepLabel>Bulk Product Registration</ng-template>
+        <app-expandable-table [tableGroups]="tableGroupValues"></app-expandable-table>
+        <div class="m-t-20 button-row">
+          <button mat-stroked-button color="primary" matStepperPrevious (click)="reset()">
+            <mat-icon>arrow_back</mat-icon> Upload Again
+          </button>
+        </div>
+      </mat-step>
+    </mat-horizontal-stepper>
+  </mat-card-content>
+</mat-card>

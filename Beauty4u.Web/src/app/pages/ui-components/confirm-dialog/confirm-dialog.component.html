@@ -1,0 +1,20 @@
+<div class="dialog-content-enhanced">
+    <div class="dialog-header">
+        <div class="dialog-icon">
+            <mat-icon color="primary">{{ data.icon || 'help' }}</mat-icon>
+        </div>
+        <div class="dialog-text">
+            <h2 class="dialog-title">{{ data.title || 'Confirm' }}</h2>
+            <p class="dialog-message">{{ data.message || 'Are you sure you want to proceed?' }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="dialog-actions" align="end">
+    <button mat-stroked-button color="warn" (click)="dialogRef.close(false)">
+        <mat-icon>cancel</mat-icon> Cancel
+    </button>
+    <button mat-flat-button color="primary" (click)="dialogRef.close(true)">
+        <mat-icon>check_circle</mat-icon> Yes
+    </button>
+</div>

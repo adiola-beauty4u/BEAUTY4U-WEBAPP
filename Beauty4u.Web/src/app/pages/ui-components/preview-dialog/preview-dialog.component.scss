@@ -1,0 +1,85 @@
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    background-color: rgba(255, 255, 255, 0.8);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-label {
+    margin-top: 12px;
+    font-weight: 500;
+    color: #444;
+}
+
+.table-wrapper {
+    position: relative;
+    overflow-x: auto;
+    max-height: 70vh;
+    width: 100%;
+}
+
+.table-wrapper.blur {
+    filter: blur(2px);
+    pointer-events: none;
+    user-select: none;
+}
+
+.preview-table {
+    min-width: 1200px;
+}
+
+.dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.dialog-content {
+  position: relative;
+  padding-bottom: 2rem; // space for message
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 3rem;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.blur {
+  filter: blur(2px);
+}
+
+.info-message {
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.info-icon {
+  margin-right: 0.5rem;
+}
+
+::ng-deep .custom-dialog-width .mat-dialog-container {
+  width: 2000px !important; // or 90vw
+  max-width: 95vw;         // optional
+}

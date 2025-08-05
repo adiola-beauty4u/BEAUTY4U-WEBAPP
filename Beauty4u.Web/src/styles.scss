@@ -1,0 +1,190 @@
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.confirm-dialog-panel {
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.transparent-dialog .mat-dialog-container {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  overflow: hidden;
+}
+
+.transparent-backdrop {
+  background: transparent;
+}
+
+.no-click-header .mat-step-header {
+  pointer-events: none;
+}
+
+.cell-valid {
+  color: #2e7d32;
+  background-color: #e8f5e9;
+  border-radius: 4px;
+  padding: 2px 6px;
+  display: inline-block;
+  font-weight: bold !important;
+}
+
+.cell-invalid {
+  color: #c62828;
+  background-color: #ffebee;
+  border-radius: 4px;
+  padding: 2px 6px;
+  display: inline-block;
+  font-weight: bold !important;
+}
+
+.cell-changed {
+  color: #b87a07;
+  background-color: #ffebee;
+  border-radius: 4px;
+  padding: 2px 6px;
+  display: inline-block;
+  font-weight: bold !important;
+}
+
+.row-valid {
+  color: #2e7d32 !important;
+  background-color: #e8f5e9 !important;
+  border-radius: 4px !important;
+  padding: 1px 5px !important;
+}
+
+.row-changed {
+  color: #010101 !important;
+  background-color: #f8e66b !important;
+  border-radius: 4px !important;
+  padding: 1px 5px !important;
+}
+
+.row-invalid {
+  color: #c62828 !important;
+  background-color: #ffebee !important;
+  border-radius: 4px !important;
+  padding: 1px 5px !important;
+}
+
+.button-row-end {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+}
+
+.page-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.compact-card {
+  padding: 0.5rem !important;
+}
+
+.compact-search .mat-form-field-wrapper {
+  padding-bottom: 0 !important;
+  padding-top: 0 !important;
+}
+
+.compact-table-wrapper {
+  max-height: 400px;
+  overflow: auto;
+}
+
+.compact-table th,
+.compact-table td {
+  padding: 0.25rem 0.5rem !important;
+}
+
+.mat-card-title .mat-form-field {
+  margin-bottom: 0;
+}
+
+.text-muted {
+  color: #6b7280; // Tailwind gray-500
+}
+
+.inline-icon {
+  font-size: 14px;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+.text-red-800 {
+  color: #ef4444; // Tailwind red-800
+  font-weight: 800;
+}
+
+.text-sm {
+  font-size: 0.875rem; // 14px
+  line-height: 1.25rem; // 20px
+}
+
+.text-red-800:hover {
+  color: #dc2626; // red-600
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.auto-fit-table {
+  width: 100%;
+  border-collapse: separate;
+  table-layout: auto;
+
+  th, td {
+    white-space: nowrap;
+    vertical-align: top;
+  }
+
+  th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #f9fafb; // tailwind gray-100
+    font-weight: bold;
+    padding: 8px 12px;
+  }
+
+  td {
+    padding: 6px 12px;
+    word-break: break-word;
+  }
+}
+
+.tooltip-follow {
+  pointer-events: none;
+}
+
+.mat-tooltip.tooltip-follow {
+  position: fixed !important;
+  transform: none !important;
+  z-index: 2000 !important;
+  max-width: 400px;
+  font-size: 12px;
+  white-space: pre-wrap;
+  background-color: #333;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+}

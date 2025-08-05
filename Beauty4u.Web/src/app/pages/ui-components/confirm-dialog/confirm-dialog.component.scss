@@ -1,0 +1,38 @@
+.dialog-content-enhanced {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  gap: 1rem;
+}
+
+.dialog-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.dialog-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog-title {
+  margin: 0 0 0.25rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.dialog-message {
+  margin: 0;
+  font-size: 1rem;
+  color: #555;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem;
+  gap: 0.75rem;
+}

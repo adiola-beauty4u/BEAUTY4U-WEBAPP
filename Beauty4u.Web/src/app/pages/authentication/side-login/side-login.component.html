@@ -1,0 +1,43 @@
+<div class="blank-layout-container justify-content-center align-items-center bg-light">
+  <div class="position-relative row w-100 h-100 bg-gredient justify-content-center">
+    <div class="col-lg-4 d-flex align-items-center">
+      <mat-card class="cardWithShadow boxed-auth">
+        <mat-card-content class="p-32">
+
+          <form class="m-t-30" [formGroup]="form">
+            <!-- Username -->
+            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Username</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+              <input matInput formControlName="uname" placeholder="Enter username" />
+            </mat-form-field>
+
+            <!-- Password -->
+            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Password</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+              <input matInput type="password" formControlName="password" placeholder="Enter password" />
+            </mat-form-field>
+
+            <!-- Remember Me + Forgot Password -->
+            <div class="d-flex align-items-center m-b-12">
+              <mat-checkbox formControlName="rememberDevice" color="primary">Remember this Device</mat-checkbox>
+              <a [routerLink]="['/']" class="text-primary f-w-600 text-decoration-none m-l-auto f-s-14">
+                Forgot Password?
+              </a>
+            </div>
+            <mat-label class="text-red-800 text-sm">
+              {{loginMessage}}
+            </mat-label>
+            <!-- Submit -->
+            <button (click)="submit()" [disabled]="form.invalid" mat-flat-button color="primary" class="w-100">
+              Sign In
+            </button>
+          </form>
+          <!-- <span class="d-block f-w-500 text-center m-t-24">New to MaterialM?
+            <a [routerLink]="['/authentication/register']" class="text-decoration-none text-primary f-w-500 f-s-14">
+              Create an account</a>
+          </span> -->
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

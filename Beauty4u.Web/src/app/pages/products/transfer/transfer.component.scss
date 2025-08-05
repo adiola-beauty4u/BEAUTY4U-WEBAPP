@@ -1,0 +1,43 @@
+.cardWithShadow {
+    font-size: 13px;
+}
+
+.compact-panel {
+    padding: 4px;
+    font-size: 11px;
+    line-height: 1;
+    border: 1px solid #ccc;
+    max-height: 500px;
+    max-width: 240px;
+    //overflow: hidden;
+}
+
+.store-list {
+    margin-top: 4px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-x: auto;
+    height: 400px;
+    row-gap: 5px;
+    /* remove spacing between checkboxes */
+}
+
+.compact-checkbox {
+    font-size: 11px !important;
+    padding: 2px 4px !important;
+    margin: 0 !important;
+    line-height: 1.1;
+    height: 20px;
+}
+
+.bordered {
+    border-bottom: 1px solid #eee;
+}
+
+.mat-checkbox-layout {
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 11px !important;
+    line-height: 1.2;
+}

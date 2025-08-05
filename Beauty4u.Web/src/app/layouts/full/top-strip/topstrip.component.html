@@ -1,0 +1,35 @@
+<!-- Top Strip -->
+<div class="app-topstrip bg-dark text-white p-y-10 p-x-20 w-100 d-lg-flex align-items-center justify-content-between">
+  <h2 class="f-s-18 m-y-8 text-lg-left text-center"></h2>
+
+  <div class="d-flex align-items-center justify-content-center flex-wrap">
+    <!-- Support -->
+    <a mat-button class="text-white d-none d-lg-flex">
+      <div class="d-flex align-items-center gap-4">
+        <i-tabler name="shopping-cart" class="icon-20 d-flex"></i-tabler>
+        Headquarters
+      </div>
+    </a>
+
+    <!-- Version Dropdown -->
+    <button mat-button class="d-flex align-items-center gap-4 text-white b-1 border-primary m-x-10"
+      [matMenuTriggerFor]="beforeMenu">
+      <div class="d-flex align-items-center gap-6">
+        <i-tabler name="briefcase" class="icon-20 d-flex"></i-tabler>
+        {{ selectedVersion }}
+        <i-tabler name="chevron-down" class="icon-20 d-flex"></i-tabler>
+      </div>
+    </button>
+
+    <mat-menu #beforeMenu="matMenu" xPosition="before">
+      <ng-container *ngFor="let version of versions">
+        <button mat-menu-item (click)="selectVersion(version)">
+          <div class="d-flex align-items-center gap-4">
+            <i-tabler name="external-link" class="icon-18 d-flex"></i-tabler>
+            {{ version }}
+          </div>
+        </button>
+      </ng-container>
+    </mat-menu>
+  </div>
+</div>
