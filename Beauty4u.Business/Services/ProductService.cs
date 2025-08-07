@@ -225,7 +225,7 @@ namespace Beauty4u.Business.Services
             var bulkProduct = DataTableHelper.ToProductDataTable(initialBulkProduct);
 
             //var bulkProduct = await _fileReadHelper.ReadCsvToDataTableAsync(stream);
-            var bulkProductList = DataTableHelper.DataTableToList<ProductDto>(bulkProduct);
+            var bulkProductList = DataTableHelper.DataTableToList<BulkProductDataRequest>(bulkProduct);
             var bulkProductUpdatePreviewResults = await this._productRepository.BulkUpdatePreview(bulkProduct);
             var updateBulkProductDict = bulkProductUpdatePreviewResults
                 .GroupBy(x => x.VendorCode).ToDictionary(x => x.Key, x => x.ToList());
@@ -446,15 +446,15 @@ namespace Beauty4u.Business.Services
                         TextValue = transferItem.Color,
                         IsValid = true,
                     });
-                    rowData.Cells.Add(nameof(transferItem.Retail), new CellData()
+                    rowData.Cells.Add(nameof(transferItem.RetailPrice), new CellData()
                     {
-                        RawValue = transferItem.Retail,
-                        TextValue = $"${transferItem.Retail:F2}",
+                        RawValue = transferItem.RetailPrice,
+                        TextValue = $"${transferItem.RetailPrice:F2}",
                         IsValid = true,
                     });
                     rowData.Cells.Add(nameof(transferItem.Cost), new CellData()
                     {
-                        RawValue = transferItem.Retail,
+                        RawValue = transferItem.RetailPrice,
                         TextValue = $"${transferItem.Cost:F2}",
                         IsValid = true,
                     });
@@ -1084,15 +1084,15 @@ namespace Beauty4u.Business.Services
                         rowData.Cells.Add("Store Retail", new CellData()
                         {
                             RawValue = row.Color,
-                            TextValue = $"${row.Retail:F2}",
-                            Tooltip = upcDict[row.UPC].Retail != row.Retail ? rowData.IsNew ? "" : $"{nameof(row.Retail)} will be updated" : "",
+                            TextValue = $"${row.RetailPrice:F2}",
+                            Tooltip = upcDict[row.UPC].RetailPrice != row.RetailPrice ? rowData.IsNew ? "" : $"{nameof(row.RetailPrice)} will be updated" : "",
                         });
                         rowData.Cells.Add("HQ Retail", new CellData()
                         {
-                            RawValue = upcDict[row.UPC].Retail,
-                            TextValue = $"${upcDict[row.UPC].Retail:F2}",
-                            CssClass = upcDict[row.UPC].Retail > row.Retail ? "cell-valid" : upcDict[row.UPC].Retail < row.Retail ? "cell-changed" : "",
-                            Tooltip = upcDict[row.UPC].Retail > row.Retail ? "Retail price increase" : upcDict[row.UPC].Retail < row.Retail ? "Retail price decrease" : "",
+                            RawValue = upcDict[row.UPC].RetailPrice,
+                            TextValue = $"${upcDict[row.UPC].RetailPrice:F2}",
+                            CssClass = upcDict[row.UPC].RetailPrice > row.RetailPrice ? "cell-valid" : upcDict[row.UPC].RetailPrice < row.RetailPrice ? "cell-changed" : "",
+                            Tooltip = upcDict[row.UPC].RetailPrice > row.RetailPrice ? "Retail price increase" : upcDict[row.UPC].RetailPrice < row.RetailPrice ? "Retail price decrease" : "",
                         });
 
                         rowData.Cells.Add("Store Cost", new CellData()
@@ -1134,7 +1134,7 @@ namespace Beauty4u.Business.Services
                         });
 
                         // Check changed values
-                        if (!rowData.IsNew && (upcDict[row.UPC].Cost != row.Cost || upcDict[row.UPC].Retail != row.Retail))
+                        if (!rowData.IsNew && (upcDict[row.UPC].Cost != row.Cost || upcDict[row.UPC].RetailPrice != row.RetailPrice))
                         {
                             rowData.CssClass = "row-changed";
                             rowData.IsNew = false;

@@ -278,5 +278,11 @@ namespace Beauty4u.DataAccess.B4u
 
             await command.ExecuteNonQueryAsync();
         }
+
+        public async Task SearchProducts()
+        {
+            using var conn = new SqlConnection(_connectionString);
+            await conn.OpenAsync();
+        }
     }
 }
