@@ -1,4 +1,5 @@
 ﻿using Beauty4u.Interfaces.Dto;
+using Beauty4u.Interfaces.Dto.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;

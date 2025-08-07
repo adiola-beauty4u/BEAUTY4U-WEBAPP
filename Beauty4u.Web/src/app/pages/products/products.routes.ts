@@ -7,9 +7,7 @@ import { ProductsComponent } from './products.component';
 
 export const ProductRoutes: Routes = [
   {
-    path: 'products',
-    component: ProductsComponent,
-    canActivate: [roleGuard(['Admin', 'Data-Analyst', 'IT Team', 'President', 'Vice President'])],
+    path: '',
     children: [
       {
         path: 'bulk-registration',

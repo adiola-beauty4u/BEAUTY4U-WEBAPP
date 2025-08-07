@@ -37,14 +37,20 @@ namespace Beauty4u.ApiAccess.Products
         }
         public async Task<T> TransferProductsToApiAsync<T>(string baseAddress, string jwtToken, List<ISearchProductResult> transferList)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
-            var response = await _httpClient.PostAsJsonAsync($"{baseAddress}{productEndpoint}/transfer", transferList);
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+                var response = await _httpClient.PostAsJsonAsync($"{baseAddress}{productEndpoint}/transfer", transferList);
 
-            response.EnsureSuccessStatusCode();
-            var output = await response.Content.ReadFromJsonAsync<T>();
+                response.EnsureSuccessStatusCode();
+                var output = await response.Content.ReadFromJsonAsync<T>();
 
-            return output;
-
+                return output;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

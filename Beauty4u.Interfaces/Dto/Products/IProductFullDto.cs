@@ -1,7 +1,6 @@
-﻿
-namespace Beauty4u.Models.Dto.Products
+﻿namespace Beauty4u.Interfaces.Dto.Products
 {
-    public interface IProductFullDto
+    public interface IProductFullDto: IProductDto
     {
         string Closed { get; set; }
         bool Inventory { get; set; }

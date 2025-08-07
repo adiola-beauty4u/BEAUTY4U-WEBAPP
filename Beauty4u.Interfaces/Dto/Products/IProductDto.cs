@@ -15,13 +15,5 @@ namespace Beauty4u.Interfaces.Dto
         string Sku { get; set; }
         string VendorCode { get; set; }
         string VendorName { get; set; }
-        string TaxType { get; set; }
-        bool Inventory { get; set; }
-        string Closed { get; set; }
-        bool Status { get; set; }
-        DateTime WriteDate { get; set; }
-        DateTime LastUpdate { get; set; }
-        string LastUser { get; set; }
-        string WriteUser { get; set; }
     }
 }

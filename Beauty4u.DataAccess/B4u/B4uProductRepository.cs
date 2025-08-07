@@ -279,10 +279,30 @@ namespace Beauty4u.DataAccess.B4u
             await command.ExecuteNonQueryAsync();
         }
 
-        public async Task SearchProducts()
+        public async Task<List<IProductFullWithPromotionCountsDto>> SearchProducts(IProductSearchParams productSearchParams)
         {
             using var conn = new SqlConnection(_connectionString);
             await conn.OpenAsync();
+
+            using var command = conn.CreateCommand();
+            command.CommandText = "dbo.usp_SearchProducts";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.AddWithValue("@Category", productSearchParams.Category);
+            command.Parameters.AddWithValue("@VendorCode", productSearchParams.VendorCode);
+            command.Parameters.AddWithValue("@StyleCode", productSearchParams.StyleCode);
+            command.Parameters.AddWithValue("@StyleDesc", productSearchParams.StyleDesc);
+            command.Parameters.AddWithValue("@Brand", productSearchParams.Brand);
+            command.Parameters.AddWithValue("@Size", productSearchParams.Size);
+            command.Parameters.AddWithValue("@Color", productSearchParams.Color);
+            command.Parameters.AddWithValue("@UPC", productSearchParams.UPC);
+            command.Parameters.AddWithValue("@Sku", productSearchParams.Sku);
+
+            using var adapter = new SqlDataAdapter(command);
+            var table = new DataTable();
+            adapter.Fill(table);
+
+            return DataTableHelper.DataTableToList<ProductFullWithPromotionCountsDto>(table).ToList<IProductFullWithPromotionCountsDto>();
         }
     }
 }

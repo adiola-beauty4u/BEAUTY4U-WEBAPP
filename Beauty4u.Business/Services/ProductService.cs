@@ -1,36 +1,23 @@
-﻿using Beauty4u.Common.Enums;
+﻿using System.Data;
+using System.Runtime.CompilerServices;
+using System.Text;
+using AutoMapper;
+using Beauty4u.Common.Enums;
 using Beauty4u.Common.Helpers;
+using Beauty4u.Interfaces.Api.Products;
+using Beauty4u.Interfaces.Api.Table;
+using Beauty4u.Interfaces.DataAccess.Api;
+using Beauty4u.Interfaces.Dto.Products;
+using Beauty4u.Interfaces.Services;
+using Beauty4u.Models.Api.Products;
 using Beauty4u.Models.Api.Table;
 using Beauty4u.Models.Common;
 using Beauty4u.Models.DataAccess.B4u;
 using Beauty4u.Models.Dto.Products;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Beauty4u.Interfaces.Services;
-using System.Reflection;
-using System.Net.Http.Headers;
-using Microsoft.Identity.Client;
-using Beauty4u.Models.Api.Products;
-using Beauty4u.Interfaces.Dto.Products;
-using Beauty4u.Models.Dto;
-using Beauty4u.Interfaces.Api.Products;
-using Beauty4u.Interfaces.DataAccess.B4u;
-using Beauty4u.Interfaces.DataAccess.Api;
-using System.Net.Http;
-using Beauty4u.Interfaces.Api.Table;
-using Newtonsoft.Json;
-using AutoMapper;
 using Beauty4u.Models.Requests;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
-using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace Beauty4u.Business.Services
 {
@@ -1466,6 +1453,11 @@ namespace Beauty4u.Business.Services
                 });
             }
             return output;
+        }
+
+        public async Task SearchProducts(IProductSearchParams searchParams)
+        {
+            var output = await _productRepository.SearchProducts(searchParams);
         }
 
     }
