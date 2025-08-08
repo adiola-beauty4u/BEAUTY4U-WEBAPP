@@ -279,7 +279,7 @@ namespace Beauty4u.DataAccess.B4u
             await command.ExecuteNonQueryAsync();
         }
 
-        public async Task<List<IProductFullWithPromotionCountsDto>> SearchProductsAsync(IProductSearchParams productSearchParams)
+        public async Task<List<IProductFullDto>> SearchProductsAsync(IProductSearchParams productSearchParams)
         {
             using var conn = new SqlConnection(_connectionString);
             await conn.OpenAsync();
@@ -302,7 +302,7 @@ namespace Beauty4u.DataAccess.B4u
             var table = new DataTable();
             adapter.Fill(table);
 
-            return DataTableHelper.DataTableToList<ProductFullWithPromotionCountsDto>(table).ToList<IProductFullWithPromotionCountsDto>();
+            return DataTableHelper.DataTableToList<ProductFullDto>(table).ToList<IProductFullDto>();
         }
     }
 }

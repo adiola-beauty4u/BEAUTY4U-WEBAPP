@@ -14,9 +14,9 @@ namespace Beauty4u.Models.Dto.Products
         public bool Inventory { get; set; }
         public string Closed { get; set; } = null!;
         public string Status { get; set; }
-        public DateTime WriteDate { get; set; }
+        public DateTime? WriteDate { get; set; }
         public string WriteUser { get; set; } = null!;
-        public DateTime LastUpdate { get; set; }
+        public DateTime? LastUpdate { get; set; }
         public string LastUser { get; set; } = null!;
     }
 }

@@ -43,6 +43,7 @@ namespace Beauty4u.DataAccess
             services.AddScoped<ISystemSetupRepository, B4uSystemSetupRepository>();
             services.AddScoped<IConnectionRepository, B4uConnectionRepository>();
             services.AddScoped<IItemGroupRepository, B4uItemGroupRepository>();
+            services.AddScoped<IPromotionRepository, B4uPromotionRepository>();
             return services;
         }
     }

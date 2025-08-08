@@ -8,6 +8,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { RowData } from 'src/interfaces/table-data';
+import { MatCardModule } from '@angular/material/card';
+
 
 @Component({
   selector: 'app-child-table',
@@ -20,7 +22,8 @@ import { RowData } from 'src/interfaces/table-data';
     MatTooltipModule,
     MatFormFieldModule,
     MatInputModule,
-    FormsModule
+    FormsModule,
+    MatCardModule
   ],
   templateUrl: './child-table.component.html',
 })

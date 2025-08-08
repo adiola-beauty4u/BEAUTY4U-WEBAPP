@@ -15,6 +15,7 @@ import { ProductSearchRequest } from 'src/interfaces/product-search-request';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ChildTableComponent } from 'src/app/components/child-table/child-table.component';
 import { TableGroup, CellData, ColumnDef, RowData } from 'src/interfaces/table-data';
+import { PromotionService } from 'src/app/services/promotion.service';
 
 @Component({
   selector: 'app-products',
@@ -44,7 +45,7 @@ export class ProductsComponent implements OnInit {
 
   @ViewChild(MatExpansionPanel) filterPanel!: MatExpansionPanel;
 
-  constructor(private fb: FormBuilder, private readonly productService: ProductService, private readonly loadingService: LoadingService) {
+  constructor(private fb: FormBuilder, private readonly productService: ProductService, private readonly loadingService: LoadingService, private readonly promotionService: PromotionService) {
 
   }
   ngOnInit(): void {
@@ -53,6 +54,9 @@ export class ProductsComponent implements OnInit {
       itemGroupCode: new FormControl<string>(''),
       styleCode: '',
       styleDesc: '',
+      brand: '',
+      color: '',
+      size: '',
       upc: '',
       sku: ''
     });
@@ -70,9 +74,9 @@ export class ProductsComponent implements OnInit {
     const request: ProductSearchRequest = {
       category: this.searchForm.value.itemGroupCode?.code,
       vendorCode: this.searchForm.value.vendor?.code,
-      brand: '',
-      color: '',
-      size: '',
+      brand: this.searchForm.value.brand,
+      color: this.searchForm.value.color,
+      size: this.searchForm.value.size,
       styleCode: this.searchForm.value.styleCode,
       styleDesc: this.searchForm.value.styleDesc,
       sku: this.searchForm.value.sku,
@@ -96,10 +100,7 @@ export class ProductsComponent implements OnInit {
     return group?.columns.map(c => c.fieldName);
   }
 
-  getPromotions(product: any) {
-    console.log(product?.sku);
-  }
-  getActivePromotions(product: any) {
-    console.log("Active" + product?.sku);
+  getPromotions(row: any) {
+    console.log(row?.product?.sku);
   }
 }

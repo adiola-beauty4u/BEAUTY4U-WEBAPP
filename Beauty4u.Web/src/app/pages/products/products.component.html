@@ -20,6 +20,15 @@
                         Desc: {{ searchForm.value.styleDesc }}
                     </mat-chip>
                     <mat-chip *ngIf="searchForm.value.upc" color="primary" selected>
+                        Brand: {{ searchForm.value.brand }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.upc" color="primary" selected>
+                        Color: {{ searchForm.value.color }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.upc" color="primary" selected>
+                        Size: {{ searchForm.value.size }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.upc" color="primary" selected>
                         UPC: {{ searchForm.value.upc }}
                     </mat-chip>
                     <mat-chip *ngIf="searchForm.value.sku" color="primary" selected>
@@ -55,6 +64,24 @@
                 <input matInput formControlName="styleDesc" />
             </mat-form-field>
 
+            <!-- Brand -->
+            <label class="col-span-2 text-right font-medium">Brand:</label>
+            <mat-form-field appearance="outline" class="col-span-4">
+                <input matInput formControlName="brand" />
+            </mat-form-field>
+
+            <!-- Color -->
+            <label class="col-span-2 text-right font-medium">Color:</label>
+            <mat-form-field appearance="outline" class="col-span-4">
+                <input matInput formControlName="color" />
+            </mat-form-field>
+
+            <!-- Size -->
+            <label class="col-span-2 text-right font-medium">Size:</label>
+            <mat-form-field appearance="outline" class="col-span-4">
+                <input matInput formControlName="size" />
+            </mat-form-field>
+
             <!-- UPC -->
             <label class="col-span-2 text-right font-medium">UPC:</label>
             <mat-form-field appearance="outline" class="col-span-4">
@@ -76,7 +103,6 @@
     </mat-expansion-panel>
     <app-child-table #childTable *ngIf="output" [group]="output" [showSearchBox]="true" [showInvalidCount]="false"
         [methodList]="{
-        getActivePromotions: getActivePromotions,
         getPromotions: getPromotions
     }" [displayedColumns]="getDisplayedColumns(output)" [pageSize]="10">
     </app-child-table>

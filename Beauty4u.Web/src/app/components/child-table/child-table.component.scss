@@ -1,53 +1,32 @@
 .table-wrapper {
+    max-height: 400px;
+    /* or use calc(100vh - Xpx) for dynamic sizing */
+    overflow-y: auto;
     overflow-x: auto;
-    max-width: 100%;
+    position: relative;
+}
+
+.auto-fit-table {
+    width: 100%;
+    min-width: max-content;
+    /* Allows horizontal scroll if needed */
+    border-collapse: collapse;
 }
 
 .compact-header {
-    font-weight: 600;
-    font-size: 0.875rem;
-    background-color: #f7f7f7;
+    background-color: #f9fafb;
+    /* Light gray */
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
-.auto-cell {
-    font-size: 0.8125rem;
-}
-
-.status-icon {
-    font-size: 18px;
-    vertical-align: middle;
-}
-
-.icon-true {
-    color: #4caf50;
-}
-
-.icon-false {
-    color: #f44336;
-}
-
+/* Optional enhancements */
 .inline-icon {
-    font-size: 16px;
     vertical-align: middle;
 }
 
-.command-link {
-    border-width: 1px;
-    border-radius: 4px;
-    line-height: 1.2;
-    text-transform: none;
-    /* Keep normal case */
-}
-
-.command-link:hover {
-    background-color: rgba(25, 118, 210, 0.08);
-    /* subtle primary hover */
-    text-decoration: underline;
-}
-
-::ng-deep td.cell-center,
-::ng-deep span.cell-center,
-::ng-deep button.cell-center {
-  justify-content: center !important; /* Flexbox horizontal center */
-  text-align: center !important;      /* Text alignment for non-flex cases */
+.mat-header-cell,
+.mat-cell {
+    white-space: nowrap;
 }

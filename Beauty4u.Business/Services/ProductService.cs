@@ -1549,19 +1549,11 @@ namespace Beauty4u.Business.Services
 
                 tableData.Columns.Add(new ColumnData()
                 {
-                    Header = "Promotions",
+                    Header = "View Promotions",
                     FieldName = "Promotions",
                     DataType = ColumnDataType.Int,
                     IsCommand = true,
                     CommandName = "getPromotions"
-                });
-                tableData.Columns.Add(new ColumnData()
-                {
-                    Header = "Active Promotions",
-                    FieldName = "Active Promotions",
-                    DataType = ColumnDataType.Int,
-                    IsCommand = true,
-                    CommandName = "getActivePromotions"
                 });
                 foreach (var row in output)
                 {
@@ -1633,29 +1625,21 @@ namespace Beauty4u.Business.Services
                     rowData.Cells.Add("Write Date", new CellData()
                     {
                         RawValue = row.WriteDate,
-                        TextValue = row.WriteDate.ToShortDateString(),
+                        TextValue = row.WriteDate?.ToShortDateString(),
                     });
                     rowData.Cells.Add("Update Date", new CellData()
                     {
                         RawValue = row.LastUpdate,
-                        TextValue = row.LastUpdate.ToShortDateString(),
+                        TextValue = row.LastUpdate?.ToShortDateString(),
                     });
                     rowData.Cells.Add("Promotions", new CellData()
                     {
-                        RawValue = row.AllPromotions,
-                        TextValue = row.AllPromotions.ToString(),
-                        CommandParameter = new { sku = row.Sku },
-                        Tooltip = "View All Promotions",
+                        RawValue = "View Promotions",
+                        TextValue = "View Promotions",
+                        CommandParameter = new { product = row },
+                        Tooltip = "View Promotions",
                         CssClass = "cell-center"
 
-                    });
-                    rowData.Cells.Add("Active Promotions", new CellData()
-                    {
-                        RawValue = row.ActivePromotions,
-                        TextValue = row.ActivePromotions.ToString(),
-                        CommandParameter = new { sku = row.Sku },
-                        Tooltip = "View Active Promotions",
-                        CssClass = "cell-center"
                     });
                     tableData.Rows.Add(rowData);
                 }
