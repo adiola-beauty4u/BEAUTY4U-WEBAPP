@@ -29,6 +29,7 @@ namespace Beauty4u.DataAccess.B4u
             using var command = conn.CreateCommand();
             command.CommandText = "[dbo].[usp_GetSystemSetup]";
             command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 300;
 
             var dataTable = new DataTable();
             using var adapter = new SqlDataAdapter(command);

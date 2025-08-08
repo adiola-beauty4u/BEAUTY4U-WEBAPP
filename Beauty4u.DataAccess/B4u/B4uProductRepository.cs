@@ -30,6 +30,7 @@ namespace Beauty4u.DataAccess.B4u
             using var command = conn.CreateCommand();
             command.CommandText = "dbo.usp_BulkProductRegistration";
             command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 300;
 
             command.Parameters.AddWithValue("@VendorId", bulkProductRequest.VendorId);
             command.Parameters.AddWithValue("@UserCode", bulkProductRequest.UserCode);
@@ -58,6 +59,7 @@ namespace Beauty4u.DataAccess.B4u
             using var command = conn.CreateCommand();
             command.CommandText = "dbo.usp_BulkProductUpdate";
             command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 300;
 
             command.Parameters.AddWithValue("@VendorId", bulkProductRequest.VendorId);
             command.Parameters.AddWithValue("@UserCode", bulkProductRequest.UserCode);
@@ -82,6 +84,7 @@ namespace Beauty4u.DataAccess.B4u
             using var command = conn.CreateCommand();
             command.CommandText = "dbo.usp_ProductTransferSearch";
             command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 300;
 
             command.Parameters.Add(new SqlParameter("@DTSTART", SqlDbType.Date) { Value = startDate.ToShortDateString() });
             command.Parameters.Add(new SqlParameter("@DTEND", SqlDbType.Date) { Value = endDate.AddDays(1).ToShortDateString() });
@@ -101,6 +104,7 @@ namespace Beauty4u.DataAccess.B4u
             using var command = conn.CreateCommand();
             command.CommandText = "dbo.usp_ValidateUPCList";
             command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 300;
 
             command.Parameters.Add(new SqlParameter
             {
@@ -126,6 +130,7 @@ namespace Beauty4u.DataAccess.B4u
             using var command = conn.CreateCommand();
             command.CommandText = "dbo.usp_BulkUpdatePreview";
             command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 300;
 
             command.Parameters.Add(new SqlParameter
             {
@@ -151,6 +156,7 @@ namespace Beauty4u.DataAccess.B4u
             using var command = conn.CreateCommand();
             command.CommandText = "dbo.usp_ProductSearchByUPCList";
             command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 300;
 
             command.Parameters.Add(new SqlParameter
             {
@@ -175,6 +181,7 @@ namespace Beauty4u.DataAccess.B4u
             using var command = conn.CreateCommand();
             command.CommandText = "dbo.usp_TransferProducts";
             command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 300;
 
             command.Parameters.Add(new SqlParameter("@UserCode", transferProductParams.UserCode));
             command.Parameters.Add(new SqlParameter
@@ -201,6 +208,7 @@ namespace Beauty4u.DataAccess.B4u
             using var command = conn.CreateCommand();
             command.CommandText = "dbo.usp_LogBulkProductRequest";
             command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 300;
 
             command.Parameters.AddWithValue("@VendorId", bulkProductRequestParams.VendorId);
             command.Parameters.AddWithValue("@UserCode", bulkProductRequestParams.UserCode);
@@ -231,6 +239,7 @@ namespace Beauty4u.DataAccess.B4u
             using var command = conn.CreateCommand();
             command.CommandText = "dbo.usp_LogProductTransfers";
             command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 300;
 
             command.Parameters.AddWithValue("@UserCode", logProductTransfersParam.UserCode);
             command.Parameters.AddWithValue("@StoreCode", logProductTransfersParam.StoreCode);
