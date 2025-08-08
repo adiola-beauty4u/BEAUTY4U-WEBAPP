@@ -13,7 +13,7 @@ namespace Beauty4u.Models.Dto.Products
         public string TaxType { get; set; } = null!;
         public bool Inventory { get; set; }
         public string Closed { get; set; } = null!;
-        public bool Status { get; set; }
+        public string Status { get; set; }
         public DateTime WriteDate { get; set; }
         public string WriteUser { get; set; } = null!;
         public DateTime LastUpdate { get; set; }

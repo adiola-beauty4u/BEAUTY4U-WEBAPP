@@ -12,5 +12,7 @@
         bool Status { get; set; }
         DateTime WriteDate { get; set; }
         string WriteUser { get; set; }
+        string Level1Code { get; set; }
+        string Level2Code { get; set; }
     }
 }

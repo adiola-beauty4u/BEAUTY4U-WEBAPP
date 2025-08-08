@@ -279,7 +279,7 @@ namespace Beauty4u.DataAccess.B4u
             await command.ExecuteNonQueryAsync();
         }
 
-        public async Task<List<IProductFullWithPromotionCountsDto>> SearchProducts(IProductSearchParams productSearchParams)
+        public async Task<List<IProductFullWithPromotionCountsDto>> SearchProductsAsync(IProductSearchParams productSearchParams)
         {
             using var conn = new SqlConnection(_connectionString);
             await conn.OpenAsync();

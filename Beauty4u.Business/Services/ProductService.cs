@@ -253,7 +253,7 @@ namespace Beauty4u.Business.Services
                     var tableGroup = new TableData();
                     tableGroup.TableName = item.Key;
                     tableGroup.Columns = columns.ToList();
-                    foreach(var previewResult in updatedItems)
+                    foreach (var previewResult in updatedItems)
                     {
                         var rowData = new RowData();
                         rowData.Cells.Add(nameof(previewResult.Sku), new CellData()
@@ -1128,7 +1128,8 @@ namespace Beauty4u.Business.Services
                             rowData.IsChanged = true;
                         }
 
-                        if (rowData.IsNew || rowData.IsChanged) { 
+                        if (rowData.IsNew || rowData.IsChanged)
+                        {
                             tableData.Rows.Add(rowData);
                         }
                     }
@@ -1455,9 +1456,216 @@ namespace Beauty4u.Business.Services
             return output;
         }
 
-        public async Task SearchProducts(IProductSearchParams searchParams)
+        public async Task<ITableData> SearchProductsAsync(IProductSearchParams searchParams)
         {
-            var output = await _productRepository.SearchProducts(searchParams);
+            try
+            {
+                var output = await _productRepository.SearchProductsAsync(searchParams);
+                var tableData = new TableData();
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Vendor Name",
+                    FieldName = "Vendor Name",
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Brand",
+                    FieldName = "Brand",
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Style Code",
+                    FieldName = "Style Code",
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Product Description",
+                    FieldName = "Product Description",
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Size",
+                    FieldName = "Size",
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Color",
+                    FieldName = "Color",
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Retail Price",
+                    FieldName = "Retail Price",
+                    DataType = ColumnDataType.Decimal
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Cost",
+                    FieldName = "Cost",
+                    DataType = ColumnDataType.Decimal
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Category",
+                    FieldName = "Category",
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "UPC",
+                    FieldName = "UPC",
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "SKU",
+                    FieldName = "Sku",
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Status",
+                    FieldName = "Status",
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Write Date",
+                    FieldName = "Write Date",
+                    DataType = ColumnDataType.Date
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Update Date",
+                    FieldName = "Update Date",
+                    DataType = ColumnDataType.Date
+                });
+
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Promotions",
+                    FieldName = "Promotions",
+                    DataType = ColumnDataType.Int,
+                    IsCommand = true,
+                    CommandName = "getPromotions"
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Active Promotions",
+                    FieldName = "Active Promotions",
+                    DataType = ColumnDataType.Int,
+                    IsCommand = true,
+                    CommandName = "getActivePromotions"
+                });
+                foreach (var row in output)
+                {
+                    var rowData = new RowData()
+                    {
+                        Cells = new Dictionary<string, ICellData>(),
+                    };
+
+                    rowData.Cells.Add("Vendor Name", new CellData()
+                    {
+                        RawValue = row.VendorName,
+                        TextValue = row.VendorName,
+                    });
+                    rowData.Cells.Add(nameof(row.Brand), new CellData()
+                    {
+                        RawValue = row.Brand,
+                        TextValue = row.Brand,
+                    });
+                    rowData.Cells.Add("Style Code", new CellData()
+                    {
+                        RawValue = row.StyleCode,
+                        TextValue = row.StyleCode,
+                    });
+                    rowData.Cells.Add("Product Description", new CellData()
+                    {
+                        RawValue = row.StyleDesc,
+                        TextValue = row.StyleDesc,
+                    });
+                    rowData.Cells.Add(nameof(row.Size), new CellData()
+                    {
+                        RawValue = row.Size,
+                        TextValue = row.Size,
+                    });
+                    rowData.Cells.Add(nameof(row.Color), new CellData()
+                    {
+                        RawValue = row.Color,
+                        TextValue = row.Color,
+                    });
+                    rowData.Cells.Add("Retail Price", new CellData()
+                    {
+                        RawValue = row.RetailPrice,
+                        TextValue = $"${row.RetailPrice:F2}",
+                    });
+                    rowData.Cells.Add(nameof(row.Cost), new CellData()
+                    {
+                        RawValue = row.Cost,
+                        TextValue = $"${row.Cost:F2}",
+                    });
+                    rowData.Cells.Add(nameof(row.Category), new CellData()
+                    {
+                        RawValue = row.Category,
+                        TextValue = row.Category,
+                    });
+                    rowData.Cells.Add(nameof(row.UPC), new CellData()
+                    {
+                        RawValue = row.UPC,
+                        TextValue = row.UPC,
+                    });
+                    rowData.Cells.Add(nameof(row.Sku), new CellData()
+                    {
+                        RawValue = row.Sku,
+                        TextValue = row.Sku,
+                    });
+                    rowData.Cells.Add(nameof(row.Status), new CellData()
+                    {
+                        RawValue = row.Status,
+                        TextValue = row.Status,
+                    });
+                    rowData.Cells.Add("Write Date", new CellData()
+                    {
+                        RawValue = row.WriteDate,
+                        TextValue = row.WriteDate.ToShortDateString(),
+                    });
+                    rowData.Cells.Add("Update Date", new CellData()
+                    {
+                        RawValue = row.LastUpdate,
+                        TextValue = row.LastUpdate.ToShortDateString(),
+                    });
+                    rowData.Cells.Add("Promotions", new CellData()
+                    {
+                        RawValue = row.AllPromotions,
+                        TextValue = row.AllPromotions.ToString(),
+                        CommandParameter = new { sku = row.Sku },
+                        Tooltip = "View All Promotions",
+                        CssClass = "cell-center"
+
+                    });
+                    rowData.Cells.Add("Active Promotions", new CellData()
+                    {
+                        RawValue = row.ActivePromotions,
+                        TextValue = row.ActivePromotions.ToString(),
+                        CommandParameter = new { sku = row.Sku },
+                        Tooltip = "View Active Promotions",
+                        CssClass = "cell-center"
+                    });
+                    tableData.Rows.Add(rowData);
+                }
+                return tableData;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return new TableData();
+            }
         }
 
     }

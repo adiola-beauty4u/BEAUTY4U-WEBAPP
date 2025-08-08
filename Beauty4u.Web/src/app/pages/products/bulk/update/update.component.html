@@ -46,7 +46,7 @@
         <!-- Step 3: Complete -->
         <mat-step>
           <ng-template matStepLabel>Bulk Product Update</ng-template>
-          <app-expandable-table [tableGroups]="tableGroupValues"></app-expandable-table>
+          <app-expandable-table [tableGroups]="tableGroupValues" [showInvalidCount]="false"></app-expandable-table>
           <div class="m-t-20 button-row">
             <button mat-stroked-button color="primary" matStepperPrevious (click)="reset()">
               <mat-icon>arrow_back</mat-icon> Upload Again

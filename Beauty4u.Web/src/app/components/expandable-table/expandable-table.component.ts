@@ -10,6 +10,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { PagesRoutes } from 'src/app/pages/pages.routes';
+import { ChildTableComponent } from '../child-table/child-table.component';
 
 interface CellData {
   textValue: string;
@@ -49,13 +50,15 @@ interface TableGroup {
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    ChildTableComponent
   ],
   templateUrl: './expandable-table.component.html',
   styleUrls: ['./expandable-table.component.scss']
 })
 export class ExpandableTableComponent implements OnInit, OnChanges {
   @Input() tableGroups: TableGroup[] = [];
+  @Input() showInvalidCount = true;
 
   filters = signal<string[]>([]);
   expandedGroups = signal<boolean[]>([]);

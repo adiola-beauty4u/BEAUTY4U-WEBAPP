@@ -17,6 +17,7 @@ namespace Beauty4u.Models.Dto.Products
         public decimal RetailPrice { get; set; } = 0;
         public decimal Cost { get; set; } = 0;
         public string ItmGroup { get; set; } = null!;
+        public string Category { get; set; } = null!;
         public string UPC { get; set; } = null!;
         public string Sku { get; set; } = null!;
         public string VendorCode { get; set; } = null!;

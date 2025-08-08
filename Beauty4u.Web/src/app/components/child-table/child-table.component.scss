@@ -1,0 +1,53 @@
+.table-wrapper {
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+.compact-header {
+    font-weight: 600;
+    font-size: 0.875rem;
+    background-color: #f7f7f7;
+}
+
+.auto-cell {
+    font-size: 0.8125rem;
+}
+
+.status-icon {
+    font-size: 18px;
+    vertical-align: middle;
+}
+
+.icon-true {
+    color: #4caf50;
+}
+
+.icon-false {
+    color: #f44336;
+}
+
+.inline-icon {
+    font-size: 16px;
+    vertical-align: middle;
+}
+
+.command-link {
+    border-width: 1px;
+    border-radius: 4px;
+    line-height: 1.2;
+    text-transform: none;
+    /* Keep normal case */
+}
+
+.command-link:hover {
+    background-color: rgba(25, 118, 210, 0.08);
+    /* subtle primary hover */
+    text-decoration: underline;
+}
+
+::ng-deep td.cell-center,
+::ng-deep span.cell-center,
+::ng-deep button.cell-center {
+  justify-content: center !important; /* Flexbox horizontal center */
+  text-align: center !important;      /* Text alignment for non-flex cases */
+}

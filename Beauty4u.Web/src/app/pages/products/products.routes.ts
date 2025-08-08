@@ -10,6 +10,11 @@ export const ProductRoutes: Routes = [
     path: '',
     children: [
       {
+        path: 'search',
+        component: ProductsComponent,
+        canActivate: [roleGuard(['Admin', 'Data-Analyst', 'IT Team', 'President', 'Vice President'])]
+      },
+      {
         path: 'bulk-registration',
         component: RegistrationComponent,
         canActivate: [roleGuard(['Admin', 'Data-Analyst', 'IT Team', 'President', 'Vice President'])]

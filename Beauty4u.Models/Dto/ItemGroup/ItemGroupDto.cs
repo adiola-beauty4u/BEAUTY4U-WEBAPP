@@ -14,5 +14,8 @@ namespace Beauty4u.Models.Dto.ItemGroup
         public string WriteUser { get; set; } = null!;
         public DateTime LastUpdate { get; set; }
         public string LastUser { get; set; } = null!;
+        public string Level1Code { get; set; } = null!;
+        public string Level2Code { get; set; } = null!;
+        public List<ItemGroupDto> ChildItemGroups { get; set; }
     }
 }

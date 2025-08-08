@@ -1,1 +1,83 @@
-<p>products works!</p>
+<mat-accordion class="w-full">
+    <mat-expansion-panel [expanded]="true">
+        <!-- Panel Summary with Filter Chips -->
+        <mat-expansion-panel-header>
+            <mat-panel-title class="text-blue-800 font-medium text-sm">
+                Search Filters
+            </mat-panel-title>
+            <mat-panel-description>
+                <mat-chip-listbox aria-label="Selected Filters" class="flex flex-wrap gap-1 text-xs">
+                    <mat-chip *ngIf="searchForm.value.itemGroupCode" color="primary" selected>
+                        Category: {{ searchForm.value.itemGroupCode.name }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.vendor?.name" color="primary" selected>
+                        Vendor: {{ searchForm.value.vendor.name }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.styleCode" color="primary" selected>
+                        Style: {{ searchForm.value.styleCode }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.styleDesc" color="primary" selected>
+                        Desc: {{ searchForm.value.styleDesc }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.upc" color="primary" selected>
+                        UPC: {{ searchForm.value.upc }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.sku" color="primary" selected>
+                        SKU: {{ searchForm.value.sku }}
+                    </mat-chip>
+                </mat-chip-listbox>
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <!-- Panel Body with Form -->
+        <form [formGroup]="searchForm" class="grid grid-cols-12 gap-3 p-4 items-center text-sm">
+            <!-- Category -->
+            <label class="col-span-2 text-right font-medium text-blue-700">Category:</label>
+            <div class="col-span-4">
+                <app-item-group-select [selectedValue]="searchForm.get('itemGroupCode')!"></app-item-group-select>
+            </div>
+
+            <!-- Vendor -->
+            <label class="col-span-2 text-right font-medium text-blue-700">Vendor:</label>
+            <div class="col-span-4">
+                <app-vendor-select [formGroup]="searchForm"></app-vendor-select>
+            </div>
+
+            <!-- Style Code -->
+            <label class="col-span-2 text-right font-medium">Style Code:</label>
+            <mat-form-field appearance="outline" class="col-span-4">
+                <input matInput formControlName="styleCode" />
+            </mat-form-field>
+
+            <!-- Product Description -->
+            <label class="col-span-2 text-right font-medium">Description:</label>
+            <mat-form-field appearance="outline" class="col-span-4">
+                <input matInput formControlName="styleDesc" />
+            </mat-form-field>
+
+            <!-- UPC -->
+            <label class="col-span-2 text-right font-medium">UPC:</label>
+            <mat-form-field appearance="outline" class="col-span-4">
+                <input matInput formControlName="upc" />
+            </mat-form-field>
+
+            <!-- SKU -->
+            <label class="col-span-2 text-right font-medium">SKU:</label>
+            <mat-form-field appearance="outline" class="col-span-4">
+                <input matInput formControlName="sku" />
+            </mat-form-field>
+
+            <!-- Action Buttons -->
+            <div class="col-span-12 flex justify-end gap-2 pt-4">
+                <button mat-stroked-button color="primary" type="button" (click)="search()">Search</button>
+                <button mat-stroked-button color="warn" type="button" (click)="clear()">Clear</button>
+            </div>
+        </form>
+    </mat-expansion-panel>
+    <app-child-table #childTable *ngIf="output" [group]="output" [showSearchBox]="true" [showInvalidCount]="false"
+        [methodList]="{
+        getActivePromotions: getActivePromotions,
+        getPromotions: getPromotions
+    }" [displayedColumns]="getDisplayedColumns(output)" [pageSize]="10">
+    </app-child-table>
+</mat-accordion>

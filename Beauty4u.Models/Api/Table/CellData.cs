@@ -15,5 +15,6 @@ namespace Beauty4u.Models.Api.Table
         public string Tooltip { get; set; } = null!;
         public string CssClass { get; set; } = null!;
         public string CssIcon { get; set; } = null!;
+        public object? CommandParameter { get; set; }
     }
 }

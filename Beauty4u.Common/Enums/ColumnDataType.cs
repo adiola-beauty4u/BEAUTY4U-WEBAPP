@@ -13,6 +13,8 @@ namespace Beauty4u.Common.Enums
         Money,
         Decimal,
         Group,
-        Bool
+        Bool,
+        Date,
+        DateTime
     }
 }

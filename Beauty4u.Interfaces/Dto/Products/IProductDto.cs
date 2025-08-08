@@ -15,5 +15,6 @@ namespace Beauty4u.Interfaces.Dto
         string Sku { get; set; }
         string VendorCode { get; set; }
         string VendorName { get; set; }
+        string Category { get; set; }
     }
 }

@@ -5,5 +5,7 @@
         //ColumnDataType DataType { get; set; }
         string FieldName { get; set; }
         string Header { get; set; }
+        bool IsCommand { get; set; }
+        string CommandName { get; set; }
     }
 }
