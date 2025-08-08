@@ -28,6 +28,7 @@ namespace Beauty4u.DataAccess.B4u
             using var command = conn.CreateCommand();
             command.CommandText = "dbo.usp_GetUserLoginById";
             command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 300;
 
             command.Parameters.AddWithValue("@UserId", userName);
 
@@ -57,6 +58,7 @@ namespace Beauty4u.DataAccess.B4u
             using var command = conn.CreateCommand();
             command.CommandText = "dbo.usp_GetUserLoginByUsercode";
             command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 300;
 
             command.Parameters.AddWithValue("@UserCode", userName);
 
@@ -88,6 +90,7 @@ namespace Beauty4u.DataAccess.B4u
                 using var command = conn.CreateCommand();
                 command.CommandText = "dbo.usp_UserUpdateRefreshToken";
                 command.CommandType = CommandType.StoredProcedure;
+                command.CommandTimeout = 300;
 
                 command.Parameters.AddWithValue("@UserCode", user.UserCode);
                 command.Parameters.AddWithValue("@RefreshToken", user.RefreshToken);
@@ -109,6 +112,7 @@ namespace Beauty4u.DataAccess.B4u
             using var command = conn.CreateCommand();
             command.CommandText = "dbo.usp_UpdateUserPasswordHash";
             command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 300;
 
             command.Parameters.AddWithValue("@UserCode", userCode);
             command.Parameters.AddWithValue("@PasswordHash", newPassword);

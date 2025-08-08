@@ -28,6 +28,7 @@ namespace Beauty4u.DataAccess.B4u
             using var command = conn.CreateCommand();
             command.CommandText = "[dbo].[usp_GetAllActiveStores]";
             command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 300;
 
             var dataTable = new DataTable();
             using var adapter = new SqlDataAdapter(command);
@@ -45,6 +46,7 @@ namespace Beauty4u.DataAccess.B4u
             using var command = conn.CreateCommand();
             command.CommandText = "[dbo].[usp_GetAllStores]";
             command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 300;
 
             var dataTable = new DataTable();
             using var adapter = new SqlDataAdapter(command);
