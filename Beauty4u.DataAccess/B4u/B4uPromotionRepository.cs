@@ -38,11 +38,13 @@ namespace Beauty4u.DataAccess.B4u
 
             command.Parameters.AddWithValue("@Sku", sku);
 
-            var data = new DataTable();
-            using var adapter = new SqlDataAdapter(command);
-            adapter.Fill(data);
+            var dataTable = new DataTable();
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                dataTable.Load(reader); // Synchronously loads all rows into DataTable
+            }
 
-            var results = DataTableHelper.DataTableToList<ProductPromotion>(data);
+            var results = DataTableHelper.DataTableToList<ProductPromotion>(dataTable);
             return results.Cast<IProductPromotion>().ToList();
         }
     }

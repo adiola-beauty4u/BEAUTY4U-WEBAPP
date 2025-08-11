@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { ItemGroupSelectComponent } from 'src/app/components/item-group-select/item-group-select.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { VendorSelectComponent } from 'src/app/components/vendor-select/vendor-select.component';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 import { MatAccordion, MatExpansionModule, MatExpansionPanel } from '@angular/material/expansion';
@@ -16,6 +16,7 @@ import { LoadingService } from 'src/app/services/loading.service';
 import { ChildTableComponent } from 'src/app/components/child-table/child-table.component';
 import { TableGroup, CellData, ColumnDef, RowData } from 'src/interfaces/table-data';
 import { PromotionService } from 'src/app/services/promotion.service';
+import { ModalService } from 'src/app/services/modal.service';
 
 @Component({
   selector: 'app-products',
@@ -37,15 +38,19 @@ import { PromotionService } from 'src/app/services/promotion.service';
 export class ProductsComponent implements OnInit {
   searchForm: FormGroup;
   output: TableGroup;
+  productPromotions: TableGroup;
 
   defaultPageSize: 10;
 
   @ViewChild(ItemGroupSelectComponent) itemGroupSelect!: ItemGroupSelectComponent;
   @ViewChild(ChildTableComponent) childTable!: ChildTableComponent;
-
+  @ViewChild('customContent', { static: true }) templateRef!: TemplateRef<any>;
   @ViewChild(MatExpansionPanel) filterPanel!: MatExpansionPanel;
 
-  constructor(private fb: FormBuilder, private readonly productService: ProductService, private readonly loadingService: LoadingService, private readonly promotionService: PromotionService) {
+  constructor(private fb: FormBuilder, private readonly productService: ProductService,
+    private readonly loadingService: LoadingService,
+    private readonly promotionService: PromotionService,
+    private readonly modalService: ModalService) {
 
   }
   ngOnInit(): void {
@@ -101,6 +106,17 @@ export class ProductsComponent implements OnInit {
   }
 
   getPromotions(row: any) {
-    console.log(row?.product?.sku);
+    this.loadingService.show("Getting promotions..");
+    this.promotionService.searchProductPromotionsBySku(row?.product?.sku).subscribe({
+      next: data => {
+        this.productPromotions = data;
+        this.modalService.openModal(row?.product?.styleDesc, this.templateRef, { });
+        this.loadingService.hide();
+      },
+      error: err => {
+        console.error('Vendor API error', err);
+        this.loadingService.hide();
+      }
+    });
   }
 }

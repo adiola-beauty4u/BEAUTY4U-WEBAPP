@@ -44,11 +44,14 @@ namespace Beauty4u.DataAccess.B4u
                 Value = bulkProductRequest.BulkProducts
             });
 
-            var dataSet = new DataSet();
-            using var adapter = new SqlDataAdapter(command);
-            adapter.Fill(dataSet);
+            var dataTable = new DataTable();
 
-            return DataTableHelper.DataTableToList<BulkProductResultDto>(dataSet.Tables[dataSet.Tables.Count - 1]).Cast<IBulkProductResultDto>().ToList();
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                dataTable.Load(reader); // Synchronously loads all rows into DataTable
+            }
+
+            return DataTableHelper.DataTableToList<BulkProductResultDto>(dataTable).Cast<IBulkProductResultDto>().ToList();
         }
 
         public async Task BulkProductUpdateAsync(IBulkProductParams bulkProductRequest)
@@ -89,11 +92,13 @@ namespace Beauty4u.DataAccess.B4u
             command.Parameters.Add(new SqlParameter("@DTSTART", SqlDbType.Date) { Value = startDate.ToShortDateString() });
             command.Parameters.Add(new SqlParameter("@DTEND", SqlDbType.Date) { Value = endDate.AddDays(1).ToShortDateString() });
 
-            using var adapter = new SqlDataAdapter(command);
-            var table = new DataTable();
-            adapter.Fill(table);
+            var dataTable = new DataTable();
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                dataTable.Load(reader); // Synchronously loads all rows into DataTable
+            }
 
-            return DataTableHelper.DataTableToList<SearchProductResult>(table).Cast<ISearchProductResult>().ToList();
+            return DataTableHelper.DataTableToList<SearchProductResult>(dataTable).Cast<ISearchProductResult>().ToList();
         }
 
         public async Task<List<IUPCValidateResult>> ValidateUPCListAsync(DataTable upcList)
@@ -115,8 +120,10 @@ namespace Beauty4u.DataAccess.B4u
             });
 
             var dataTable = new DataTable();
-            using var adapter = new SqlDataAdapter(command);
-            adapter.Fill(dataTable);
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                dataTable.Load(reader); // Synchronously loads all rows into DataTable
+            }
 
             var results = DataTableHelper.DataTableToList<UPCValidateResult>(dataTable);
             return results.Cast<IUPCValidateResult>().ToList();
@@ -141,8 +148,10 @@ namespace Beauty4u.DataAccess.B4u
             });
 
             var dataTable = new DataTable();
-            using var adapter = new SqlDataAdapter(command);
-            adapter.Fill(dataTable);
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                dataTable.Load(reader); // Synchronously loads all rows into DataTable
+            }
 
             var results = DataTableHelper.DataTableToList<BulkProductUpdatePreviewResult>(dataTable);
             return results.Cast<IBulkProductUpdatePreviewResult>().ToList();
@@ -166,11 +175,13 @@ namespace Beauty4u.DataAccess.B4u
                 Value = upcList
             });
 
-            using var adapter = new SqlDataAdapter(command);
-            var table = new DataTable();
-            adapter.Fill(table);
+            var dataTable = new DataTable();
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                dataTable.Load(reader); // Synchronously loads all rows into DataTable
+            }
 
-            return DataTableHelper.DataTableToList<SearchProductResult>(table).ToList<ISearchProductResult>();
+            return DataTableHelper.DataTableToList<SearchProductResult>(dataTable).ToList<ISearchProductResult>();
         }
 
         public async Task<List<IBulkProductUpdatePreviewResult>> TransferProductsAsync(ITransferProductParams transferProductParams)
@@ -193,8 +204,10 @@ namespace Beauty4u.DataAccess.B4u
             });
 
             var dataTable = new DataTable();
-            using var adapter = new SqlDataAdapter(command);
-            adapter.Fill(dataTable);
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                dataTable.Load(reader); // Synchronously loads all rows into DataTable
+            }
 
             var results = DataTableHelper.DataTableToList<BulkProductUpdatePreviewResult>(dataTable);
             return results.Cast<IBulkProductUpdatePreviewResult>().ToList();
@@ -307,11 +320,13 @@ namespace Beauty4u.DataAccess.B4u
             command.Parameters.AddWithValue("@UPC", productSearchParams.UPC);
             command.Parameters.AddWithValue("@Sku", productSearchParams.Sku);
 
-            using var adapter = new SqlDataAdapter(command);
-            var table = new DataTable();
-            adapter.Fill(table);
+            var dataTable = new DataTable();
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                dataTable.Load(reader); // Synchronously loads all rows into DataTable
+            }
 
-            return DataTableHelper.DataTableToList<ProductFullDto>(table).ToList<IProductFullDto>();
+            return DataTableHelper.DataTableToList<ProductFullDto>(dataTable).ToList<IProductFullDto>();
         }
     }
 }

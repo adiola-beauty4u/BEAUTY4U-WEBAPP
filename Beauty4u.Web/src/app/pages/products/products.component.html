@@ -52,17 +52,16 @@
                 <app-vendor-select [formGroup]="searchForm"></app-vendor-select>
             </div>
 
-            <!-- Style Code -->
             <label class="col-span-2 text-right font-medium">Style Code:</label>
-            <mat-form-field appearance="outline" class="col-span-4">
+            <mat-form-field appearance="outline">
                 <input matInput formControlName="styleCode" />
             </mat-form-field>
 
-            <!-- Product Description -->
             <label class="col-span-2 text-right font-medium">Description:</label>
-            <mat-form-field appearance="outline" class="col-span-4">
+            <mat-form-field appearance="outline">
                 <input matInput formControlName="styleDesc" />
             </mat-form-field>
+
 
             <!-- Brand -->
             <label class="col-span-2 text-right font-medium">Brand:</label>
@@ -103,7 +102,13 @@
     </mat-expansion-panel>
     <app-child-table #childTable *ngIf="output" [group]="output" [showSearchBox]="true" [showInvalidCount]="false"
         [methodList]="{
-        getPromotions: getPromotions
+        getPromotions: getPromotions.bind(this)
     }" [displayedColumns]="getDisplayedColumns(output)" [pageSize]="10">
     </app-child-table>
+
+    <ng-template #customContent let-name="name">
+        <app-child-table #promotionsTable *ngIf="productPromotions" [group]="productPromotions" [showSearchBox]="true"
+            [showInvalidCount]="false" [displayedColumns]="getDisplayedColumns(productPromotions)" [pageSize]="10">
+        </app-child-table>
+    </ng-template>
 </mat-accordion>

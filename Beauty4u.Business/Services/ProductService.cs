@@ -1455,7 +1455,6 @@ namespace Beauty4u.Business.Services
             }
             return output;
         }
-
         public async Task<ITableData> SearchProductsAsync(IProductSearchParams searchParams)
         {
             try
@@ -1526,12 +1525,6 @@ namespace Beauty4u.Business.Services
                 {
                     Header = "SKU",
                     FieldName = "Sku",
-                    DataType = ColumnDataType.String
-                });
-                tableData.Columns.Add(new ColumnData()
-                {
-                    Header = "Status",
-                    FieldName = "Status",
                     DataType = ColumnDataType.String
                 });
                 tableData.Columns.Add(new ColumnData()
@@ -1616,11 +1609,6 @@ namespace Beauty4u.Business.Services
                     {
                         RawValue = row.Sku,
                         TextValue = row.Sku,
-                    });
-                    rowData.Cells.Add(nameof(row.Status), new CellData()
-                    {
-                        RawValue = row.Status,
-                        TextValue = row.Status,
                     });
                     rowData.Cells.Add("Write Date", new CellData()
                     {

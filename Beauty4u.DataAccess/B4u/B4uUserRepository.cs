@@ -33,8 +33,10 @@ namespace Beauty4u.DataAccess.B4u
             command.Parameters.AddWithValue("@UserId", userName);
 
             var dataTable = new DataTable();
-            using var adapter = new SqlDataAdapter(command);
-            adapter.Fill(dataTable);
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                dataTable.Load(reader); // Synchronously loads all rows into DataTable
+            }
 
             var users = DataTableHelper.DataTableToList<UserDto>(dataTable);
 
@@ -63,8 +65,10 @@ namespace Beauty4u.DataAccess.B4u
             command.Parameters.AddWithValue("@UserCode", userName);
 
             var dataTable = new DataTable();
-            using var adapter = new SqlDataAdapter(command);
-            adapter.Fill(dataTable);
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                dataTable.Load(reader); // Synchronously loads all rows into DataTable
+            }
 
             var users = DataTableHelper.DataTableToList<UserDto>(dataTable);
 
