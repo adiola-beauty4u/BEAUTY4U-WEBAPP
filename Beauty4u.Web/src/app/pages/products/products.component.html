@@ -1,1 +1,131 @@
-<p>products works!</p>
+<mat-accordion class="w-100">
+    <mat-expansion-panel [expanded]="true" class="m-0">
+
+        <!-- Panel Summary with Filter Chips -->
+        <mat-expansion-panel-header class="py-1 min-h-10">
+            <mat-panel-title class="text-primary fw-medium small">
+                Search Filters
+            </mat-panel-title>
+            <mat-panel-description>
+                <mat-chip-listbox aria-label="Selected Filters" class="d-flex flex-wrap gap-1 small">
+                    <mat-chip *ngIf="searchForm.value.itemGroupCode" color="primary" selected>
+                        Category: {{ searchForm.value.itemGroupCode.name }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.vendor?.name" color="primary" selected>
+                        Vendor: {{ searchForm.value.vendor.name }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.styleCode" color="primary" selected>
+                        Style: {{ searchForm.value.styleCode }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.styleDesc" color="primary" selected>
+                        Desc: {{ searchForm.value.styleDesc }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.brand" color="primary" selected>
+                        Brand: {{ searchForm.value.brand }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.color" color="primary" selected>
+                        Color: {{ searchForm.value.color }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.size" color="primary" selected>
+                        Size: {{ searchForm.value.size }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.upc" color="primary" selected>
+                        UPC: {{ searchForm.value.upc }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.sku" color="primary" selected>
+                        SKU: {{ searchForm.value.sku }}
+                    </mat-chip>
+                </mat-chip-listbox>
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <!-- Panel Body -->
+        <form [formGroup]="searchForm" class="container-fluid py-3 small">
+            <div class="row g-3">
+
+                <!-- Column 1 -->
+                <div class="col-md-6">
+                    <label class="fw-medium text-primary">Category:</label>
+                    <app-item-group-select [selectedValue]="searchForm.get('itemGroupCode')!"></app-item-group-select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="fw-medium text-primary">Vendor:</label>
+                    <app-vendor-select [formGroup]="searchForm"></app-vendor-select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="fw-medium">Style Code:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="styleCode" />
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="fw-medium">Description:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="styleDesc" />
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="fw-medium">Brand:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="brand" />
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="fw-medium">Color:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="color" />
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="fw-medium">Size:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="size" />
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="fw-medium">UPC:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="upc" />
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="fw-medium">SKU:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="sku" />
+                    </mat-form-field>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="col-12 d-flex justify-content-end gap-2 pt-2">
+                    <button mat-flat-button color="primary" type="button" (click)="search()" class="py-1 px-3 small">
+                        Search
+                    </button>
+                    <button mat-stroked-button color="warn" type="button" (click)="clear()" class="py-1 px-3 small">
+                        Clear
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </mat-expansion-panel>
+
+    <!-- Child Table -->
+    <app-child-table #childTable *ngIf="output" [group]="output" [showInvalidCount]="false"
+        [methodList]="{ getPromotions: getPromotions.bind(this) }" [displayedColumns]="getDisplayedColumns(output)"
+        [pageSize]="10">
+    </app-child-table>
+
+    <ng-template #customContent let-name="name">
+        <app-child-table #promotionsTable *ngIf="productPromotions" [group]="productPromotions"
+            [showInvalidCount]="false" [displayedColumns]="getDisplayedColumns(productPromotions)" [pageSize]="10">
+        </app-child-table>
+    </ng-template>
+</mat-accordion>

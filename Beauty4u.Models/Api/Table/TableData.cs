@@ -12,6 +12,6 @@ namespace Beauty4u.Models.Api.Table
         public List<IColumnData> Columns { get; set; } = new List<IColumnData>();
         public List<IRowData> Rows { get; set; } = new List<IRowData>();
         public List<ITableData> TableGroups { get; set; } = new List<ITableData>();
-        public string TableName { get; set; } = null!;
+        public string TableName { get; set; } = string.Empty;
     }
 }

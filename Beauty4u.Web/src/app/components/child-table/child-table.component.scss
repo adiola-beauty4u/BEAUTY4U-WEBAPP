@@ -1,0 +1,31 @@
+.table-wrapper {
+    /* or use calc(100vh - Xpx) for dynamic sizing */
+    overflow-y: auto;
+    overflow-x: auto;
+    position: relative;
+}
+
+.auto-fit-table {
+    width: 100%;
+    min-width: max-content;
+    /* Allows horizontal scroll if needed */
+    border-collapse: collapse;
+}
+
+.compact-header {
+    background-color: #f9fafb;
+    /* Light gray */
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Optional enhancements */
+.inline-icon {
+    vertical-align: middle;
+}
+
+.mat-header-cell,
+.mat-cell {
+    white-space: nowrap;
+}

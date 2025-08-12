@@ -13,5 +13,7 @@ namespace Beauty4u.Models.Api.Table
         public string FieldName { get; set; } = string.Empty;
         public string Header { get; set; } = string.Empty;
         public ColumnDataType DataType { get; set; } = ColumnDataType.String;
+        public bool IsCommand { get; set; }
+        public string CommandName { get; set; } = string.Empty;
     }
 }

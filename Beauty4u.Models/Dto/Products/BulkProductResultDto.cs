@@ -10,7 +10,7 @@ namespace Beauty4u.Models.Dto.Products
 {
     public class BulkProductResultDto : BulkProductDataRequest, IBulkProductResultDto
     {
-        public string Sku { get; set; } = null!;
-        public string Result { get; set; } = null!;
+        public string Sku { get; set; } = string.Empty;
+        public string Result { get; set; } = string.Empty;
     }
 }

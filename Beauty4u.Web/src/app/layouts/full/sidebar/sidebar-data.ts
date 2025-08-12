@@ -13,6 +13,13 @@ export const navItems: NavItem[] = [
     navCap: 'Products',
   },
   {
+    displayName: 'Search',
+    iconName: 'solar:widget-4-line-duotone',
+    route: '/products/search',
+    chip: true,
+    children: [],
+  },
+  {
     displayName: 'Bulk Actions',
     iconName: 'solar:widget-4-line-duotone',
     route: 'apps/Bulk',

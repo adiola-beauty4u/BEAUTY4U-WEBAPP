@@ -18,5 +18,6 @@ namespace Beauty4u.Interfaces.Services
         Task<IProductTransferResult> TransferProductsAsync(List<ISearchProductResult> productTransferRequest);
         Task<ITableData> ProductTransferToStoresAsync(IProductTransferRequest productTransferRequest);
         Task<IBulkProductPreviewResult> BulkRegisterPreviewAsync(IBulkProduct bulkProductRequest);
+        Task<ITableData> SearchProductsAsync(IProductSearchParams searchParams);
     }
 }

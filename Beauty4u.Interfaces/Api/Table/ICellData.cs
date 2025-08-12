@@ -8,5 +8,6 @@
         string Tooltip { get; set; }
         string CssClass { get; set; }
         string CssIcon { get; set; }
+        object? CommandParameter { get; set; }
     }
 }

@@ -3,12 +3,17 @@ import { RegistrationComponent } from './bulk/registration/registration.componen
 import { UpdateComponent } from './bulk/update/update.component';
 import { roleGuard } from 'src/app/services/authentication/role.guard';
 import { TransferComponent } from './transfer/transfer.component';
+import { ProductsComponent } from './products.component';
 
 export const ProductRoutes: Routes = [
   {
     path: '',
-
     children: [
+      {
+        path: 'search',
+        component: ProductsComponent,
+        canActivate: [roleGuard(['Admin', 'Data-Analyst', 'IT Team', 'President', 'Vice President'])]
+      },
       {
         path: 'bulk-registration',
         component: RegistrationComponent,

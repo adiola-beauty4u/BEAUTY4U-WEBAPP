@@ -1,67 +1,80 @@
-<mat-card class="cardWithShadow">
-    <mat-card-header>
-        <mat-card-title>Transfer Products to Stores</mat-card-title>
+<mat-card class="shadow-md rounded-lg p-4 bg-white">
+    <mat-card-header class="pb-2">
+        <mat-card-title class="text-base font-semibold text-gray-800">
+            Transfer Products to Stores
+        </mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
-        <div class="scrollable-wrapper">
-            <mat-horizontal-stepper [linear]="true" #stepper class="no-click-header small-font">
+        <div class="overflow-y-auto max-h-[80vh]">
+            <mat-horizontal-stepper [linear]="true" #stepper class="no-click-header">
+
+                <!-- Step 1: Search Products -->
                 <mat-step>
                     <ng-template matStepLabel>Search Products</ng-template>
 
-                    <div class="page-container">
-                        <br>
-                        <div class="filters mat-elevation-z1">
-                            <div class="filter-group">
-                                <mat-form-field appearance="outline">
-                                    <mat-label>From</mat-label>
-                                    <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDate">
-                                    <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
-                                    <mat-datepicker #fromPicker></mat-datepicker>
-                                </mat-form-field>
+                    <div class="space-y-2">
+                        <!-- Filters -->
+                        <div class="flex flex-wrap items-end gap-2 p-2 bg-gray-50 rounded-md border">
+                            <!-- Date From -->
+                            <mat-form-field appearance="outline" class="w-36">
+                                <mat-label>Start</mat-label>
+                                <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDate">
+                                <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+                                <mat-datepicker #fromPicker></mat-datepicker>
+                            </mat-form-field>
 
-                                <span class="to-label">to</span>
+                            <span class="text-xs font-medium text-gray-600">to</span>
 
-                                <mat-form-field appearance="outline">
-                                    <mat-label>To</mat-label>
-                                    <input matInput [matDatepicker]="toPicker" [(ngModel)]="toDate">
-                                    <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
-                                    <mat-datepicker #toPicker></mat-datepicker>
-                                </mat-form-field>
+                            <!-- Date To -->
+                            <mat-form-field appearance="outline" class="w-36">
+                                <mat-label>End</mat-label>
+                                <input matInput [matDatepicker]="toPicker" [(ngModel)]="toDate">
+                                <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+                                <mat-datepicker #toPicker></mat-datepicker>
+                            </mat-form-field>
 
-                            </div>
-
-                            <div class="button-group button-row">
-                                <button mat-flat-button color="primary"
-                                    (click)="searchTransfer()"><mat-icon>search</mat-icon>
-                                    Search</button>
-                                <button mat-stroked-button (click)="clearForm()"><mat-icon>clear</mat-icon> Clear</button>
+                            <!-- Search & Clear Buttons -->
+                            <div class="flex gap-1 ml-auto">
+                                <button mat-flat-button color="primary" (click)="searchTransfer()" class="!px-3 !py-1">
+                                    <mat-icon class="!text-sm">search</mat-icon>Search
+                                </button>
+                                <button mat-stroked-button (click)="clearForm()" class="!px-3 !py-1">
+                                    <mat-icon class="!text-sm">clear</mat-icon>Clear
+                                </button>
                             </div>
                         </div>
 
-                        <p class="note-text">🟢 The list below shows new (UPC level) and updated products.</p>
-                        <app-expandable-table [tableGroups]="tableGroupValues"></app-expandable-table>
+                        <!-- Note -->
+                        <p class="text-xs text-green-600">
+                            🟢 New and updated products (UPC level) are listed below.
+                        </p>
+
+                        <!-- Table -->
+                        <app-expandable-table [tableGroups]="tableGroupValues" [showInvalidCount]="false">
+                        </app-expandable-table>
                     </div>
 
+                    <!-- Step 1 Buttons -->
                     <div class="m-t-20 button-row-end">
-                        <button mat-stroked-button color="warn" (click)="clearForm()">
-                            <mat-icon>cancel</mat-icon> Clear
+                        <button mat-stroked-button color="warn" (click)="clearForm()" class="!px-3 !py-1">
+                            <mat-icon class="!text-sm">cancel</mat-icon> Clear
                         </button>
-
-                        <button mat-flat-button color="primary" (click)="nextStep()" [disabled]="products.length < 1">
+                        <button mat-flat-button color="primary" (click)="nextStep()" [disabled]="products.length < 1"
+                            class="!px-3 !py-1">
                             Next
                         </button>
                     </div>
                 </mat-step>
+
+                <!-- Step 2: Select Stores -->
                 <mat-step>
                     <ng-template matStepLabel>Select Stores</ng-template>
-                    <!-- Store Selector -->
                     <div class="page-center">
-                        <div class="store-panel mat-elevation-z1 compact-panel">
+                        <div class="store-panel compact-panel">
                             <mat-checkbox [(ngModel)]="allSelected" (change)="toggleAll()" class="compact-checkbox">
                                 Check All
                             </mat-checkbox>
-
                             <div class="store-list">
                                 <mat-checkbox *ngFor="let store of stores" [(ngModel)]="store.selected"
                                     class="compact-checkbox">
@@ -71,35 +84,39 @@
                         </div>
                     </div>
                     <div class="m-t-20 button-row-end">
-                        <button mat-stroked-button color="warn" (click)="previousStep()">
-                            <mat-icon>arrow_back</mat-icon> Back
+                        <button mat-stroked-button color="warn" (click)="previousStep()" class="!px-3 !py-1">
+                            <mat-icon class="!text-sm">arrow_back</mat-icon> Back
                         </button>
-
                         <button mat-flat-button color="primary" (click)="previewTransfer()"
-                            [disabled]="getSelectedStoreCodes().length < 1">
+                            [disabled]="getSelectedStoreCodes().length < 1" class="!px-3 !py-1">
                             Next
                         </button>
                     </div>
                 </mat-step>
+
+                <!-- Step 3: Transfer Preview -->
                 <mat-step>
                     <ng-template matStepLabel>Transfer Preview</ng-template>
-                    <app-expandable-table [tableGroups]="tablePreviewValues"></app-expandable-table>
+                    <app-expandable-table [tableGroups]="tablePreviewValues"
+                        [showInvalidCount]="false"></app-expandable-table>
                     <div class="m-t-20 button-row-end">
-                        <button mat-stroked-button color="warn" (click)="previousStep()">
-                            <mat-icon>arrow_back</mat-icon> Back
+                        <button mat-stroked-button color="warn" (click)="previousStep()" class="!px-3 !py-1">
+                            <mat-icon class="!text-sm">arrow_back</mat-icon> Back
                         </button>
-
-                        <button mat-flat-button color="primary" (click)="confirmTransfer()">
+                        <button mat-flat-button color="primary" (click)="confirmTransfer()" class="!px-3 !py-1">
                             Next
                         </button>
                     </div>
                 </mat-step>
+
+                <!-- Step 4: Transfer Results -->
                 <mat-step>
                     <ng-template matStepLabel>Transfer Results</ng-template>
-                    <app-expandable-table [tableGroups]="tableGroupResultValues"></app-expandable-table>
+                    <app-expandable-table [tableGroups]="tableGroupResultValues"
+                        [showInvalidCount]="false"></app-expandable-table>
                     <div class="m-t-20 button-row-end">
-                        <button mat-stroked-button color="primary" (click)="reset()">
-                            <mat-icon>arrow_back</mat-icon> Transfer Again
+                        <button mat-stroked-button color="primary" (click)="reset()" class="!px-3 !py-1">
+                            <mat-icon class="!text-sm">arrow_back</mat-icon> Transfer Again
                         </button>
                     </div>
                 </mat-step>

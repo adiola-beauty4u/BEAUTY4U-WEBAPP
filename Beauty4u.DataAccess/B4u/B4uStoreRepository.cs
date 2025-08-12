@@ -31,8 +31,10 @@ namespace Beauty4u.DataAccess.B4u
             command.CommandTimeout = 300;
 
             var dataTable = new DataTable();
-            using var adapter = new SqlDataAdapter(command);
-            adapter.Fill(dataTable);
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                dataTable.Load(reader); // Synchronously loads all rows into DataTable
+            }
 
             var results = DataTableHelper.DataTableToList<StoreDto>(dataTable);
             return results.Cast<IStoreDto>().ToList();
@@ -49,8 +51,10 @@ namespace Beauty4u.DataAccess.B4u
             command.CommandTimeout = 300;
 
             var dataTable = new DataTable();
-            using var adapter = new SqlDataAdapter(command);
-            adapter.Fill(dataTable);
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                dataTable.Load(reader); // Synchronously loads all rows into DataTable
+            }
 
             var results = DataTableHelper.DataTableToList<StoreDto>(dataTable);
             return results.Cast<IStoreDto>().ToList();

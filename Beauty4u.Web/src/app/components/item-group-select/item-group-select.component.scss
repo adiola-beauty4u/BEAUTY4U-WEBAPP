@@ -1,0 +1,25 @@
+.group-select-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    align-items: start;
+}
+
+.group-field {
+    width: 100%;
+    font-size: 13px;
+
+    ::ng-deep .mat-select-trigger {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    ::ng-deep .mat-form-field-wrapper {
+        padding-bottom: 1px;
+    }
+
+    ::ng-deep .mat-form-field-infix {
+        padding: 4px 0;
+    }
+}

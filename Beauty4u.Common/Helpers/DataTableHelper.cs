@@ -1,5 +1,6 @@
 ﻿using Beauty4u.Interfaces.Dto;
 using Beauty4u.Interfaces.Dto.Products;
+using Beauty4u.Interfaces.Requests;
 using System.Data;
 using System.Reflection;
 
@@ -7,7 +8,7 @@ namespace Beauty4u.Common.Helpers
 {
     public static class DataTableHelper
     {
-        public static DataTable ToProductDataTable(IEnumerable<IProductDto> products)
+        public static DataTable ToProductDataTable(IEnumerable<IBulkProductDataRequest> products)
         {
             var table = new DataTable();
             table.Columns.Add("Brand", typeof(string));
@@ -91,7 +92,7 @@ namespace Beauty4u.Common.Helpers
                     product.StyleDesc,
                     product.Size,
                     product.Color,
-                    product.Retail,
+                    product.RetailPrice,
                     product.Cost,
                     product.ItmGroup,
                     product.UPC,

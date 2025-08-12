@@ -1,0 +1,31 @@
+.vendor-autocomplete-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 400px;
+}
+
+.vendor-form-field {
+    width: 100%;
+    font-size: 13px;
+
+    ::ng-deep .mat-form-field-wrapper {
+        padding-bottom: 1px;
+    }
+
+    ::ng-deep .mat-form-field-infix {
+        padding: 4px 0;
+    }
+
+    ::ng-deep .mat-input-element {
+        font-size: 13px;
+        line-height: 1.4;
+        padding: 4px;
+    }
+
+    ::ng-deep .mat-option-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}

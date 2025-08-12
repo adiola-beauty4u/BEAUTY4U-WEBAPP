@@ -1,5 +1,6 @@
 ﻿using Beauty4u.ApiAccess.Health;
 using Beauty4u.ApiAccess.Products;
+using Beauty4u.ApiAccess.Promotions;
 using Beauty4u.Interfaces.Api.Health;
 using Beauty4u.Interfaces.DataAccess.Api;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,7 @@ namespace Beauty4u.ApiAccess
         {
             services.AddScoped<IProductsApi, ProductsApi>();
             services.AddScoped<IHealthApi, HealthApi>();
+            services.AddScoped<IPromotionsApi, PromotionsApi>();
             return services;
         }
     }

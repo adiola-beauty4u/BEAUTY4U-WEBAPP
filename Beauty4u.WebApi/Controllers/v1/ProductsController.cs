@@ -116,5 +116,12 @@ namespace Beauty4u.WebApi.Controllers.v1
 
             return Ok(result);
         }
+
+        [HttpPost("product-search")]
+        public async Task<IActionResult> ProductSearch([FromBody] ProductSearchParams productSearchParams)
+        {
+            var result = await _productService.SearchProductsAsync(productSearchParams);
+            return Ok(result);
+        }
     }
 }

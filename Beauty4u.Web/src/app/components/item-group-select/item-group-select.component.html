@@ -1,0 +1,34 @@
+<div class="group-select-grid">
+    <!-- Level 1 -->
+    <mat-form-field appearance="outline" class="group-field">
+        <mat-label>Level 1</mat-label>
+        <mat-select [(value)]="selectedLevel1" (selectionChange)="onLevel1Change()">
+            <mat-option [value]="undefined">Not selected</mat-option>
+            <mat-option *ngFor="let group of itemGroups" [value]="group">
+                {{ group.name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <!-- Level 2 -->
+    <mat-form-field *ngIf="level2Groups.length" appearance="outline" class="group-field">
+        <mat-label>Level 2</mat-label>
+        <mat-select [(value)]="selectedLevel2" (selectionChange)="onLevel2Change()">
+            <mat-option [value]="undefined">Not selected</mat-option>
+            <mat-option *ngFor="let group of level2Groups" [value]="group">
+                {{ group.name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <!-- Level 3 -->
+    <mat-form-field *ngIf="level3Groups.length" appearance="outline" class="group-field">
+        <mat-label>Level 3</mat-label>
+        <mat-select [(value)]="selectedLevel3" (selectionChange)="onLevel3Change()">
+            <mat-option [value]="undefined">Not selected</mat-option>
+            <mat-option *ngFor="let group of level3Groups" [value]="group">
+                {{ group.name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>

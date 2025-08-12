@@ -9,20 +9,20 @@ namespace Beauty4u.Models.Dto.Users
 {
     public class UserDto : IUserDto
     {
-        public string StoreCode { get; set; } = null!;
-        public string UserCode { get; set; } = null!;
-        public string UserId { get; set; } = null!;
-        public string Password { get; set; } = null!;
-        public string UserPassword { get; set; } = null!;
-        public string EmployeeId { get; set; } = null!;
-        public string Firstname { get; set; } = null!;
-        public string Lastname { get; set; } = null!;
-        public string UserRole { get; set; } = null!;
-        public string LockCount { get; set; } = null!;
+        public string StoreCode { get; set; } = string.Empty;
+        public string UserCode { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public string UserPassword { get; set; } = string.Empty;
+        public string EmployeeId { get; set; } = string.Empty;
+        public string Firstname { get; set; } = string.Empty;
+        public string Lastname { get; set; } = string.Empty;
+        public string UserRole { get; set; } = string.Empty;
+        public string LockCount { get; set; } = string.Empty;
         public bool Status { get; set; }
-        public string RefreshToken { get; set; } = null!;
+        public string RefreshToken { get; set; } = string.Empty;
         public DateTime RefreshTokenExpiry { get; set; }
-        public string Position { get; set; } = null!;
-        public string PasswordHash { get; set; } = null!;
+        public string Position { get; set; } = string.Empty;
+        public string PasswordHash { get; set; } = string.Empty;
     }
 }

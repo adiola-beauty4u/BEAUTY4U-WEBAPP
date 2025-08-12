@@ -1,0 +1,21 @@
+mat-form-field {
+    width: 100%;
+    font-size: 13px;
+
+    ::ng-deep .mat-input-element {
+        padding: 4px 6px;
+    }
+
+    ::ng-deep .mat-form-field-wrapper {
+        padding-bottom: 0;
+    }
+
+    ::ng-deep .mat-form-field-infix {
+        padding: 4px 0;
+    }
+}
+
+.mat-chip {
+    padding: 0 6px;
+    font-size: 0.75rem;
+}

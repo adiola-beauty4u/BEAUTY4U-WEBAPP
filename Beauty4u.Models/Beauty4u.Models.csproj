@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Api\Hea\**" />
     <Compile Remove="Helpers\**" />
+    <EmbeddedResource Remove="Api\Hea\**" />
     <EmbeddedResource Remove="Helpers\**" />
+    <None Remove="Api\Hea\**" />
     <None Remove="Helpers\**" />
   </ItemGroup>
 
@@ -20,10 +23,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Beauty4u.Common\Beauty4u.Common.csproj" />
     <ProjectReference Include="..\Beauty4u.Interfaces\Beauty4u.Interfaces.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Api\Hea\" />
   </ItemGroup>
 
 </Project>

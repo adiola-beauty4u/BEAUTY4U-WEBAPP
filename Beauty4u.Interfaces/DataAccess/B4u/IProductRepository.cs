@@ -15,5 +15,6 @@ namespace Beauty4u.Models.DataAccess.B4u
         Task<List<IBulkProductUpdatePreviewResult>> TransferProductsAsync(ITransferProductParams transferProductParams);
         Task LogBulkProductRequestAsync(IBulkProductRequestParams bulkProductRequestParams);
         Task LogProductTransfersAsync(ILogProductTransfersParam logProductTransfersParam);
+        Task<List<IProductFullDto>> SearchProductsAsync(IProductSearchParams productSearchParams);
     }
 }

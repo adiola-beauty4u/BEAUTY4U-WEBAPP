@@ -105,7 +105,7 @@ body {
 }
 
 .compact-table-wrapper {
-  max-height: 400px;
+  max-height: 600px;
   overflow: auto;
 }
 
@@ -152,7 +152,8 @@ body {
   border-collapse: separate;
   table-layout: auto;
 
-  th, td {
+  th,
+  td {
     white-space: nowrap;
     vertical-align: top;
   }
@@ -187,4 +188,43 @@ body {
   color: white;
   padding: 6px 10px;
   border-radius: 4px;
+}
+
+/* Responsive grid for filter fields */
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  /* responsive columns */
+  gap: 16px;
+  padding: 16px;
+}
+
+/* Each label+control is stacked */
+.filter-field {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Label styling */
+.filter-field label {
+  font-weight: 500;
+  color: #1e40af;
+  /* blue tone */
+  margin-bottom: 4px;
+}
+
+/* Action buttons spanning full row */
+.form-actions {
+  grid-column: 1 / -1;
+  /* full width */
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+.mat-mdc-dialog-content {
+  max-height: 80vh !important; /* adjust as needed */
+  padding: 1rem;    /* adjust padding */
+  overflow-y: auto; /* ensure scrolling if content is large */
 }

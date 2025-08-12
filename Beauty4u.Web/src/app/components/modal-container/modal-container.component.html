@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>{{ data.title }}</h2>
+<mat-dialog-content>
+    <!-- If content is string -->
+    <ng-container *ngIf="isString(data.content)">
+        <p>{{ data.content }}</p>
+    </ng-container>
+
+    <!-- If content is TemplateRef -->
+    <ng-container *ngIf="!isString(data.content)">
+        <ng-container *ngTemplateOutlet="data.content; context: data.context"></ng-container>
+    </ng-container>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="close()">Close</button>
+</mat-dialog-actions>
