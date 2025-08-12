@@ -1,12 +1,13 @@
-<mat-accordion class="w-full">
-    <mat-expansion-panel [expanded]="true">
+<mat-accordion class="w-100">
+    <mat-expansion-panel [expanded]="true" class="m-0">
+
         <!-- Panel Summary with Filter Chips -->
-        <mat-expansion-panel-header>
-            <mat-panel-title class="text-blue-800 font-medium text-sm">
+        <mat-expansion-panel-header class="py-1 min-h-10">
+            <mat-panel-title class="text-primary fw-medium small">
                 Search Filters
             </mat-panel-title>
             <mat-panel-description>
-                <mat-chip-listbox aria-label="Selected Filters" class="flex flex-wrap gap-1 text-xs">
+                <mat-chip-listbox aria-label="Selected Filters" class="d-flex flex-wrap gap-1 small">
                     <mat-chip *ngIf="searchForm.value.itemGroupCode" color="primary" selected>
                         Category: {{ searchForm.value.itemGroupCode.name }}
                     </mat-chip>
@@ -19,13 +20,13 @@
                     <mat-chip *ngIf="searchForm.value.styleDesc" color="primary" selected>
                         Desc: {{ searchForm.value.styleDesc }}
                     </mat-chip>
-                    <mat-chip *ngIf="searchForm.value.upc" color="primary" selected>
+                    <mat-chip *ngIf="searchForm.value.brand" color="primary" selected>
                         Brand: {{ searchForm.value.brand }}
                     </mat-chip>
-                    <mat-chip *ngIf="searchForm.value.upc" color="primary" selected>
+                    <mat-chip *ngIf="searchForm.value.color" color="primary" selected>
                         Color: {{ searchForm.value.color }}
                     </mat-chip>
-                    <mat-chip *ngIf="searchForm.value.upc" color="primary" selected>
+                    <mat-chip *ngIf="searchForm.value.size" color="primary" selected>
                         Size: {{ searchForm.value.size }}
                     </mat-chip>
                     <mat-chip *ngIf="searchForm.value.upc" color="primary" selected>
@@ -38,76 +39,92 @@
             </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <!-- Panel Body with Form -->
-        <form [formGroup]="searchForm" class="grid grid-cols-12 gap-3 p-4 items-center text-sm">
-            <!-- Category -->
-            <label class="col-span-2 text-right font-medium text-blue-700">Category:</label>
-            <div class="col-span-4">
-                <app-item-group-select [selectedValue]="searchForm.get('itemGroupCode')!"></app-item-group-select>
-            </div>
+        <!-- Panel Body -->
+        <form [formGroup]="searchForm" class="container-fluid py-3 small">
+            <div class="row g-3">
 
-            <!-- Vendor -->
-            <label class="col-span-2 text-right font-medium text-blue-700">Vendor:</label>
-            <div class="col-span-4">
-                <app-vendor-select [formGroup]="searchForm"></app-vendor-select>
-            </div>
+                <!-- Column 1 -->
+                <div class="col-md-6">
+                    <label class="fw-medium text-primary">Category:</label>
+                    <app-item-group-select [selectedValue]="searchForm.get('itemGroupCode')!"></app-item-group-select>
+                </div>
 
-            <label class="col-span-2 text-right font-medium">Style Code:</label>
-            <mat-form-field appearance="outline">
-                <input matInput formControlName="styleCode" />
-            </mat-form-field>
+                <div class="col-md-6">
+                    <label class="fw-medium text-primary">Vendor:</label>
+                    <app-vendor-select [formGroup]="searchForm"></app-vendor-select>
+                </div>
 
-            <label class="col-span-2 text-right font-medium">Description:</label>
-            <mat-form-field appearance="outline">
-                <input matInput formControlName="styleDesc" />
-            </mat-form-field>
+                <div class="col-md-6">
+                    <label class="fw-medium">Style Code:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="styleCode" />
+                    </mat-form-field>
+                </div>
 
+                <div class="col-md-6">
+                    <label class="fw-medium">Description:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="styleDesc" />
+                    </mat-form-field>
+                </div>
 
-            <!-- Brand -->
-            <label class="col-span-2 text-right font-medium">Brand:</label>
-            <mat-form-field appearance="outline" class="col-span-4">
-                <input matInput formControlName="brand" />
-            </mat-form-field>
+                <div class="col-md-6">
+                    <label class="fw-medium">Brand:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="brand" />
+                    </mat-form-field>
+                </div>
 
-            <!-- Color -->
-            <label class="col-span-2 text-right font-medium">Color:</label>
-            <mat-form-field appearance="outline" class="col-span-4">
-                <input matInput formControlName="color" />
-            </mat-form-field>
+                <div class="col-md-6">
+                    <label class="fw-medium">Color:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="color" />
+                    </mat-form-field>
+                </div>
 
-            <!-- Size -->
-            <label class="col-span-2 text-right font-medium">Size:</label>
-            <mat-form-field appearance="outline" class="col-span-4">
-                <input matInput formControlName="size" />
-            </mat-form-field>
+                <div class="col-md-6">
+                    <label class="fw-medium">Size:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="size" />
+                    </mat-form-field>
+                </div>
 
-            <!-- UPC -->
-            <label class="col-span-2 text-right font-medium">UPC:</label>
-            <mat-form-field appearance="outline" class="col-span-4">
-                <input matInput formControlName="upc" />
-            </mat-form-field>
+                <div class="col-md-6">
+                    <label class="fw-medium">UPC:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="upc" />
+                    </mat-form-field>
+                </div>
 
-            <!-- SKU -->
-            <label class="col-span-2 text-right font-medium">SKU:</label>
-            <mat-form-field appearance="outline" class="col-span-4">
-                <input matInput formControlName="sku" />
-            </mat-form-field>
+                <div class="col-md-6">
+                    <label class="fw-medium">SKU:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="sku" />
+                    </mat-form-field>
+                </div>
 
-            <!-- Action Buttons -->
-            <div class="col-span-12 flex justify-end gap-2 pt-4">
-                <button mat-stroked-button color="primary" type="button" (click)="search()">Search</button>
-                <button mat-stroked-button color="warn" type="button" (click)="clear()">Clear</button>
+                <!-- Action Buttons -->
+                <div class="col-12 d-flex justify-content-end gap-2 pt-2">
+                    <button mat-flat-button color="primary" type="button" (click)="search()" class="py-1 px-3 small">
+                        Search
+                    </button>
+                    <button mat-stroked-button color="warn" type="button" (click)="clear()" class="py-1 px-3 small">
+                        Clear
+                    </button>
+                </div>
+
             </div>
         </form>
     </mat-expansion-panel>
-    <app-child-table #childTable *ngIf="output" [group]="output" [showSearchBox]="true" [showInvalidCount]="false"
-        [methodList]="{
-        getPromotions: getPromotions.bind(this)
-    }" [displayedColumns]="getDisplayedColumns(output)" [pageSize]="10">
+
+    <!-- Child Table -->
+    <app-child-table #childTable *ngIf="output" [group]="output" [showInvalidCount]="false"
+        [methodList]="{ getPromotions: getPromotions.bind(this) }" [displayedColumns]="getDisplayedColumns(output)"
+        [pageSize]="10">
     </app-child-table>
 
     <ng-template #customContent let-name="name">
-        <app-child-table #promotionsTable *ngIf="productPromotions" [group]="productPromotions" [showSearchBox]="true"
+        <app-child-table #promotionsTable *ngIf="productPromotions" [group]="productPromotions"
             [showInvalidCount]="false" [displayedColumns]="getDisplayedColumns(productPromotions)" [pageSize]="10">
         </app-child-table>
     </ng-template>

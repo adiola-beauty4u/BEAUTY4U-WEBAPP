@@ -8,6 +8,6 @@ namespace Beauty4u.Models.Api.Products
     {
         public ITableData TableData { get; set; } = new TableData();
         public bool IsValid { get; set; } = false;
-        public string PreviewResult { get; set; } = null!;
+        public string PreviewResult { get; set; } = string.Empty;
     }
 }

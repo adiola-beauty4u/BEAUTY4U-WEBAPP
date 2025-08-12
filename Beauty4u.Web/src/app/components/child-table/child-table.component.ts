@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { RowData } from 'src/interfaces/table-data';
 import { MatCardModule } from '@angular/material/card';
-
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-child-table',
@@ -18,14 +19,17 @@ import { MatCardModule } from '@angular/material/card';
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
+    MatSortModule,
     MatIconModule,
     MatTooltipModule,
     MatFormFieldModule,
     MatInputModule,
     FormsModule,
-    MatCardModule
+    MatCardModule,
+    MatButtonModule
   ],
   templateUrl: './child-table.component.html',
+  styleUrl: './child-table.component.scss',
 })
 export class ChildTableComponent implements OnInit, OnChanges {
   @Input() group: any;
@@ -33,15 +37,17 @@ export class ChildTableComponent implements OnInit, OnChanges {
   @Input() pageSize = 5;
   @Input() pageIndex = 0;
   @Input() showInvalidCount = false;
-  @Input() showSearchBox = false;
   @Input() methodList: { [key: string]: (row: any) => void } = {};
   @Output() page = new EventEmitter<PageEvent>();
 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   filteredData: any[] = [];
   pagedData: any[] = [];
   searchText = '';
-  
+
+  hideTable = false;
 
   ngOnInit() {
     this.applySearch();
@@ -51,6 +57,10 @@ export class ChildTableComponent implements OnInit, OnChanges {
     if (changes['group']) {
       this.applySearch();
     }
+  }
+
+  toggleTable(){
+    this.hideTable = !this.hideTable;
   }
 
   applySearch() {
@@ -63,6 +73,18 @@ export class ChildTableComponent implements OnInit, OnChanges {
       )
     );
     this.pageIndex = 0;
+    this.updatePagedData();
+  }
+
+  sortData(sort: Sort) {
+    if (!sort.active || sort.direction === '') {
+      return;
+    }
+    this.filteredData.sort((a, b) => {
+      const valA = (a.cells[sort.active]?.textValue || '').toString().toLowerCase();
+      const valB = (b.cells[sort.active]?.textValue || '').toString().toLowerCase();
+      return (valA < valB ? -1 : valA > valB ? 1 : 0) * (sort.direction === 'asc' ? 1 : -1);
+    });
     this.updatePagedData();
   }
 

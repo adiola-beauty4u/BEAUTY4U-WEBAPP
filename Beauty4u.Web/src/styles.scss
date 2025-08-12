@@ -105,7 +105,7 @@ body {
 }
 
 .compact-table-wrapper {
-  max-height: 400px;
+  max-height: 600px;
   overflow: auto;
 }
 
@@ -223,7 +223,8 @@ body {
   padding-top: 8px;
 }
 
-/* Make mat-form-field fill its container */
-mat-form-field {
-  width: 100%;
+.mat-mdc-dialog-content {
+  max-height: 80vh !important; /* adjust as needed */
+  padding: 1rem;    /* adjust padding */
+  overflow-y: auto; /* ensure scrolling if content is large */
 }

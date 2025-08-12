@@ -31,7 +31,7 @@
           <app-fileupload title="Select Bulk Product Registration file" [onUpload]="handleUploaded"
             [templatePath]="bulkRegisterTemplatePath" [templateName]="bulkRegisterTemplateName" #fileUploadRef />
 
-          <div class="m-t-20 button-row">
+          <div class="m-t-20 button-row-end">
             <button mat-stroked-button color="warn" (click)="clearForm()">
               <mat-icon>cancel</mat-icon> Clear
             </button>
@@ -51,11 +51,11 @@
           (change)="onInvalidFilterToggle($event)">
           Show Invalid Rows only
         </mat-checkbox>
-        <app-expandable-table [tableGroups]="tableGroupValues"></app-expandable-table>
+        <app-expandable-table [tableGroups]="tableGroupValues" [showInvalidCount]="true"></app-expandable-table>
         <mat-label *ngIf="!isValidFile" class="text-red-800 text-sm">
           {{previewResult}}
         </mat-label>
-        <div class="m-t-20 button-row">
+        <div class="m-t-20 button-row-end">
           <button mat-stroked-button color="primary" matStepperPrevious>
             <mat-icon>arrow_back</mat-icon> Back
           </button>
@@ -69,7 +69,7 @@
       <mat-step>
         <ng-template matStepLabel>Bulk Product Registration</ng-template>
         <app-expandable-table [tableGroups]="tableGroupValues" [showInvalidCount]="false"></app-expandable-table>
-        <div class="m-t-20 button-row">
+        <div class="m-t-20 button-row-end">
           <button mat-stroked-button color="primary" matStepperPrevious (click)="reset()">
             <mat-icon>arrow_back</mat-icon> Upload Again
           </button>

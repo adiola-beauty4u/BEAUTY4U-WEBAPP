@@ -5,6 +5,6 @@ namespace Beauty4u.Models.Dto.Products
 {
     public class SearchProductResult : ProductDto, ISearchProductResult, IProductDto
     {
-        public string Storecode { get; set; } = null!;
+        public string Storecode { get; set; } = string.Empty;
     }
 }

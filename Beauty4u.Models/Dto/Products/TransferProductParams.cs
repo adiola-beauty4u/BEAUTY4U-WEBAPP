@@ -10,7 +10,7 @@ namespace Beauty4u.Models.Dto.Products
 {
     public class TransferProductParams : ITransferProductParams
     {
-        public string UserCode { get; set; } = null!;
+        public string UserCode { get; set; } = string.Empty;
         public DataTable ProductTransferDetails { get; set; } = new DataTable();
     }
 }

@@ -9,7 +9,7 @@ namespace Beauty4u.Models.Dto.Products
 {
     public class UPCValidateResult : IUPCValidateResult
     {
-        public string UPC { get; set; } = null!;
+        public string UPC { get; set; } = string.Empty;
         public bool ExistsInB4u { get; set; }
         public bool ExistsInMIS { get; set; }
     }

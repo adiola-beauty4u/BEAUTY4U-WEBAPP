@@ -8,30 +8,9 @@
 <!-- Table Groups -->
 <div *ngFor="let group of tableGroups; let i = index">
     <mat-card class="mb-4 compact-card">
-        <mat-card-header>
-            <mat-card-title class="flex justify-between items-center w-full text-sm font-semibold">
-                <span>
-                    {{ group.tableName }}
-                    <span class="text-muted ml-2 font-normal">
-                        (Total: {{ getTotalRowCount(i) }}<ng-container *ngIf="showInvalidCount">, Invalid: {{ getInvalidRowCount(i) }}</ng-container>)
-                    </span>
-                </span>
-
-                <div class="flex gap-2 items-center">
-                    <mat-form-field appearance="outline" floatLabel="auto" class="search-box compact-search">
-                        <mat-label>Search</mat-label>
-                        <input matInput [(ngModel)]="filters()[i]" (ngModelChange)="applyFilter(i)" />
-                    </mat-form-field>
-                    <button mat-icon-button (click)="toggleGroup(i)" matTooltip="Expand or collapse group">
-                        <mat-icon>{{ expandedGroups()[i] ? 'expand_less' : 'expand_more' }}</mat-icon>
-                    </button>
-                </div>
-            </mat-card-title>
-        </mat-card-header>
-
         <mat-card-content *ngIf="expandedGroups()[i]">
             <app-child-table [group]="group" [displayedColumns]="getDisplayedColumns(group)"
-                [pageSize]="pageSizes()[i]" [pageIndex]="pageIndexes()[i]" 
+                [pageSize]="pageSizes()[i]" [pageIndex]="pageIndexes()[i]" [showInvalidCount]="showInvalidCount"
                 (page)="onPage($event, i)">
             </app-child-table>
         </mat-card-content>

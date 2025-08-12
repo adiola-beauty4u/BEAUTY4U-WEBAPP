@@ -10,11 +10,11 @@ namespace Beauty4u.Models.Dto
     {
         public int VendorId { get; set; }
 
-        public string Name { get; set; } = null!;
+        public string Name { get; set; } = string.Empty;
 
-        public string Code { get; set; } = null!;
+        public string Code { get; set; } = string.Empty;
 
-        public string Type { get; set; } = null!;
+        public string Type { get; set; } = string.Empty;
 
         public int? BrandId { get; set; }
 

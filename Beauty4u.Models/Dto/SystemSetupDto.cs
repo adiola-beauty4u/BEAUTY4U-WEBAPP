@@ -9,10 +9,10 @@ namespace Beauty4u.Models.Dto
 {
     public class SystemSetupDto : ISystemSetupDto
     {
-        public string Code { get; set; } = null!;
-        public string Name { get; set; } = null!;
-        public string Value { get; set; } = null!;
-        public string AltValue { get; set; } = null!;
-        public string Description { get; set; } = null!;
+        public string Code { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
+        public string AltValue { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
     }
 }

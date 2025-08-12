@@ -13,7 +13,7 @@ namespace Beauty4u.Models.Api.Products
 {
     public class ProductTransferResult : IProductTransferResult
     {
-        public string StoreCode { get; set; } = null!;
+        public string StoreCode { get; set; } = string.Empty;
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public ITableData TableData { get; set; } = new TableData();
