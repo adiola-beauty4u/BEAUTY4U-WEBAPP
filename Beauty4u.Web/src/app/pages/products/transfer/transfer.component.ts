@@ -94,6 +94,7 @@ export class TransferComponent implements OnInit {
       error: (err) => {
         console.error('Transfer search failed:', err);
         this.products = [];
+        this.loadingService.hide();
       }
     });
 
@@ -130,6 +131,7 @@ export class TransferComponent implements OnInit {
       error: (err) => {
         console.error('Transfer search failed:', err);
         this.products = [];
+        this.loadingService.hide();
       }
     });
   }
@@ -185,6 +187,7 @@ export class TransferComponent implements OnInit {
       error: (err) => {
         console.error('Transfer search failed:', err);
         this.products = [];
+        this.loadingService.hide();
       }
     });
   }

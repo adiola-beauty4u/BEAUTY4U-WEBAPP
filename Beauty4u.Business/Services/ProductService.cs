@@ -371,7 +371,7 @@ namespace Beauty4u.Business.Services
                 tableData.Columns.Add(new ColumnData() { FieldName = "StyleDesc", Header = "Product Description" });
                 tableData.Columns.Add(new ColumnData() { FieldName = "Size", Header = "Size" });
                 tableData.Columns.Add(new ColumnData() { FieldName = "Color", Header = "Color" });
-                tableData.Columns.Add(new ColumnData() { FieldName = "Retail", Header = "Retail Price", DataType = ColumnDataType.Money });
+                tableData.Columns.Add(new ColumnData() { FieldName = "RetailPrice", Header = "Retail Price", DataType = ColumnDataType.Money });
                 tableData.Columns.Add(new ColumnData() { FieldName = "Cost", Header = "Cost", DataType = ColumnDataType.Money });
                 tableData.Columns.Add(new ColumnData() { FieldName = "ItmGroup", Header = "Category" });
 
@@ -441,7 +441,7 @@ namespace Beauty4u.Business.Services
                     });
                     rowData.Cells.Add(nameof(transferItem.Cost), new CellData()
                     {
-                        RawValue = transferItem.RetailPrice,
+                        RawValue = transferItem.Cost,
                         TextValue = $"${transferItem.Cost:F2}",
                         IsValid = true,
                     });
@@ -938,7 +938,7 @@ namespace Beauty4u.Business.Services
             if (currentUser != null)
             {
                 var upcList = await ProductSearchByUPCListAsync(productTransferRequest.UPCList);
-                var upcDict = upcList.ToDictionary(x => x.UPC);
+                var upcSku = upcList.ToDictionary(x => x.Sku);
                 var test = JsonConvert.SerializeObject(upcList);
                 var storeList = await _storeService.GetAllStoresAsync();
                 var selectedStores = storeList.Where(x => productTransferRequest.StoreCodes.Contains(x.Code)).ToDictionary(x => x.Code);
@@ -1015,9 +1015,9 @@ namespace Beauty4u.Business.Services
                         });
                         rowData.Cells.Add("HQ Brand", new CellData()
                         {
-                            RawValue = upcDict[row.UPC].Brand,
-                            TextValue = upcDict[row.UPC].Brand,
-                            CssClass = upcDict[row.UPC].Brand != row.Brand ? "cell-changed" : "",
+                            RawValue = upcSku[row.Sku].Brand,
+                            TextValue = upcSku[row.Sku].Brand,
+                            CssClass = upcSku[row.Sku].Brand != row.Brand ? "cell-changed" : "",
                         });
 
                         rowData.Cells.Add("Store StyleCode", new CellData()
@@ -1027,9 +1027,9 @@ namespace Beauty4u.Business.Services
                         });
                         rowData.Cells.Add("HQ StyleCode", new CellData()
                         {
-                            RawValue = upcDict[row.UPC].StyleCode,
-                            TextValue = upcDict[row.UPC].StyleCode,
-                            CssClass = upcDict[row.UPC].StyleCode != row.StyleCode ? "cell-changed" : "",
+                            RawValue = upcSku[row.Sku].StyleCode,
+                            TextValue = upcSku[row.Sku].StyleCode,
+                            CssClass = upcSku[row.Sku].StyleCode != row.StyleCode ? "cell-changed" : "",
                         });
 
                         rowData.Cells.Add("Store StyleDesc", new CellData()
@@ -1039,9 +1039,9 @@ namespace Beauty4u.Business.Services
                         });
                         rowData.Cells.Add("HQ StyleDesc", new CellData()
                         {
-                            RawValue = upcDict[row.UPC].StyleDesc,
-                            TextValue = upcDict[row.UPC].StyleDesc,
-                            CssClass = upcDict[row.UPC].StyleDesc != row.StyleDesc ? "cell-changed" : "",
+                            RawValue = upcSku[row.Sku].StyleDesc,
+                            TextValue = upcSku[row.Sku].StyleDesc,
+                            CssClass = upcSku[row.Sku].StyleDesc != row.StyleDesc ? "cell-changed" : "",
                         });
 
                         rowData.Cells.Add("Store Size", new CellData()
@@ -1051,9 +1051,9 @@ namespace Beauty4u.Business.Services
                         });
                         rowData.Cells.Add("HQ Size", new CellData()
                         {
-                            RawValue = upcDict[row.UPC].Size,
-                            TextValue = upcDict[row.UPC].Size,
-                            CssClass = upcDict[row.UPC].Size != row.Size ? "cell-changed" : "",
+                            RawValue = upcSku[row.Sku].Size,
+                            TextValue = upcSku[row.Sku].Size,
+                            CssClass = upcSku[row.Sku].Size != row.Size ? "cell-changed" : "",
                         });
 
                         rowData.Cells.Add("Store Color", new CellData()
@@ -1063,37 +1063,37 @@ namespace Beauty4u.Business.Services
                         });
                         rowData.Cells.Add("HQ Color", new CellData()
                         {
-                            RawValue = upcDict[row.UPC].Color,
-                            TextValue = upcDict[row.UPC].Color,
-                            CssClass = upcDict[row.UPC].Color != row.Color ? "cell-changed" : "",
+                            RawValue = upcSku[row.Sku].Color,
+                            TextValue = upcSku[row.Sku].Color,
+                            CssClass = upcSku[row.Sku].Color != row.Color ? "cell-changed" : "",
                         });
 
                         rowData.Cells.Add("Store Retail", new CellData()
                         {
                             RawValue = row.Color,
                             TextValue = $"${row.RetailPrice:F2}",
-                            Tooltip = upcDict[row.UPC].RetailPrice != row.RetailPrice ? rowData.IsNew ? "" : $"{nameof(row.RetailPrice)} will be updated" : "",
+                            Tooltip = upcSku[row.Sku].RetailPrice != row.RetailPrice ? rowData.IsNew ? "" : $"{nameof(row.RetailPrice)} will be updated" : "",
                         });
                         rowData.Cells.Add("HQ Retail", new CellData()
                         {
-                            RawValue = upcDict[row.UPC].RetailPrice,
-                            TextValue = $"${upcDict[row.UPC].RetailPrice:F2}",
-                            CssClass = upcDict[row.UPC].RetailPrice > row.RetailPrice ? "cell-valid" : upcDict[row.UPC].RetailPrice < row.RetailPrice ? "cell-changed" : "",
-                            Tooltip = upcDict[row.UPC].RetailPrice > row.RetailPrice ? "Retail price increase" : upcDict[row.UPC].RetailPrice < row.RetailPrice ? "Retail price decrease" : "",
+                            RawValue = upcSku[row.Sku].RetailPrice,
+                            TextValue = $"${upcSku[row.Sku].RetailPrice:F2}",
+                            CssClass = upcSku[row.Sku].RetailPrice > row.RetailPrice ? "cell-valid" : upcSku[row.Sku].RetailPrice < row.RetailPrice ? "cell-changed" : "",
+                            Tooltip = upcSku[row.Sku].RetailPrice > row.RetailPrice ? "Retail price increase" : upcSku[row.Sku].RetailPrice < row.RetailPrice ? "Retail price decrease" : "",
                         });
 
                         rowData.Cells.Add("Store Cost", new CellData()
                         {
                             RawValue = row.Cost,
                             TextValue = $"${row.Cost:F2}",
-                            Tooltip = upcDict[row.UPC].Cost != row.Cost ? rowData.IsNew ? "" : $"{nameof(row.Cost)} will be updated" : "",
+                            Tooltip = upcSku[row.Sku].Cost != row.Cost ? rowData.IsNew ? "" : $"{nameof(row.Cost)} will be updated" : "",
                         });
                         rowData.Cells.Add("HQ Cost", new CellData()
                         {
-                            RawValue = upcDict[row.UPC].Cost,
-                            TextValue = $"${upcDict[row.UPC].Cost:F2}",
-                            CssClass = upcDict[row.UPC].Cost > row.Cost ? "cell-valid" : upcDict[row.UPC].Cost < row.Cost ? "cell-changed" : "",
-                            Tooltip = upcDict[row.UPC].Cost > row.Cost ? "Cost increase" : upcDict[row.UPC].Cost < row.Cost ? "Cost decrease" : "",
+                            RawValue = upcSku[row.Sku].Cost,
+                            TextValue = $"${upcSku[row.Sku].Cost:F2}",
+                            CssClass = upcSku[row.Sku].Cost > row.Cost ? "cell-valid" : upcSku[row.Sku].Cost < row.Cost ? "cell-changed" : "",
+                            Tooltip = upcSku[row.Sku].Cost > row.Cost ? "Cost increase" : upcSku[row.Sku].Cost < row.Cost ? "Cost decrease" : "",
                         });
 
                         if (!string.IsNullOrWhiteSpace(row.ItmGroup))
@@ -1115,13 +1115,13 @@ namespace Beauty4u.Business.Services
                         }
                         rowData.Cells.Add("HQ ItmGroup", new CellData()
                         {
-                            RawValue = itemGroups.ContainsKey(upcDict[row.UPC].ItmGroup) ? $"{itemGroups[upcDict[row.UPC].ItmGroup].Code} ({itemGroups[upcDict[row.UPC].ItmGroup].Name})" : upcDict[row.UPC].ItmGroup,
-                            TextValue = itemGroups.ContainsKey(upcDict[row.UPC].ItmGroup) ? $"{itemGroups[upcDict[row.UPC].ItmGroup].Code} ({itemGroups[upcDict[row.UPC].ItmGroup].Name})" : upcDict[row.UPC].ItmGroup,
-                            CssClass = upcDict[row.UPC].ItmGroup != row.ItmGroup ? "cell-changed" : "",
+                            RawValue = itemGroups.ContainsKey(upcSku[row.Sku].ItmGroup) ? $"{itemGroups[upcSku[row.Sku].ItmGroup].Code} ({itemGroups[upcSku[row.Sku].ItmGroup].Name})" : upcSku[row.Sku].ItmGroup,
+                            TextValue = itemGroups.ContainsKey(upcSku[row.Sku].ItmGroup) ? $"{itemGroups[upcSku[row.Sku].ItmGroup].Code} ({itemGroups[upcSku[row.Sku].ItmGroup].Name})" : upcSku[row.Sku].ItmGroup,
+                            CssClass = upcSku[row.Sku].ItmGroup != row.ItmGroup ? "cell-changed" : "",
                         });
 
                         // Check changed values
-                        if (!rowData.IsNew && (upcDict[row.UPC].Cost != row.Cost || upcDict[row.UPC].RetailPrice != row.RetailPrice))
+                        if (!rowData.IsNew && (upcSku[row.Sku].Cost != row.Cost || upcSku[row.Sku].RetailPrice != row.RetailPrice))
                         {
                             rowData.CssClass = "row-changed";
                             rowData.IsNew = false;
@@ -1158,7 +1158,6 @@ namespace Beauty4u.Business.Services
                 try
                 {
                     var upcTable = DataTableHelper.ToProductTransferDetailsDataTable(productTransferRequest);
-                    var upcDict = productTransferRequest.ToDictionary(x => x.UPC);
 
                     var result = await _productRepository.TransferProductsAsync(new TransferProductParams() { UserCode = currentUser?.Claims["UserCode"]!, ProductTransferDetails = upcTable });
                     var store = await _systemSetupService.GetSystemSetupAsync();
@@ -1310,7 +1309,12 @@ namespace Beauty4u.Business.Services
                             RawValue = transferResult.Result,
                             TextValue = transferResult.Result,
                         });
-
+                        if (transferResult.Result != "Saved")
+                        {
+                            rowData.CssClass = "row-invalid";
+                            rowData.Tooltip = transferResult.Result;
+                            rowData.IsValid = false;
+                        }
                         tableData.Rows.Add(rowData);
                     }
 
@@ -1345,8 +1349,8 @@ namespace Beauty4u.Business.Services
                 try
                 {
                     var upcList = await ProductSearchByUPCListAsync(productTransferRequest.UPCList);
-                    var upcDict = upcList.ToDictionary(x => x.UPC);
-                    var jsonVal = JsonConvert.SerializeObject(upcDict);
+                    //var upcSku = upcList.ToDictionary(x => x.Sku);
+
                     var storeList = await _storeService.GetAllStoresAsync();
                     var selectedStores = storeList.Where(x => productTransferRequest.StoreCodes.Contains(x.Code)).ToDictionary(x => x.Code);
                     var tasks = selectedStores
@@ -1401,11 +1405,11 @@ namespace Beauty4u.Business.Services
                             var newRetailDataRow = logProductTransfersParam.NewRetailPrice.NewRow();
                             var currentCostDataRow = logProductTransfersParam.CurrentCost.NewRow();
                             var newCostDataRow = logProductTransfersParam.NewCost.NewRow();
-                            logProductTransfersParam.IsNew.Rows.Add(itemData.UPC, itemData.IsNew.ToString());
-                            logProductTransfersParam.CurrentRetailPrice.Rows.Add(itemData.UPC, itemData.CurrentRetail.ToString());
-                            logProductTransfersParam.NewRetailPrice.Rows.Add(itemData.UPC, itemData.UpdatedRetail.ToString());
-                            logProductTransfersParam.CurrentCost.Rows.Add(itemData.UPC, itemData.CurrentCost.ToString());
-                            logProductTransfersParam.NewCost.Rows.Add(itemData.UPC, itemData.UpdatedCost.ToString());
+                            logProductTransfersParam.IsNew.Rows.Add(itemData.Sku, itemData.IsNew.ToString());
+                            logProductTransfersParam.CurrentRetailPrice.Rows.Add(itemData.Sku, itemData.CurrentRetail.ToString());
+                            logProductTransfersParam.NewRetailPrice.Rows.Add(itemData.Sku, itemData.UpdatedRetail.ToString());
+                            logProductTransfersParam.CurrentCost.Rows.Add(itemData.Sku, itemData.CurrentCost.ToString());
+                            logProductTransfersParam.NewCost.Rows.Add(itemData.Sku, itemData.UpdatedCost.ToString());
                         }
 
                         foreach (var itemTable in item.TableData.TableGroups)
@@ -1613,12 +1617,12 @@ namespace Beauty4u.Business.Services
                     rowData.Cells.Add("Write Date", new CellData()
                     {
                         RawValue = row.WriteDate,
-                        TextValue = row.WriteDate?.ToShortDateString(),
+                        TextValue = row.WriteDate?.ToString("yyyy-MM-dd"),
                     });
                     rowData.Cells.Add("Update Date", new CellData()
                     {
                         RawValue = row.LastUpdate,
-                        TextValue = row.LastUpdate?.ToShortDateString(),
+                        TextValue = row.LastUpdate?.ToString("yyyy-MM-dd"),
                     });
                     rowData.Cells.Add("Promotions", new CellData()
                     {
