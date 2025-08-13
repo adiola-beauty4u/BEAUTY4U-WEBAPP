@@ -97,6 +97,7 @@ export class ProductsComponent implements OnInit {
       error: (err) => {
         console.error('Transfer search failed:', err);
         this.output.rows = [];
+        this.loadingService.hide();
       }
     });
   }
