@@ -78,7 +78,7 @@ export class ProductsComponent implements OnInit {
   search(): void {
     const request: ProductSearchRequest = {
       category: this.searchForm.value.itemGroupCode?.code,
-      vendorCode: this.searchForm.value.vendor?.code,
+      vendorCode: this.searchForm.value.vendor?.value,
       brand: this.searchForm.value.brand,
       color: this.searchForm.value.color,
       size: this.searchForm.value.size,
@@ -115,7 +115,7 @@ export class ProductsComponent implements OnInit {
         this.loadingService.hide();
       },
       error: err => {
-        console.error('Vendor API error', err);
+        console.error('Promotion API error', err);
         this.loadingService.hide();
       }
     });

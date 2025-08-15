@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using AutoMapper;
 using Beauty4u.Common.Enums;
 using Beauty4u.Interfaces.Api.Table;
 using Beauty4u.Interfaces.DataAccess.Api;
 using Beauty4u.Interfaces.DataAccess.B4u;
+using Beauty4u.Interfaces.Dto.Promotions;
 using Beauty4u.Interfaces.Services;
 using Beauty4u.Models.Api.Table;
 using Beauty4u.Models.Dto.Promotions;
@@ -25,8 +27,8 @@ namespace Beauty4u.Business.Services
         private readonly IMapper _mapper;
         private readonly bool _isHq;
         private readonly string _hqApi;
-        public PromotionService(IConfiguration configuration, IPromotionRepository promotionRepository, 
-            ILogger<PromotionService> logger, ICurrentUserService currentUserService, 
+        public PromotionService(IConfiguration configuration, IPromotionRepository promotionRepository,
+            ILogger<PromotionService> logger, ICurrentUserService currentUserService,
             IPromotionsApi promotionsApi, IMapper mapper)
         {
             _promotionRepository = promotionRepository;
@@ -190,6 +192,407 @@ namespace Beauty4u.Business.Services
                     else
                     {
                         var tableData = await _promotionsApi.SeachBySkuInApiAsync<TableDataApi>(_hqApi, currentUser!.JwtToken!, sku);
+                        return _mapper.Map<TableData>(tableData);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                    return new TableData();
+                }
+            }
+            return new TableData();
+        }
+        public async Task<ITableData> GetProductPromotionsByPromoNoAsync(string promoNo)
+        {
+            var currentUser = _currentUserService.GetCurrentUser();
+            if (currentUser != null)
+            {
+                try
+                {
+                    if (_isHq)
+                    {
+                        #region From HQ
+                        var data = await _promotionRepository.GetProductPromotionsByPromoNoAsync(promoNo);
+
+                        var tableData = new TableData();
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Vendor",
+                            FieldName = nameof(ProductPromotion.VendorName),
+                            DataType = ColumnDataType.String
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Brand",
+                            FieldName = nameof(ProductPromotion.Brand),
+                            DataType = ColumnDataType.String
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Style Code",
+                            FieldName = nameof(ProductPromotion.StyleCode),
+                            DataType = ColumnDataType.String
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Product Description",
+                            FieldName = nameof(ProductPromotion.StyleDesc),
+                            DataType = ColumnDataType.String
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Category",
+                            FieldName = nameof(ProductPromotion.Category),
+                            DataType = ColumnDataType.String
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Color",
+                            FieldName = nameof(ProductPromotion.Color),
+                            DataType = ColumnDataType.String
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Size",
+                            FieldName = nameof(ProductPromotion.Size),
+                            DataType = ColumnDataType.String
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Cost",
+                            FieldName = nameof(ProductPromotion.Cost),
+                            DataType = ColumnDataType.Decimal
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Current Retail Price",
+                            FieldName = nameof(ProductPromotion.CurrentRetailPrice),
+                            DataType = ColumnDataType.Decimal
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "New Promotion Price",
+                            FieldName = nameof(ProductPromotion.NewPrice),
+                            DataType = ColumnDataType.Decimal
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Sku",
+                            FieldName = nameof(ProductPromotion.Sku),
+                            DataType = ColumnDataType.String
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "UPC",
+                            FieldName = nameof(ProductPromotion.UPC),
+                            DataType = ColumnDataType.String
+                        });
+
+                        foreach (ProductPromotion row in data)
+                        {
+                            var rowData = new RowData()
+                            {
+                                Cells = new Dictionary<string, ICellData>(),
+                            };
+
+                            rowData.Cells.Add(nameof(ProductPromotion.VendorName), new CellData()
+                            {
+                                RawValue = row.VendorName,
+                                TextValue = row.VendorName,
+                            });
+                            rowData.Cells.Add(nameof(ProductPromotion.Brand), new CellData()
+                            {
+                                RawValue = row.Brand,
+                                TextValue = row.Brand,
+                            });
+                            rowData.Cells.Add(nameof(ProductPromotion.StyleCode), new CellData()
+                            {
+                                RawValue = row.StyleCode,
+                                TextValue = row.StyleCode,
+                            });
+                            rowData.Cells.Add(nameof(ProductPromotion.StyleDesc), new CellData()
+                            {
+                                RawValue = row.StyleDesc,
+                                TextValue = row.StyleDesc,
+                            });
+                            rowData.Cells.Add(nameof(ProductPromotion.Category), new CellData()
+                            {
+                                RawValue = row.Category,
+                                TextValue = row.Category,
+                            });
+                            rowData.Cells.Add(nameof(ProductPromotion.Color), new CellData()
+                            {
+                                RawValue = row.Color,
+                                TextValue = row.Color,
+                            });
+                            rowData.Cells.Add(nameof(ProductPromotion.Size), new CellData()
+                            {
+                                RawValue = row.Size,
+                                TextValue = row.Size,
+                            });
+                            rowData.Cells.Add(nameof(ProductPromotion.Cost), new CellData()
+                            {
+                                RawValue = row.Cost,
+                                TextValue = $"${row.Cost:F2}",
+                            });
+                            rowData.Cells.Add(nameof(ProductPromotion.CurrentRetailPrice), new CellData()
+                            {
+                                RawValue = row.CurrentRetailPrice,
+                                TextValue = $"${row.CurrentRetailPrice:F2}",
+                            });
+                            rowData.Cells.Add(nameof(ProductPromotion.NewPrice), new CellData()
+                            {
+                                RawValue = row.NewPrice,
+                                TextValue = $"${row.NewPrice:F2}",
+                            });
+                            rowData.Cells.Add(nameof(ProductPromotion.Sku), new CellData()
+                            {
+                                RawValue = row.Sku,
+                                TextValue = row.Sku,
+                            });
+                            rowData.Cells.Add(nameof(ProductPromotion.UPC), new CellData()
+                            {
+                                RawValue = row.UPC,
+                                TextValue = row.UPC,
+                            });
+
+                            tableData.Rows.Add(rowData);
+                        }
+
+                        return tableData;
+                        #endregion From HQ
+                    }
+                    else
+                    {
+                        var tableData = await _promotionsApi.SeachItemsByPromoNoInApiAsync<TableDataApi>(_hqApi, currentUser!.JwtToken!, promoNo);
+                        return _mapper.Map<TableData>(tableData);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                    return new TableData();
+                }
+            }
+            return new TableData();
+        }
+
+        public async Task<ITableData> SearchPromotionsAsync(IPromoSearchParams promoSearchParams)
+        {
+            var currentUser = _currentUserService.GetCurrentUser();
+            if (currentUser != null)
+            {
+                try
+                {
+                    if (_isHq)
+                    {
+                        #region From HQ
+                        var data = await _promotionRepository.SearchPromotionsAsync(promoSearchParams);
+
+                        var tableData = new TableData();
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "View Items",
+                            FieldName = "Items",
+                            DataType = ColumnDataType.Int,
+                            IsCommand = true,
+                            CommandName = "viewItems"
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Promo No",
+                            FieldName = nameof(PromotionDto.PromoNo),
+                            DataType = ColumnDataType.String
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Promo Name",
+                            FieldName = nameof(PromotionDto.PromoName),
+                            DataType = ColumnDataType.String
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Promo Date",
+                            FieldName = nameof(PromotionDto.PromoDate),
+                            DataType = ColumnDataType.Date
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Start Date",
+                            FieldName = nameof(PromotionDto.StartDate),
+                            DataType = ColumnDataType.Date
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "End Date",
+                            FieldName = nameof(PromotionDto.EndDate),
+                            DataType = ColumnDataType.Date
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Promo Type",
+                            FieldName = nameof(PromotionDto.PromoType),
+                            DataType = ColumnDataType.String
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Status",
+                            FieldName = nameof(PromotionDto.Status),
+                            DataType = ColumnDataType.Bool
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Is Active",
+                            FieldName = nameof(PromotionDto.IsActive),
+                            DataType = ColumnDataType.String
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "DC",
+                            FieldName = nameof(PromotionDto.DC),
+                            DataType = ColumnDataType.Decimal
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Final Sale",
+                            FieldName = nameof(PromotionDto.FinalSale),
+                            DataType = ColumnDataType.String
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Store List",
+                            FieldName = nameof(PromotionDto.StoreList),
+                            DataType = ColumnDataType.String
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Write Date",
+                            FieldName = nameof(PromotionDto.WriteDate),
+                            DataType = ColumnDataType.Date
+                        });
+                        tableData.Columns.Add(new ColumnData()
+                        {
+                            Header = "Last Update",
+                            FieldName = nameof(PromotionDto.LastUpdate),
+                            DataType = ColumnDataType.Date
+                        });
+                        //tableData.Columns.Add(new ColumnData()
+                        //{
+                        //    Header = "Edit",
+                        //    FieldName = "EditPromotion",
+                        //    DataType = ColumnDataType.String,
+                        //    CommandName = "editPromotion",
+                        //    IsCommand = true,
+                        //});
+
+                        foreach (var row in data)
+                        {
+                            var rowData = new RowData()
+                            {
+                                Cells = new Dictionary<string, ICellData>(),
+                            };
+
+                            rowData.Cells.Add(nameof(PromotionDto.PromoNo), new CellData()
+                            {
+                                RawValue = row.PromoNo,
+                                TextValue = row.PromoNo,
+                            });
+                            rowData.Cells.Add(nameof(PromotionDto.PromoName), new CellData()
+                            {
+                                RawValue = row.PromoName,
+                                TextValue = row.PromoName,
+                            });
+                            rowData.Cells.Add(nameof(PromotionDto.PromoDate), new CellData()
+                            {
+                                RawValue = row.PromoDate,
+                                TextValue = row.PromoDate,
+                            });
+                            rowData.Cells.Add(nameof(PromotionDto.StartDate), new CellData()
+                            {
+                                RawValue = row.StartDate,
+                                TextValue = row.StartDate,
+                            });
+                            rowData.Cells.Add(nameof(PromotionDto.EndDate), new CellData()
+                            {
+                                RawValue = row.EndDate,
+                                TextValue = row.EndDate,
+                            });
+                            rowData.Cells.Add(nameof(PromotionDto.PromoType), new CellData()
+                            {
+                                RawValue = row.PromoTypeName,
+                                TextValue = row.PromoTypeName,
+                            });
+                            rowData.Cells.Add(nameof(PromotionDto.Status), new CellData()
+                            {
+                                RawValue = row.Status,
+                                TextValue = row.Status.ToString(),
+                            });
+                            rowData.Cells.Add(nameof(PromotionDto.IsActive), new CellData()
+                            {
+                                RawValue = row.IsActive,
+                                TextValue = row.IsActive,
+                            });
+
+                            string dcPrefix = "";
+                            int dcMultiplier = 1;
+                            if (row.PromoTypeName.Contains("%"))
+                            {
+                                dcPrefix = "%";
+                                dcMultiplier = 100;
+                            }
+                            if (row.PromoTypeName.Contains("$"))
+                                dcPrefix = "$";
+
+                            rowData.Cells.Add(nameof(PromotionDto.DC), new CellData()
+                            {
+                                RawValue = row.DC,
+                                TextValue = $"{dcPrefix}{(row.DC * dcMultiplier):F2}",
+                            });
+                            rowData.Cells.Add(nameof(PromotionDto.FinalSale), new CellData()
+                            {
+                                RawValue = row.FinalSale,
+                                TextValue = row.FinalSale,
+                            });
+                            rowData.Cells.Add(nameof(PromotionDto.StoreList), new CellData()
+                            {
+                                RawValue = row.StoreList,
+                                TextValue = row.StoreList,
+                            });
+                            rowData.Cells.Add(nameof(PromotionDto.WriteDate), new CellData()
+                            {
+                                RawValue = row.WriteDate,
+                                TextValue = row.WriteDate.ToString("yyyy-MM-dd"),
+                            });
+                            rowData.Cells.Add(nameof(PromotionDto.LastUpdate), new CellData()
+                            {
+                                RawValue = row.LastUpdate,
+                                TextValue = row.LastUpdate.ToString("yyyy-MM-dd"),
+                            });
+                            rowData.Cells.Add("Items", new CellData()
+                            {
+                                RawValue = "View Items",
+                                TextValue = "View Items",
+                                CommandParameter = new { promo = row },
+                                CssClass = "cell-center"
+
+                            });
+                            rowData.Cells.Add("EditPromotion", new CellData()
+                            {
+                                RawValue = "Edit",
+                                TextValue = "Edit",
+                                CommandParameter = new { promo = row }
+                            });
+
+                            tableData.Rows.Add(rowData);
+                        }
+
+                        return tableData;
+                        #endregion From HQ
+                    }
+                    else
+                    {
+                        var tableData = await _promotionsApi.SearchPromoInApiAsync<TableDataApi>(_hqApi, currentUser!.JwtToken!, promoSearchParams);
                         return _mapper.Map<TableData>(tableData);
                     }
                 }

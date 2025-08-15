@@ -5,7 +5,8 @@ namespace Beauty4u.Interfaces.DataAccess.Api
 {
     public interface IProductsApi
     {
-        Task<List<ISearchProductResult>> SearchProductFromApiAsync(string baseAddress, string jwtToken, List<string> upcList);
+        Task<List<ISearchProductResult>> SearchProductBySkuFromApiAsync(string baseAddress, string jwtToken, List<string> skuList);
+        Task<List<ISearchProductResult>> SearchProductByUpcFromApiAsync(string baseAddress, string jwtToken, List<string> upcList);
         Task<T> TransferProductsToApiAsync<T>(string baseAddress, string jwtToken, List<ISearchProductResult> transferList);
     }
 }

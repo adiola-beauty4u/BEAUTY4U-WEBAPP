@@ -1,0 +1,19 @@
+.radio-list-wrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 0.25rem 0;
+}
+
+.radio-list-label {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+mat-radio-group.vertical mat-radio-button {
+    display: block;
+}
+
+mat-radio-group.horizontal {
+    display: flex;
+    gap: 1rem;
+}

@@ -228,3 +228,10 @@ body {
   padding: 1rem;    /* adjust padding */
   overflow-y: auto; /* ensure scrolling if content is large */
 }
+
+.autocomplete-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 400px;
+}

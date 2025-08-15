@@ -24,10 +24,21 @@ namespace Beauty4u.ApiAccess.Products
             _httpClient = httpClient;
         }
 
-        public async Task<List<ISearchProductResult>> SearchProductFromApiAsync(string baseAddress, string jwtToken, List<string> upcList)
+        public async Task<List<ISearchProductResult>> SearchProductByUpcFromApiAsync(string baseAddress, string jwtToken, List<string> upcList)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
             var response = await _httpClient.PostAsJsonAsync($"{baseAddress}{productEndpoint}/search-by-upc", upcList);
+
+            response.EnsureSuccessStatusCode();
+            var output = await response.Content.ReadFromJsonAsync<List<SearchProductResult>>();
+
+            return output.ToList<ISearchProductResult>();
+
+        }
+        public async Task<List<ISearchProductResult>> SearchProductBySkuFromApiAsync(string baseAddress, string jwtToken, List<string> skuList)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            var response = await _httpClient.PostAsJsonAsync($"{baseAddress}{productEndpoint}/search-by-sku", skuList);
 
             response.EnsureSuccessStatusCode();
             var output = await response.Content.ReadFromJsonAsync<List<SearchProductResult>>();

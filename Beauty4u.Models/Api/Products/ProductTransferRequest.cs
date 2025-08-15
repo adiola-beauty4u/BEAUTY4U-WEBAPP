@@ -10,5 +10,6 @@ namespace Beauty4u.Models.Api.Products
     {
         public List<string> StoreCodes { get; set; } = new List<string>();
         public List<string> UPCList { get; set; } = new List<string>();
+        public List<string> SkuList { get; set; } = new List<string>();
     }
 }

@@ -22,8 +22,15 @@ namespace Beauty4u.WebApi.Controllers.v1
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var vendors = await _systemSetupService.GetSystemSetupAsync();
-            return Ok(vendors);
+            var system = await _systemSetupService.GetSystemSetupAsync();
+            return Ok(system);
+        }
+
+        [HttpGet("syscode-by-class")]
+        public async Task<IActionResult> SysCodeByClass(string sysCodeClass)
+        {
+            var sysCodes = await _systemSetupService.GetSysCodesByClassAsync(sysCodeClass);
+            return Ok(sysCodes);
         }
     }
 }

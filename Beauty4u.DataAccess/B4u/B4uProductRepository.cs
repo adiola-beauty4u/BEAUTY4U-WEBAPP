@@ -184,6 +184,33 @@ namespace Beauty4u.DataAccess.B4u
             return DataTableHelper.DataTableToList<SearchProductResult>(dataTable).ToList<ISearchProductResult>();
         }
 
+        public async Task<List<ISearchProductResult>> ProductSearchBySkuListAsync(DataTable upcList)
+        {
+            using var conn = new SqlConnection(_connectionString);
+            await conn.OpenAsync();
+
+            using var command = conn.CreateCommand();
+            command.CommandText = "dbo.usp_ProductSearchBySkuList";
+            command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 300;
+
+            command.Parameters.Add(new SqlParameter
+            {
+                ParameterName = "@StringList",
+                SqlDbType = SqlDbType.Structured,
+                TypeName = "dbo.udt_StringList",
+                Value = upcList
+            });
+
+            var dataTable = new DataTable();
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                dataTable.Load(reader); // Synchronously loads all rows into DataTable
+            }
+
+            return DataTableHelper.DataTableToList<SearchProductResult>(dataTable).ToList<ISearchProductResult>();
+        }
+
         public async Task<List<IBulkProductUpdatePreviewResult>> TransferProductsAsync(ITransferProductParams transferProductParams)
         {
             using var conn = new SqlConnection(_connectionString);

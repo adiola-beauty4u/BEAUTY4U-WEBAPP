@@ -1,4 +1,5 @@
 export interface ProductTransferRequest {
     StoreCodes: string[],
-    UPCList: string[]
+    UPCList: string[],
+    SkuList: string[]
 }

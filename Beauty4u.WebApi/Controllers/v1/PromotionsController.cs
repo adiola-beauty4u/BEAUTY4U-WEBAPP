@@ -4,6 +4,7 @@ using Beauty4u.Business.Services;
 using Beauty4u.Interfaces.Services;
 using Beauty4u.Models.Api.Table;
 using Beauty4u.Models.Dto.ItemGroup;
+using Beauty4u.Models.Dto.Promotions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -29,6 +30,20 @@ namespace Beauty4u.WebApi.Controllers.v1
         public async Task<IActionResult> SearchBySku(string sku)
         {
             var output = await _promotionService.GetProductPromotionsBySkuAsync(sku);
+            return Ok(_mapper.Map<TableDataApi>(output));
+        }
+
+        [HttpGet("search-items-by-promono")]
+        public async Task<IActionResult> SearchItemsByPromoNo(string promono)
+        {
+            var output = await _promotionService.GetProductPromotionsByPromoNoAsync(promono);
+            return Ok(_mapper.Map<TableDataApi>(output));
+        }
+
+        [HttpPost("search-promo")]
+        public async Task<IActionResult> SearchPromo([FromBody] PromoSearchParams promoSearchParams)
+        {
+            var output = await _promotionService.SearchPromotionsAsync(promoSearchParams);
             return Ok(_mapper.Map<TableDataApi>(output));
         }
     }

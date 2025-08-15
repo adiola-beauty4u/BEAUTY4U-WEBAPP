@@ -11,8 +11,8 @@
                     <mat-chip *ngIf="searchForm.value.itemGroupCode" color="primary" selected>
                         Category: {{ searchForm.value.itemGroupCode.name }}
                     </mat-chip>
-                    <mat-chip *ngIf="searchForm.value.vendor?.name" color="primary" selected>
-                        Vendor: {{ searchForm.value.vendor.name }}
+                    <mat-chip *ngIf="searchForm.value.vendor?.displayText" color="primary" selected>
+                        Vendor: {{ searchForm.value.vendor.displayText }}
                     </mat-chip>
                     <mat-chip *ngIf="searchForm.value.styleCode" color="primary" selected>
                         Style: {{ searchForm.value.styleCode }}
@@ -51,7 +51,7 @@
 
                 <div class="col-md-6">
                     <label class="fw-medium text-primary">Vendor:</label>
-                    <app-vendor-select [formGroup]="searchForm"></app-vendor-select>
+                    <app-vendor-select [formGroup]="searchForm" formControlName="vendor"></app-vendor-select>
                 </div>
 
                 <div class="col-md-6">
