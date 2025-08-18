@@ -1,0 +1,11 @@
+<div>
+    <label>{{ label }}</label>
+    <mat-radio-group [value]="value?.value" (change)="selectValue($event.value)"
+        [class.vertical]="orientation === 'vertical'" [class.horizontal]="orientation === 'horizontal'"
+        [disabled]="disabled">
+        <mat-radio-button [value]="null">All</mat-radio-button>
+        <mat-radio-button *ngFor="let item of items" [value]="item.value">
+            {{ item.displayText }}
+        </mat-radio-button>
+    </mat-radio-group>
+</div>

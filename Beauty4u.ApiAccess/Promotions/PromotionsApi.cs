@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Beauty4u.Interfaces.Api.Table;
 using Beauty4u.Interfaces.DataAccess.Api;
 using Beauty4u.Interfaces.Dto.Products;
+using Beauty4u.Interfaces.Dto.Promotions;
 using Beauty4u.Models.Api.Table;
 using Beauty4u.Models.Dto.Products;
 
@@ -29,6 +30,42 @@ namespace Beauty4u.ApiAccess.Promotions
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
                 var response = await _httpClient.GetAsync($"{baseAddress}{promotionsEndpoint}/search-by-sku?sku={sku}");
+
+                response.EnsureSuccessStatusCode();
+                var output = await response.Content.ReadFromJsonAsync<T>();
+
+                return output;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<T> SeachItemsByPromoNoInApiAsync<T>(string baseAddress, string jwtToken, string promoNo)
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+                var response = await _httpClient.GetAsync($"{baseAddress}{promotionsEndpoint}/search-items-by-promono?promono={promoNo}");
+
+                response.EnsureSuccessStatusCode();
+                var output = await response.Content.ReadFromJsonAsync<T>();
+
+                return output;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<T> SearchPromoInApiAsync<T>(string baseAddress, string jwtToken, IPromoSearchParams promoSearchParams)
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+                var response = await _httpClient.PostAsJsonAsync($"{baseAddress}{promotionsEndpoint}/search-promo", promoSearchParams);
 
                 response.EnsureSuccessStatusCode();
                 var output = await response.Content.ReadFromJsonAsync<T>();

@@ -47,5 +47,52 @@ namespace Beauty4u.DataAccess.B4u
             var results = DataTableHelper.DataTableToList<ProductPromotion>(dataTable);
             return results.Cast<IProductPromotion>().ToList();
         }
+
+        public async Task<List<IProductPromotion>> GetProductPromotionsByPromoNoAsync(string promoNo)
+        {
+            using var conn = new SqlConnection(_connectionString);
+            await conn.OpenAsync();
+
+            using var command = conn.CreateCommand();
+            command.CommandText = "dbo.usp_GetProductPromotionsByPromoNo";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.AddWithValue("@PromoNo", promoNo);
+
+            var dataTable = new DataTable();
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                dataTable.Load(reader); // Synchronously loads all rows into DataTable
+            }
+
+            var results = DataTableHelper.DataTableToList<ProductPromotion>(dataTable);
+            return results.Cast<IProductPromotion>().ToList();
+        }
+
+        public async Task<List<IPromotionDto>> SearchPromotionsAsync(IPromoSearchParams promoSearchParams)
+        {
+            using var conn = new SqlConnection(_connectionString);
+            await conn.OpenAsync();
+
+            using var command = conn.CreateCommand();
+            command.CommandText = "dbo.usp_SearchPromotions";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.AddWithValue("@promoNo", promoSearchParams.PromoNo);
+            command.Parameters.AddWithValue("@fromDate", promoSearchParams.FromDate);
+            command.Parameters.AddWithValue("@toDate", promoSearchParams.ToDate);
+            command.Parameters.AddWithValue("@storecode", promoSearchParams.StoreCode);
+            command.Parameters.AddWithValue("@promotionType", promoSearchParams.PromoType);
+            command.Parameters.AddWithValue("@promoDescription", promoSearchParams.PromoDescription);
+            command.Parameters.AddWithValue("@status", promoSearchParams.Status);
+
+            var dataTable = new DataTable();
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                dataTable.Load(reader); // Synchronously loads all rows into DataTable
+            }
+            var results = DataTableHelper.DataTableToList<PromotionDto>(dataTable);
+            return results.Cast<IPromotionDto>().ToList();
+        }
     }
 }

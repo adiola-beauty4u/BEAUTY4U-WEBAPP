@@ -930,6 +930,13 @@ namespace Beauty4u.Business.Services
             return prodSearchOutput;
         }
 
+        public async Task<List<ISearchProductResult>> ProductSearchBySkuListAsync(List<string> skuList)
+        {
+            DataTable dataTable = DataTableHelper.StringListParameter(skuList);
+            var prodSearchOutput = await _productRepository.ProductSearchBySkuListAsync(dataTable);
+            return prodSearchOutput;
+        }
+
         public async Task<ITableData> ProductTransferPreviewAsync(IProductTransferRequest productTransferRequest)
         {
             var currentUser = _currentUserService.GetCurrentUser();
@@ -937,13 +944,13 @@ namespace Beauty4u.Business.Services
 
             if (currentUser != null)
             {
-                var upcList = await ProductSearchByUPCListAsync(productTransferRequest.UPCList);
-                var upcSku = upcList.ToDictionary(x => x.Sku);
-                var test = JsonConvert.SerializeObject(upcList);
+                var skuList = await ProductSearchBySkuListAsync(productTransferRequest.SkuList);
+                var upcSku = skuList.ToDictionary(x => x.Sku);
+                var test = JsonConvert.SerializeObject(skuList);
                 var storeList = await _storeService.GetAllStoresAsync();
                 var selectedStores = storeList.Where(x => productTransferRequest.StoreCodes.Contains(x.Code)).ToDictionary(x => x.Code);
                 var tasks = selectedStores
-                                .Select(store => _productsApi.SearchProductFromApiAsync(store.Value.ApiUrl, currentUser!.JwtToken!, productTransferRequest.UPCList))
+                                .Select(store => _productsApi.SearchProductBySkuFromApiAsync(store.Value.ApiUrl, currentUser!.JwtToken!, productTransferRequest.SkuList))
                                 .ToList();
 
                 var results = await Task.WhenAll(tasks);
@@ -984,9 +991,9 @@ namespace Beauty4u.Business.Services
                         var rowData = new RowData
                         {
                             Cells = new Dictionary<string, ICellData>(),
-                            CssClass = string.IsNullOrEmpty(row.Sku) ? "row-valid" : "",
-                            Tooltip = string.IsNullOrEmpty(row.Sku) ? "Product will be created\n" : "",
-                            IsNew = string.IsNullOrEmpty(row.Sku)
+                            CssClass = string.IsNullOrEmpty(row.UPC) ? "row-valid" : "",
+                            Tooltip = string.IsNullOrEmpty(row.UPC) ? "Product will be created\n" : "",
+                            IsNew = string.IsNullOrEmpty(row.UPC)
                         };
 
                         rowData.Cells.Add(nameof(row.VendorName), new CellData()

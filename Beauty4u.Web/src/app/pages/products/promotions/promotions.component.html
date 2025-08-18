@@ -1,0 +1,112 @@
+<mat-accordion class="w-100">
+    <mat-expansion-panel [expanded]="true" class="m-0">
+
+        <!-- Panel Summary with Filter Chips -->
+        <mat-expansion-panel-header class="py-1 min-h-10">
+            <mat-panel-title class="text-primary fw-medium small">
+                Search Filters
+            </mat-panel-title>
+            <mat-panel-description>
+                <mat-chip-listbox aria-label="Selected Filters" class="d-flex flex-wrap gap-1 small">
+                    <mat-chip *ngIf="searchForm.value.fromDate" color="primary" selected>
+                        Start Date: {{ searchForm.value.fromDate | date: 'yyyy-MM-dd' }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.toDate" color="primary" selected>
+                        End Date: {{ searchForm.value.toDate | date: 'yyyy-MM-dd' }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.promoNo" color="primary" selected>
+                        Promo No: {{ searchForm.value.promoNo }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.promoName" color="primary" selected>
+                        Promo Name: {{ searchForm.value.promoName }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.store?.displayText" color="primary" selected>
+                        Store: {{ searchForm.value.store?.displayText }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.promoType?.displayText" color="primary" selected>
+                        PromoType: {{ searchForm.value.promoType?.displayText }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.promoStatus?.value" color="primary" selected>
+                        Status: {{ searchForm.value.promoStatus?.displayText }}
+                    </mat-chip>
+                </mat-chip-listbox>
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <!-- Panel Body -->
+        <form [formGroup]="searchForm" class="container-fluid py-3 small">
+            <div class="row g-3">
+
+                <div class="col-md-4">
+                    <!-- Date From -->
+                    <mat-form-field appearance="outline" class="w-36">
+                        <mat-label>Start</mat-label>
+                        <input matInput [matDatepicker]="fromPicker" formControlName="fromDate">
+                        <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #fromPicker></mat-datepicker>
+                    </mat-form-field>
+
+                    <span class="text-xs font-medium text-gray-600"> to </span>
+
+                    <!-- Date To -->
+                    <mat-form-field appearance="outline" class="w-36">
+                        <mat-label>End</mat-label>
+                        <input matInput [matDatepicker]="toPicker" formControlName="toDate">
+                        <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #toPicker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-4">
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <mat-label>Promo No</mat-label>
+                        <input matInput formControlName="promoNo" placeholder="Promo No" />
+                    </mat-form-field>
+                </div>
+                <div class="col-md-4">
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <mat-label>Promo Name</mat-label>
+                        <input matInput formControlName="promoName" placeholder="Promo Name" />
+                    </mat-form-field>
+                </div>
+                <div class="col-md-4">
+                    <app-store-select [formGroup]="searchForm" formControlName="store"></app-store-select>
+                </div>
+                <div class="col-md-4">
+                    <app-syscodes-select [formGroup]="searchForm" formControlName="promoType" sysCodeClass="6"
+                        sysCodeLabel="Promotion Type"
+                        sysCodePlaceHolder="Type to search Promotion"></app-syscodes-select>
+                </div>
+                <div class="col-md-4">
+                    <app-radio-list label="Status" formControlName="promoStatus" [items]="promoStatusItems" orientation="horizontal">
+                    </app-radio-list>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="col-12 d-flex justify-content-end gap-2 pt-2">
+                    <button mat-flat-button color="primary" type="button" (click)="search()" class="py-1 px-3 small">
+                        Search
+                    </button>
+                    <button mat-flat-button color="primary" type="button" (click)="new()" class="py-1 px-3 small">
+                        New
+                    </button>
+                    <button mat-stroked-button color="warn" type="button" (click)="clear()" class="py-1 px-3 small">
+                        Clear
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </mat-expansion-panel>
+
+    <!-- Child Table -->
+    <app-child-table #childTable *ngIf="output" [group]="output" [showInvalidCount]="false"
+        [methodList]="{ viewItems: viewItems.bind(this) }" [displayedColumns]="getDisplayedColumns(output)"
+        [pageSize]="10">
+    </app-child-table>
+
+    <ng-template #promoItemsContent let-name="name">
+        <app-child-table #promotionsTable *ngIf="promoItems" [group]="promoItems"
+            [showInvalidCount]="false" [displayedColumns]="getDisplayedColumns(promoItems)" [pageSize]="10">
+        </app-child-table>
+    </ng-template>
+</mat-accordion>

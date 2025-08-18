@@ -1,8 +1,10 @@
-﻿using Beauty4u.Interfaces.Dto.Promotions;
+﻿using Beauty4u.Interfaces.Dto;
+using Beauty4u.Interfaces.Dto.Promotions;
+using Beauty4u.Models.Dto.Products;
 
 namespace Beauty4u.Models.Dto.Promotions
 {
-    public class ProductPromotion : IProductPromotion
+    public class ProductPromotion : ProductDto, IProductPromotion, IProductDto
     {
         public string PromoNo { get; set; } = string.Empty;
         public string PromoName { get; set; } = string.Empty;
@@ -11,9 +13,7 @@ namespace Beauty4u.Models.Dto.Promotions
         public string PromoType { get; set; } = string.Empty;
         public bool Status { get; set; }
         public string IsActive { get; set; } = string.Empty;
-        public string Sku { get; set; } = string.Empty;
-        public decimal Cost { get; set; }
-        public decimal RetailPrice { get; set; }
         public decimal NewPrice { get; set; }
+        public decimal CurrentRetailPrice { get; set; }
     }
 }

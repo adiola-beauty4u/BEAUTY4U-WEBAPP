@@ -13,5 +13,6 @@
         string Sku { get; set; }
         DateTime StartDate { get; set; }
         bool Status { get; set; }
+        decimal CurrentRetailPrice { get; set; }
     }
 }

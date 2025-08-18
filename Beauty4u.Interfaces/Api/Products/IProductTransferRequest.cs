@@ -5,5 +5,6 @@ namespace Beauty4u.Models.Api.Products
     {
         List<string> StoreCodes { get; set; }
         List<string> UPCList { get; set; }
+        List<string> SkuList { get; set; }
     }
 }

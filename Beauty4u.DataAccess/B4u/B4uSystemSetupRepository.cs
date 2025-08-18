@@ -40,5 +40,26 @@ namespace Beauty4u.DataAccess.B4u
             var results = DataTableHelper.DataTableToList<SystemSetupDto>(dataTable);
             return results.Cast<ISystemSetupDto>().ToList();
         }
+
+        public async Task<List<ISysCodeDto>> GetSysCodesByClassAsync(string value)
+        {
+            using var conn = new SqlConnection(_connectionString);
+            await conn.OpenAsync();
+
+            using var command = conn.CreateCommand();
+            command.CommandText = "[dbo].[usp_GetSysCodesByClass]";
+            command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 300;
+            command.Parameters.Add(new SqlParameter("@Class", value));
+
+            var dataTable = new DataTable();
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                dataTable.Load(reader); // Synchronously loads all rows into DataTable
+            }
+
+            var results = DataTableHelper.DataTableToList<SysCodeDto>(dataTable);
+            return results.Cast<ISysCodeDto>().ToList();
+        }
     }
 }

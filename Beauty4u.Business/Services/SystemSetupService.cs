@@ -24,5 +24,11 @@ namespace Beauty4u.Business.Services
 
             return systemSetup.ToDictionary(x => x.Code);
         }
+        public async Task<List<ISysCodeDto>> GetSysCodesByClassAsync(string value)
+        {
+            var systemSetup = await _systemRepository.GetSysCodesByClassAsync(value);
+
+            return systemSetup;
+        }
     }
 }

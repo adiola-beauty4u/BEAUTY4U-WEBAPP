@@ -118,7 +118,8 @@ export class TransferComponent implements OnInit {
 
     const transferProductRequest: ProductTransferRequest = {
       StoreCodes: this.getSelectedStoreCodes(),
-      UPCList: this.productList.map(x => x.upc)
+      UPCList: this.productList.map(x => x.upc),
+      SkuList: this.productList.map(x => x.sku),
     };
 
     this.productService.transferPreview(transferProductRequest).subscribe({
@@ -174,7 +175,8 @@ export class TransferComponent implements OnInit {
 
     const transferProductRequest: ProductTransferRequest = {
       StoreCodes: this.getSelectedStoreCodes(),
-      UPCList: this.productList.map(x => x.upc)
+      UPCList: this.productList.map(x => x.upc),
+      SkuList: this.productList.map(x => x.sku)
     };
 
     this.productService.transferToStores(transferProductRequest).subscribe({

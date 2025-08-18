@@ -93,6 +93,14 @@ namespace Beauty4u.WebApi.Controllers.v1
             return Ok(result);
         }
 
+        [HttpPost("search-by-sku")]
+        public async Task<IActionResult> SearchBySku([FromBody] List<string> skuList)
+        {
+            var result = await _productService.ProductSearchBySkuListAsync(skuList);
+
+            return Ok(result);
+        }
+
         [HttpPost("transfer-preview")]
         public async Task<IActionResult> TransferPreview([FromBody] ProductTransferRequest productTransferRequest)
         {

@@ -18,6 +18,13 @@ export const navItems: NavItem[] = [
     route: '/products/search',
     chip: true,
     children: [],
+  }, 
+  {
+    displayName: 'Promotions',
+    iconName: 'solar:widget-4-line-duotone',
+    route: '/products/promotions',
+    chip: true,
+    children: [],
   },
   {
     displayName: 'Bulk Actions',
