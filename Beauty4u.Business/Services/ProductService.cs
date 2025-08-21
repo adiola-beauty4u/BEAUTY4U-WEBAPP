@@ -112,8 +112,8 @@ namespace Beauty4u.Business.Services
                             ["StyleDesc"] = new CellData { RawValue = bulkProductResult.StyleDesc, TextValue = bulkProductResult.StyleDesc },
                             ["Size"] = new CellData { RawValue = bulkProductResult.Size, TextValue = bulkProductResult.Size },
                             ["Color"] = new CellData { RawValue = bulkProductResult.Color, TextValue = bulkProductResult.Color },
-                            ["Retail"] = new CellData { RawValue = bulkProductResult.Retail, TextValue = $"${bulkProductResult.Retail:F2}" },
-                            ["Cost"] = new CellData { RawValue = bulkProductResult.Cost, TextValue = $"${bulkProductResult.Cost:F2}" },
+                            ["Retail"] = new CellData { RawValue = bulkProductResult.Retail, TextValue = $"${bulkProductResult.Retail:N2}" },
+                            ["Cost"] = new CellData { RawValue = bulkProductResult.Cost, TextValue = $"${bulkProductResult.Cost:N2}" },
                             ["ItmGroup"] = new CellData { RawValue = bulkProductResult.ItmGroup, TextValue = bulkProductResult.ItmGroup },
                             ["UPC"] = new CellData { RawValue = bulkProductResult.UPC, TextValue = bulkProductResult.UPC },
                             ["Sku"] = new CellData { RawValue = bulkProductResult.Sku, TextValue = bulkProductResult.Sku },
@@ -269,13 +269,13 @@ namespace Beauty4u.Business.Services
                         rowData.Cells.Add("PreviousRetail", new CellData()
                         {
                             RawValue = previewResult.CurrentRetail,
-                            TextValue = $"${previewResult.CurrentRetail:F2}",
+                            TextValue = $"${previewResult.CurrentRetail:N2}",
                             CssClass = ""
                         });
                         rowData.Cells.Add(nameof(previewResult.UpdatedRetail), new CellData()
                         {
                             RawValue = previewResult.UpdatedRetail,
-                            TextValue = $"${previewResult.UpdatedRetail:F2}",
+                            TextValue = $"${previewResult.UpdatedRetail:N2}",
                             IsValid = true,
                             CssClass = previewResult.CurrentRetail > previewResult.UpdatedRetail ? "cell-changed" : previewResult.CurrentRetail < previewResult.UpdatedRetail ? "cell-valid" : "",
                             Tooltip = previewResult.CurrentRetail > previewResult.UpdatedRetail ? "Retail price decrease\n" : previewResult.CurrentRetail < previewResult.UpdatedRetail ? "Retail price increase\n" : "",
@@ -283,13 +283,13 @@ namespace Beauty4u.Business.Services
                         rowData.Cells.Add("PreviousCost", new CellData()
                         {
                             RawValue = previewResult.CurrentCost,
-                            TextValue = $"${previewResult.CurrentCost:F2}",
+                            TextValue = $"${previewResult.CurrentCost:N2}",
                             CssClass = ""
                         });
                         rowData.Cells.Add(nameof(previewResult.UpdatedCost), new CellData()
                         {
                             RawValue = previewResult.UpdatedCost,
-                            TextValue = $"${previewResult.UpdatedCost:F2}",
+                            TextValue = $"${previewResult.UpdatedCost:N2}",
                             IsValid = true,
                             CssClass = previewResult.CurrentCost > previewResult.UpdatedCost ? "cell-changed" : previewResult.CurrentCost < previewResult.UpdatedCost ? "cell-valid" : "",
                             Tooltip = previewResult.CurrentCost > previewResult.UpdatedCost ? "Cost decrease\n" : previewResult.CurrentCost < previewResult.UpdatedCost ? "Cost increase\n" : "",
@@ -436,13 +436,13 @@ namespace Beauty4u.Business.Services
                     rowData.Cells.Add(nameof(transferItem.RetailPrice), new CellData()
                     {
                         RawValue = transferItem.RetailPrice,
-                        TextValue = $"${transferItem.RetailPrice:F2}",
+                        TextValue = $"${transferItem.RetailPrice:N2}",
                         IsValid = true,
                     });
                     rowData.Cells.Add(nameof(transferItem.Cost), new CellData()
                     {
                         RawValue = transferItem.Cost,
-                        TextValue = $"${transferItem.Cost:F2}",
+                        TextValue = $"${transferItem.Cost:N2}",
                         IsValid = true,
                     });
                     rowData.Cells.Add(nameof(transferItem.ItmGroup), new CellData()
@@ -600,12 +600,12 @@ namespace Beauty4u.Business.Services
                 rowData.Cells.Add(nameof(prodct.Retail), new CellData()
                 {
                     RawValue = prodct.Retail,
-                    TextValue = $"${prodct.Retail:F2}",
+                    TextValue = $"${prodct.Retail:N2}",
                 });
                 rowData.Cells.Add(nameof(prodct.Cost), new CellData()
                 {
                     RawValue = prodct.Cost,
-                    TextValue = $"${prodct.Cost:F2}",
+                    TextValue = $"${prodct.Cost:N2}",
                 });
                 rowData.Cells.Add(nameof(prodct.ItmGroup), new CellData()
                 {
@@ -842,13 +842,13 @@ namespace Beauty4u.Business.Services
                     rowData.Cells.Add(nameof(previewResult.CurrentRetail), new CellData()
                     {
                         RawValue = previewResult.CurrentRetail,
-                        TextValue = $"${previewResult.CurrentRetail:F2}",
+                        TextValue = $"${previewResult.CurrentRetail:N2}",
                         IsValid = !string.IsNullOrEmpty(previewResult.Sku),
                     });
                     rowData.Cells.Add(nameof(previewResult.UpdatedRetail), new CellData()
                     {
                         RawValue = previewResult.UpdatedRetail,
-                        TextValue = $"${previewResult.UpdatedRetail:F2}",
+                        TextValue = $"${previewResult.UpdatedRetail:N2}",
                         IsValid = !string.IsNullOrEmpty(previewResult.Sku),
                         CssClass = string.IsNullOrEmpty(previewResult.Sku) ? "cell-invalid" : previewResult.RetailChange && previewResult.CurrentRetail > previewResult.UpdatedRetail ? "cell-changed" : previewResult.RetailChange && previewResult.CurrentRetail < previewResult.UpdatedRetail ? "cell-valid" : "",
                         Tooltip = previewResult.RetailChange && previewResult.CurrentRetail > previewResult.UpdatedRetail ? "Retail price decrease\n" : previewResult.RetailChange && previewResult.CurrentRetail < previewResult.UpdatedRetail ? "Retail price increase\n" : "",
@@ -857,13 +857,13 @@ namespace Beauty4u.Business.Services
                     rowData.Cells.Add(nameof(previewResult.CurrentCost), new CellData()
                     {
                         RawValue = previewResult.CurrentCost,
-                        TextValue = $"${previewResult.CurrentCost:F2}",
+                        TextValue = $"${previewResult.CurrentCost:N2}",
                         IsValid = !string.IsNullOrEmpty(previewResult.Sku),
                     });
                     rowData.Cells.Add(nameof(previewResult.UpdatedCost), new CellData()
                     {
                         RawValue = previewResult.UpdatedCost,
-                        TextValue = $"${previewResult.UpdatedCost:F2}",
+                        TextValue = $"${previewResult.UpdatedCost:N2}",
                         IsValid = !string.IsNullOrEmpty(previewResult.Sku),
                         CssClass = string.IsNullOrEmpty(previewResult.Sku) ? "cell-invalid" : previewResult.CostChange && previewResult.CurrentCost > previewResult.UpdatedCost ? "cell-changed" : previewResult.CostChange && previewResult.CurrentCost < previewResult.UpdatedCost ? "cell-valid" : "",
                         Tooltip = previewResult.CostChange && previewResult.CurrentCost > previewResult.UpdatedCost ? "Cost decrease\n" : previewResult.CostChange && previewResult.CurrentCost < previewResult.UpdatedCost ? "Cost increase\n" : "",
@@ -1078,13 +1078,13 @@ namespace Beauty4u.Business.Services
                         rowData.Cells.Add("Store Retail", new CellData()
                         {
                             RawValue = row.Color,
-                            TextValue = $"${row.RetailPrice:F2}",
+                            TextValue = $"${row.RetailPrice:N2}",
                             Tooltip = upcSku[row.Sku].RetailPrice != row.RetailPrice ? rowData.IsNew ? "" : $"{nameof(row.RetailPrice)} will be updated" : "",
                         });
                         rowData.Cells.Add("HQ Retail", new CellData()
                         {
                             RawValue = upcSku[row.Sku].RetailPrice,
-                            TextValue = $"${upcSku[row.Sku].RetailPrice:F2}",
+                            TextValue = $"${upcSku[row.Sku].RetailPrice:N2}",
                             CssClass = upcSku[row.Sku].RetailPrice > row.RetailPrice ? "cell-valid" : upcSku[row.Sku].RetailPrice < row.RetailPrice ? "cell-changed" : "",
                             Tooltip = upcSku[row.Sku].RetailPrice > row.RetailPrice ? "Retail price increase" : upcSku[row.Sku].RetailPrice < row.RetailPrice ? "Retail price decrease" : "",
                         });
@@ -1092,13 +1092,13 @@ namespace Beauty4u.Business.Services
                         rowData.Cells.Add("Store Cost", new CellData()
                         {
                             RawValue = row.Cost,
-                            TextValue = $"${row.Cost:F2}",
+                            TextValue = $"${row.Cost:N2}",
                             Tooltip = upcSku[row.Sku].Cost != row.Cost ? rowData.IsNew ? "" : $"{nameof(row.Cost)} will be updated" : "",
                         });
                         rowData.Cells.Add("HQ Cost", new CellData()
                         {
                             RawValue = upcSku[row.Sku].Cost,
-                            TextValue = $"${upcSku[row.Sku].Cost:F2}",
+                            TextValue = $"${upcSku[row.Sku].Cost:N2}",
                             CssClass = upcSku[row.Sku].Cost > row.Cost ? "cell-valid" : upcSku[row.Sku].Cost < row.Cost ? "cell-changed" : "",
                             Tooltip = upcSku[row.Sku].Cost > row.Cost ? "Cost increase" : upcSku[row.Sku].Cost < row.Cost ? "Cost decrease" : "",
                         });
@@ -1278,12 +1278,12 @@ namespace Beauty4u.Business.Services
                         rowData.Cells.Add(nameof(transferResult.CurrentRetail), new CellData()
                         {
                             RawValue = transferResult.CurrentRetail,
-                            TextValue = $"${transferResult.CurrentRetail:F2}",
+                            TextValue = $"${transferResult.CurrentRetail:N2}",
                         });
                         rowData.Cells.Add(nameof(transferResult.UpdatedRetail), new CellData()
                         {
                             RawValue = transferResult.UpdatedRetail,
-                            TextValue = $"${transferResult.UpdatedRetail:F2}",
+                            TextValue = $"${transferResult.UpdatedRetail:N2}",
                             CssClass = transferResult.UpdatedRetail > transferResult.CurrentRetail ? "cell-valid" : transferResult.UpdatedRetail < transferResult.CurrentRetail ? "cell-changed" : "",
                             Tooltip = transferResult.UpdatedRetail > transferResult.CurrentRetail ? "Retail price increase" : transferResult.UpdatedRetail < transferResult.CurrentRetail ? "Retail price decrease" : "",
                         });
@@ -1291,12 +1291,12 @@ namespace Beauty4u.Business.Services
                         rowData.Cells.Add(nameof(transferResult.CurrentCost), new CellData()
                         {
                             RawValue = transferResult.CurrentCost,
-                            TextValue = $"${transferResult.CurrentCost:F2}",
+                            TextValue = $"${transferResult.CurrentCost:N2}",
                         });
                         rowData.Cells.Add(nameof(transferResult.UpdatedCost), new CellData()
                         {
                             RawValue = transferResult.UpdatedCost,
-                            TextValue = $"${transferResult.UpdatedCost:F2}",
+                            TextValue = $"${transferResult.UpdatedCost:N2}",
                             CssClass = transferResult.UpdatedCost > transferResult.CurrentCost ? "cell-valid" : transferResult.UpdatedCost < transferResult.CurrentCost ? "cell-changed" : "",
                             Tooltip = transferResult.UpdatedCost > transferResult.CurrentCost ? "Cost increase" : transferResult.UpdatedCost < transferResult.CurrentCost ? "Cost decrease" : "",
                         });
@@ -1564,6 +1564,7 @@ namespace Beauty4u.Business.Services
                     var rowData = new RowData()
                     {
                         Cells = new Dictionary<string, ICellData>(),
+                        RowKey = row.Sku
                     };
 
                     rowData.Cells.Add("Vendor Name", new CellData()
@@ -1599,12 +1600,12 @@ namespace Beauty4u.Business.Services
                     rowData.Cells.Add("Retail Price", new CellData()
                     {
                         RawValue = row.RetailPrice,
-                        TextValue = $"${row.RetailPrice:F2}",
+                        TextValue = $"${row.RetailPrice:N2}",
                     });
                     rowData.Cells.Add(nameof(row.Cost), new CellData()
                     {
                         RawValue = row.Cost,
-                        TextValue = $"${row.Cost:F2}",
+                        TextValue = $"${row.Cost:N2}",
                     });
                     rowData.Cells.Add(nameof(row.Category), new CellData()
                     {
@@ -1631,6 +1632,203 @@ namespace Beauty4u.Business.Services
                         RawValue = row.LastUpdate,
                         TextValue = row.LastUpdate?.ToString("yyyy-MM-dd"),
                     });
+                    rowData.Cells.Add("Promotions", new CellData()
+                    {
+                        RawValue = "View Promotions",
+                        TextValue = "View Promotions",
+                        CommandParameter = new { product = row },
+                        Tooltip = "View Promotions",
+                        CssClass = "cell-center"
+
+                    });
+                    tableData.Rows.Add(rowData);
+                }
+                return tableData;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return new TableData();
+            }
+        }
+
+        public async Task<ITableData> SearchProductsForPromoAsync(IPromotionProductSearchParams searchParams)
+        {
+            try
+            {
+                var output = await _productRepository.SearchProductsAsync(searchParams);
+
+                var tableData = new TableData();
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Vendor Name",
+                    FieldName = "Vendor Name",
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Brand",
+                    FieldName = "Brand",
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Style Code",
+                    FieldName = "Style Code",
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Product Description",
+                    FieldName = "Product Description",
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Size",
+                    FieldName = "Size",
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Color",
+                    FieldName = "Color",
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Category",
+                    FieldName = "Category",
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "UPC",
+                    FieldName = "UPC",
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "SKU",
+                    FieldName = "Sku",
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Cost",
+                    FieldName = "Cost",
+                    DataType = ColumnDataType.Decimal
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Retail Price",
+                    FieldName = "Retail Price",
+                    DataType = ColumnDataType.Decimal
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "New Price",
+                    FieldName = "New Price",
+                    DataType = ColumnDataType.Decimal
+                });
+
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "View Promotions",
+                    FieldName = "Promotions",
+                    DataType = ColumnDataType.Int,
+                    IsCommand = true,
+                    CommandName = "getPromotions"
+                });
+
+                foreach (var row in output)
+                {
+                    var rowData = new RowData()
+                    {
+                        Cells = new Dictionary<string, ICellData>(),
+                        RowKey = row.Sku
+                    };
+
+                    rowData.Cells.Add("Vendor Name", new CellData()
+                    {
+                        RawValue = row.VendorName,
+                        TextValue = row.VendorName,
+                    });
+                    rowData.Cells.Add(nameof(row.Brand), new CellData()
+                    {
+                        RawValue = row.Brand,
+                        TextValue = row.Brand,
+                    });
+                    rowData.Cells.Add("Style Code", new CellData()
+                    {
+                        RawValue = row.StyleCode,
+                        TextValue = row.StyleCode,
+                    });
+                    rowData.Cells.Add("Product Description", new CellData()
+                    {
+                        RawValue = row.StyleDesc,
+                        TextValue = row.StyleDesc,
+                    });
+                    rowData.Cells.Add(nameof(row.Size), new CellData()
+                    {
+                        RawValue = row.Size,
+                        TextValue = row.Size,
+                    });
+                    rowData.Cells.Add(nameof(row.Color), new CellData()
+                    {
+                        RawValue = row.Color,
+                        TextValue = row.Color,
+                    });
+                    rowData.Cells.Add(nameof(row.Category), new CellData()
+                    {
+                        RawValue = row.Category,
+                        TextValue = row.Category,
+                    });
+                    rowData.Cells.Add(nameof(row.UPC), new CellData()
+                    {
+                        RawValue = row.UPC,
+                        TextValue = row.UPC,
+                    });
+                    rowData.Cells.Add(nameof(row.Sku), new CellData()
+                    {
+                        RawValue = row.Sku,
+                        TextValue = row.Sku,
+                    });
+
+                    rowData.Cells.Add(nameof(row.Cost), new CellData()
+                    {
+                        RawValue = row.Cost,
+                        TextValue = $"${row.Cost:N2}",
+                    });
+
+                    rowData.Cells.Add("Retail Price", new CellData()
+                    {
+                        RawValue = row.RetailPrice,
+                        TextValue = $"${row.RetailPrice:N2}",
+                    });
+
+                    var newPrice = row.RetailPrice;
+
+                    switch (searchParams.PromoType)
+                    {
+                        case "P":
+                            decimal dcPercent = (searchParams.PromoRate / 100);
+                            newPrice = (row.RetailPrice - (decimal.Parse((row.RetailPrice * dcPercent).ToString())));
+                            break;
+                        case "S":
+                        case "D":
+                        case "G":
+                        case "B":
+                            newPrice = searchParams.PromoRate;
+                            break;
+                    }
+
+                    rowData.Cells.Add("New Price", new CellData()
+                    {
+                        RawValue = newPrice,
+                        TextValue = $"${newPrice:N2}",
+                    });
+
                     rowData.Cells.Add("Promotions", new CellData()
                     {
                         RawValue = "View Promotions",

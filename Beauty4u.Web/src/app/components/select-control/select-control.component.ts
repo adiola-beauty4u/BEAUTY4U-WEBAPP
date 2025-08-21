@@ -35,6 +35,7 @@ export class SelectControlComponent implements OnChanges, ControlValueAccessor {
   @Input() label!: string;
   @Input() placeHolder!: string;
   @Input() selectItems: ItemValue[] = [];
+  @Input() addAll = true;
 
   control = new FormControl();
   filteredItems: ItemValue[] = [];

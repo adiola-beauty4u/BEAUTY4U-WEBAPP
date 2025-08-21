@@ -224,14 +224,21 @@ body {
 }
 
 .mat-mdc-dialog-content {
-  max-height: 80vh !important; /* adjust as needed */
-  padding: 1rem;    /* adjust padding */
-  overflow-y: auto; /* ensure scrolling if content is large */
+  max-height: 80vh !important;
+  /* adjust as needed */
+  padding: 1rem;
+  /* adjust padding */
+  overflow-y: auto;
+  /* ensure scrolling if content is large */
 }
 
 .autocomplete-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 400px;
+}
+
+.mt-6 {
+  margin-top: 6px;
 }

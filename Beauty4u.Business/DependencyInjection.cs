@@ -31,6 +31,7 @@ namespace Beauty4u.Business
             services.AddScoped<IHealthService, HealthService>();
             services.AddScoped<IItemGroupService, ItemGroupService>();
             services.AddScoped<IPromotionService, PromotionService>();
+            services.AddScoped<IBrandService, BrandService>();
             return services;
         }
     }

@@ -7,6 +7,7 @@ import { DateSearchRequest } from 'src/interfaces/date-search-request';
 import { TransferProductSearchResult } from 'src/interfaces/transfer-product-search';
 import { ProductTransferRequest } from 'src/interfaces/product-transfer-request';
 import { ProductSearchRequest } from 'src/interfaces/product-search-request';
+import { PromotionProductSearchParams } from 'src/interfaces/product-for-promotion-search-request';
 
 @Injectable({
   providedIn: 'root'
@@ -66,6 +67,10 @@ export class ProductService {
   }
   searchProducts(productSearchRequest: ProductSearchRequest): Observable<any>{
     return this.http.post(this.productUrl + '/product-search', productSearchRequest);
+  }
+
+  searchProductsForPromotion(productSearchRequest: PromotionProductSearchParams): Observable<any>{
+    return this.http.post(this.productUrl + '/search-for-promotion', productSearchRequest);
   }
 }
 

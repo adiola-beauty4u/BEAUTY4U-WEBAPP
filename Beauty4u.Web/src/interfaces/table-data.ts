@@ -9,6 +9,7 @@ export interface CellData {
 export interface RowData {
     tooltip?: string;
     cssClass?: string;
+    rowKey?: string;
     cells: { [key: string]: CellData };
 }
 

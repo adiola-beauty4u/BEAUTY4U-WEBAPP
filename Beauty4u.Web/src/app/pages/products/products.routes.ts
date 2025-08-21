@@ -4,7 +4,8 @@ import { UpdateComponent } from './bulk/update/update.component';
 import { roleGuard } from 'src/app/services/authentication/role.guard';
 import { TransferComponent } from './transfer/transfer.component';
 import { ProductsComponent } from './products.component';
-import { PromotionsComponent } from './promotions/promotions.component';
+import { PromotionsSearchComponent } from './promotions/promotions-search/promotions-search.component';
+import { PromotionComponent } from './promotions/promotion/promotion.component';
 
 export const ProductRoutes: Routes = [
   {
@@ -17,7 +18,12 @@ export const ProductRoutes: Routes = [
       },
       {
         path: 'promotions',
-        component: PromotionsComponent,
+        component: PromotionsSearchComponent,
+        canActivate: [roleGuard(['Admin', 'Data-Analyst', 'IT Team', 'President', 'Vice President'])]
+      },
+      {
+        path: 'promotion',
+        component: PromotionComponent,
         canActivate: [roleGuard(['Admin', 'Data-Analyst', 'IT Team', 'President', 'Vice President'])]
       },
       {

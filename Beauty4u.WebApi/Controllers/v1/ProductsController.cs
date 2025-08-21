@@ -4,6 +4,7 @@ using Beauty4u.Interfaces.Api.Auth;
 using Beauty4u.Interfaces.Dto.Products;
 using Beauty4u.Interfaces.Services;
 using Beauty4u.Models.Api;
+using Beauty4u.Models.Api.Auth;
 using Beauty4u.Models.Api.Products;
 using Beauty4u.Models.Api.Table;
 using Beauty4u.Models.Common;
@@ -129,6 +130,13 @@ namespace Beauty4u.WebApi.Controllers.v1
         public async Task<IActionResult> ProductSearch([FromBody] ProductSearchParams productSearchParams)
         {
             var result = await _productService.SearchProductsAsync(productSearchParams);
+            return Ok(result);
+        }
+
+        [HttpPost("search-for-promotion")]
+        public async Task<IActionResult> SearchForPromotion([FromBody] PromotionProductSearchParams productSearchParams)
+        {
+            var result = await _productService.SearchProductsForPromoAsync(productSearchParams);
             return Ok(result);
         }
     }

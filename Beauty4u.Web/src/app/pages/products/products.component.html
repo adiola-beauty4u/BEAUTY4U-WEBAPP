@@ -8,50 +8,51 @@
             </mat-panel-title>
             <mat-panel-description>
                 <mat-chip-listbox aria-label="Selected Filters" class="d-flex flex-wrap gap-1 small">
-                    <mat-chip *ngIf="searchForm.value.itemGroupCode" color="primary" selected>
-                        Category: {{ searchForm.value.itemGroupCode.name }}
+                    <mat-chip *ngIf="productSearchForm.value.itemGroupCode" color="primary" selected>
+                        Category: {{ productSearchForm.value.itemGroupCode.name }}
                     </mat-chip>
-                    <mat-chip *ngIf="searchForm.value.vendor?.displayText" color="primary" selected>
-                        Vendor: {{ searchForm.value.vendor.displayText }}
+                    <mat-chip *ngIf="productSearchForm.value.vendor?.displayText" color="primary" selected>
+                        Vendor: {{ productSearchForm.value.vendor.displayText }}
                     </mat-chip>
-                    <mat-chip *ngIf="searchForm.value.styleCode" color="primary" selected>
-                        Style: {{ searchForm.value.styleCode }}
+                    <mat-chip *ngIf="productSearchForm.value.styleCode" color="primary" selected>
+                        Style: {{ productSearchForm.value.styleCode }}
                     </mat-chip>
-                    <mat-chip *ngIf="searchForm.value.styleDesc" color="primary" selected>
-                        Desc: {{ searchForm.value.styleDesc }}
+                    <mat-chip *ngIf="productSearchForm.value.styleDesc" color="primary" selected>
+                        Desc: {{ productSearchForm.value.styleDesc }}
                     </mat-chip>
-                    <mat-chip *ngIf="searchForm.value.brand" color="primary" selected>
-                        Brand: {{ searchForm.value.brand }}
+                    <mat-chip *ngIf="productSearchForm.value.brand" color="primary" selected>
+                        Brand: {{ productSearchForm.value.brand }}
                     </mat-chip>
-                    <mat-chip *ngIf="searchForm.value.color" color="primary" selected>
-                        Color: {{ searchForm.value.color }}
+                    <mat-chip *ngIf="productSearchForm.value.color" color="primary" selected>
+                        Color: {{ productSearchForm.value.color }}
                     </mat-chip>
-                    <mat-chip *ngIf="searchForm.value.size" color="primary" selected>
-                        Size: {{ searchForm.value.size }}
+                    <mat-chip *ngIf="productSearchForm.value.size" color="primary" selected>
+                        Size: {{ productSearchForm.value.size }}
                     </mat-chip>
-                    <mat-chip *ngIf="searchForm.value.upc" color="primary" selected>
-                        UPC: {{ searchForm.value.upc }}
+                    <mat-chip *ngIf="productSearchForm.value.upc" color="primary" selected>
+                        UPC: {{ productSearchForm.value.upc }}
                     </mat-chip>
-                    <mat-chip *ngIf="searchForm.value.sku" color="primary" selected>
-                        SKU: {{ searchForm.value.sku }}
+                    <mat-chip *ngIf="productSearchForm.value.sku" color="primary" selected>
+                        SKU: {{ productSearchForm.value.sku }}
                     </mat-chip>
                 </mat-chip-listbox>
             </mat-panel-description>
         </mat-expansion-panel-header>
 
         <!-- Panel Body -->
-        <form [formGroup]="searchForm" class="container-fluid py-3 small">
+        <form [formGroup]="productSearchForm" class="container-fluid py-3 small">
             <div class="row g-3">
 
                 <!-- Column 1 -->
                 <div class="col-md-6">
                     <label class="fw-medium text-primary">Category:</label>
-                    <app-item-group-select [selectedValue]="searchForm.get('itemGroupCode')!"></app-item-group-select>
+                    <app-item-group-select
+                        [selectedValue]="productSearchForm.get('itemGroupCode')!"></app-item-group-select>
                 </div>
 
                 <div class="col-md-6">
                     <label class="fw-medium text-primary">Vendor:</label>
-                    <app-vendor-select [formGroup]="searchForm" formControlName="vendor"></app-vendor-select>
+                    <app-vendor-select [formGroup]="productSearchForm" formControlName="vendor"></app-vendor-select>
                 </div>
 
                 <div class="col-md-6">
@@ -120,7 +121,7 @@
     <!-- Child Table -->
     <app-child-table #childTable *ngIf="output" [group]="output" [showInvalidCount]="false"
         [methodList]="{ getPromotions: getPromotions.bind(this) }" [displayedColumns]="getDisplayedColumns(output)"
-        [pageSize]="10">
+        [pageSize]="10" [enableRowSelection]="enableRowSelection" (selectedChange)="onRowsSelected($event)">
     </app-child-table>
 
     <ng-template #customContent let-name="name">

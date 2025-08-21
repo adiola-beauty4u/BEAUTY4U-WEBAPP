@@ -181,5 +181,13 @@ namespace Beauty4u.Common.Helpers
 
             return result;
         }
+
+        public static List<string> ToStringList(this DataTable table, string columnName)
+        {
+            return table.AsEnumerable()
+                .Where(row => row[columnName] != DBNull.Value)
+                .Select(row => row[columnName].ToString()!)
+                .ToList();
+        }
     }
 }

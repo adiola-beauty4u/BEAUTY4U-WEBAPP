@@ -27,8 +27,11 @@ export class RadioListComponent implements ControlValueAccessor {
   @Input() items: ItemValue[] = [];
   @Input() orientation: 'vertical' | 'horizontal' = 'horizontal';
   @Input() disabled = false;
+  @Input() addAll = true;
 
   @Input() defaultValue: ItemValue | null = null;
+
+  @Input() inline = false;
 
   value: ItemValue | null = null;
 

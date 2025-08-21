@@ -20,6 +20,7 @@ import { StoreSelectComponent } from 'src/app/components/store-select/store-sele
 import { SysCodesSelectComponent } from 'src/app/components/syscodes-select/syscodes-select.component';
 import { RadioListComponent } from 'src/app/components/radio-list/radio-list.component';
 import { PromotionSearchParams } from 'src/interfaces/promotion-search-request';
+import { Router } from '@angular/router';
 
 import { ItemValue } from 'src/interfaces/item-value';
 
@@ -42,10 +43,10 @@ import { ItemValue } from 'src/interfaces/item-value';
     SysCodesSelectComponent,
     RadioListComponent
   ],
-  templateUrl: './promotions.component.html',
-  styleUrl: './promotions.component.scss'
+  templateUrl: './promotions-search.component.html',
+  styleUrl: './promotions-search.component.scss'
 })
-export class PromotionsComponent implements OnInit {
+export class PromotionsSearchComponent implements OnInit {
   searchForm: FormGroup;
   output?: TableGroup;
   promoItems?: TableGroup;
@@ -61,7 +62,8 @@ export class PromotionsComponent implements OnInit {
   constructor(private fb: FormBuilder,
     private readonly loadingService: LoadingService,
     private readonly promotionService: PromotionService,
-    private readonly modalService: ModalService) {
+    private readonly modalService: ModalService,
+    private router: Router) {
 
   }
   ngOnInit(): void {
@@ -134,6 +136,6 @@ export class PromotionsComponent implements OnInit {
   }
 
   new(): void {
-
+    this.router.navigate(['/products/promotion']);
   }
 }

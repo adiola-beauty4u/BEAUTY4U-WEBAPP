@@ -170,17 +170,17 @@ namespace Beauty4u.Business.Services
                             rowData.Cells.Add(nameof(ProductPromotion.Cost), new CellData()
                             {
                                 RawValue = row.Cost,
-                                TextValue = $"${row.Cost:F2}",
+                                TextValue = $"${row.Cost:N2}",
                             });
                             rowData.Cells.Add(nameof(ProductPromotion.RetailPrice), new CellData()
                             {
                                 RawValue = row.RetailPrice,
-                                TextValue = $"${row.RetailPrice:F2}",
+                                TextValue = $"${row.RetailPrice:N2}",
                             });
                             rowData.Cells.Add(nameof(ProductPromotion.NewPrice), new CellData()
                             {
                                 RawValue = row.NewPrice,
-                                TextValue = $"${row.NewPrice:F2}",
+                                TextValue = $"${row.NewPrice:N2}",
                             });
 
                             tableData.Rows.Add(rowData);
@@ -334,17 +334,17 @@ namespace Beauty4u.Business.Services
                             rowData.Cells.Add(nameof(ProductPromotion.Cost), new CellData()
                             {
                                 RawValue = row.Cost,
-                                TextValue = $"${row.Cost:F2}",
+                                TextValue = $"${row.Cost:N2}",
                             });
                             rowData.Cells.Add(nameof(ProductPromotion.CurrentRetailPrice), new CellData()
                             {
                                 RawValue = row.CurrentRetailPrice,
-                                TextValue = $"${row.CurrentRetailPrice:F2}",
+                                TextValue = $"${row.CurrentRetailPrice:N2}",
                             });
                             rowData.Cells.Add(nameof(ProductPromotion.NewPrice), new CellData()
                             {
                                 RawValue = row.NewPrice,
-                                TextValue = $"${row.NewPrice:F2}",
+                                TextValue = $"${row.NewPrice:N2}",
                             });
                             rowData.Cells.Add(nameof(ProductPromotion.Sku), new CellData()
                             {
@@ -547,7 +547,7 @@ namespace Beauty4u.Business.Services
                             rowData.Cells.Add(nameof(PromotionDto.DC), new CellData()
                             {
                                 RawValue = row.DC,
-                                TextValue = $"{dcPrefix}{(row.DC * dcMultiplier):F2}",
+                                TextValue = $"{dcPrefix}{(row.DC * dcMultiplier):N2}",
                             });
                             rowData.Cells.Add(nameof(PromotionDto.FinalSale), new CellData()
                             {

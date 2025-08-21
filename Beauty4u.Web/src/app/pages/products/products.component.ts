@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, Input, Output, EventEmitter } from '@angular/core';
 import { ItemGroupSelectComponent } from 'src/app/components/item-group-select/item-group-select.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -36,11 +36,18 @@ import { ModalService } from 'src/app/services/modal.service';
   styleUrl: './products.component.scss'
 })
 export class ProductsComponent implements OnInit {
-  searchForm: FormGroup;
+  productSearchForm: FormGroup;
   output: TableGroup;
   productPromotions: TableGroup;
 
   defaultPageSize: 10;
+
+  @Input() addAll = true;
+  @Input() enableRowSelection = false;
+  @Input() enableRowDelete = false;
+
+  @Output() rowsSelected = new EventEmitter<any[]>();
+  @Output() columnsReady = new EventEmitter<any[]>();
 
   @ViewChild(ItemGroupSelectComponent) itemGroupSelect!: ItemGroupSelectComponent;
   @ViewChild(ChildTableComponent) childTable!: ChildTableComponent;
@@ -54,7 +61,11 @@ export class ProductsComponent implements OnInit {
 
   }
   ngOnInit(): void {
-    this.searchForm = this.fb.group({
+
+    const columns = this.output?.columns;
+    this.columnsReady.emit(columns);
+
+    this.productSearchForm = this.fb.group({
       vendor: [null],
       itemGroupCode: new FormControl<string>(''),
       styleCode: '',
@@ -68,7 +79,7 @@ export class ProductsComponent implements OnInit {
   }
 
   clear(): void {
-    this.searchForm.reset();
+    this.productSearchForm.reset();
     this.itemGroupSelect.clear();
     this.output.rows = [];
     this.childTable.clear();
@@ -77,20 +88,23 @@ export class ProductsComponent implements OnInit {
 
   search(): void {
     const request: ProductSearchRequest = {
-      category: this.searchForm.value.itemGroupCode?.code,
-      vendorCode: this.searchForm.value.vendor?.value,
-      brand: this.searchForm.value.brand,
-      color: this.searchForm.value.color,
-      size: this.searchForm.value.size,
-      styleCode: this.searchForm.value.styleCode,
-      styleDesc: this.searchForm.value.styleDesc,
-      sku: this.searchForm.value.sku,
-      upc: this.searchForm.value.upc,
+      category: this.productSearchForm.value.itemGroupCode?.code,
+      vendorCode: this.productSearchForm.value.vendor?.value,
+      brand: this.productSearchForm.value.brand,
+      color: this.productSearchForm.value.color,
+      size: this.productSearchForm.value.size,
+      styleCode: this.productSearchForm.value.styleCode,
+      styleDesc: this.productSearchForm.value.styleDesc,
+      sku: this.productSearchForm.value.sku,
+      upc: this.productSearchForm.value.upc,
     };
     this.loadingService.show("Searching products...");
     this.productService.searchProducts(request).subscribe({
       next: (data) => {
         this.output = data;
+
+        const columns = data?.columns;
+        this.columnsReady.emit(columns);
         this.filterPanel.close();
         this.loadingService.hide();
       },
@@ -111,7 +125,7 @@ export class ProductsComponent implements OnInit {
     this.promotionService.searchProductPromotionsBySku(row?.product?.sku).subscribe({
       next: data => {
         this.productPromotions = data;
-        this.modalService.openModal(row?.product?.styleDesc, this.templateRef, { });
+        this.modalService.openModal(row?.product?.styleDesc, this.templateRef, {});
         this.loadingService.hide();
       },
       error: err => {
@@ -119,5 +133,9 @@ export class ProductsComponent implements OnInit {
         this.loadingService.hide();
       }
     });
+  }
+
+  onRowsSelected(rows: any[]) {
+    this.rowsSelected.emit(rows);
   }
 }
