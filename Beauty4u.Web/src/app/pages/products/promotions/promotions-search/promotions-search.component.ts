@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, AfterViewInit, ElementRef } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
@@ -21,6 +21,8 @@ import { SysCodesSelectComponent } from 'src/app/components/syscodes-select/sysc
 import { RadioListComponent } from 'src/app/components/radio-list/radio-list.component';
 import { PromotionSearchParams } from 'src/interfaces/promotion-search-request';
 import { Router } from '@angular/router';
+import { FlatpickrDirective } from 'src/directives/flatpickr.directive';
+import { StoreAutocompleteComponent } from 'src/app/components/store-autocomplete/store-autocomplete.component';
 
 import { ItemValue } from 'src/interfaces/item-value';
 
@@ -31,7 +33,6 @@ import { ItemValue } from 'src/interfaces/item-value';
     MatSelectModule,
     CommonModule,
     ReactiveFormsModule,
-    MatInput,
     MatDatepickerModule,
     MatNativeDateModule,
     MatButton,
@@ -41,18 +42,21 @@ import { ItemValue } from 'src/interfaces/item-value';
     ChildTableComponent,
     StoreSelectComponent,
     SysCodesSelectComponent,
-    RadioListComponent
+    RadioListComponent,
+    FlatpickrDirective,
+    StoreAutocompleteComponent
   ],
   templateUrl: './promotions-search.component.html',
   styleUrl: './promotions-search.component.scss'
 })
-export class PromotionsSearchComponent implements OnInit {
+export class PromotionsSearchComponent implements OnInit, AfterViewInit {
   searchForm: FormGroup;
   output?: TableGroup;
   promoItems?: TableGroup;
 
   @ViewChild('promoItemsContent', { static: true }) promoItemsTemplateRef!: TemplateRef<any>;
   @ViewChild(MatExpansionPanel) filterPanel!: MatExpansionPanel;
+
 
   promoStatusItems: ItemValue[] = [
     { displayText: 'Active', value: 'active' },
@@ -79,6 +83,9 @@ export class PromotionsSearchComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit(): void {
+ 
+  }
 
   getDisplayedColumns(group: TableGroup): string[] {
     return group?.columns.map(c => c.fieldName);
@@ -100,15 +107,17 @@ export class PromotionsSearchComponent implements OnInit {
   }
 
   clear(): void {
+    const today = new Date();
     this.searchForm.reset({
       store: [null],
-      fromDate: new Date(),
-      toDate: new Date(),
+      fromDate: today,
+      toDate: today,
       promoType: '',
       promoNo: '',
       promoName: '',
       promoStatus: { displayText: "Active", value: "active" }
     });
+
     this.output = undefined;
   }
   search(): void {

@@ -1,0 +1,183 @@
+:root {
+    --bg-color: #f5f7fa;
+    --card-bg: #fff;
+    --text-color: #222;
+    --border-color: #dee2e6;
+    --link-color: #444;
+    --link-active: #0078d4;
+}
+
+.dark-mode {
+    --bg-color: #1e1e1e;
+    --card-bg: #2b2b2b;
+    --text-color: #f0f0f0;
+    --border-color: #3c3c3c;
+    --link-color: #ccc;
+    --link-active: #4fa3ff;
+}
+
+/* Layout */
+.azure-portal {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    font-size: 0.9rem;
+    flex-direction: row;
+    color: var(--text-color);
+}
+
+/* Sidebar */
+.azure-sidebar {
+    width: 260px;
+    background: var(--card-bg);
+    border-right: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.azure-sidebar .nav-link {
+    color: var(--link-color);
+    padding: 0.5rem 1rem;
+    border-left: 3px solid transparent;
+}
+
+.azure-sidebar .nav-link:hover {
+    background: rgba(79, 163, 255, 0.1);
+    border-left: 3px solid var(--link-active);
+}
+
+.azure-sidebar .nav-link.active {
+    font-weight: 600;
+    color: var(--link-active);
+    background: rgba(79, 163, 255, 0.15);
+    border-left: 3px solid var(--link-active);
+}
+
+/* Main */
+.azure-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Header */
+.azure-header {
+    background-color: #0078d4;
+    /* Azure blue */
+    color: #fff;
+    height: 56px;
+    display: flex;
+    align-items: center;
+}
+
+.azure-header .navbar-brand {
+    font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .azure-portal {
+        flex-direction: column;
+    }
+
+    .azure-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+}
+
+mat-sidenav-container {
+    width: 100vw !important;
+}
+
+.azure-container {
+    height: calc(100vh - 50px); // subtract header height
+    width: 100vw;
+}
+
+.sidebarNav {
+    width: 260px;
+    z-index: 2000;
+}
+
+.page-content {
+    height: 100%;
+    flex: 1;
+    overflow: auto;
+    background: #f3f3f3;
+}
+
+app-topstrip {
+    height: 50px;
+    display: block;
+    background: #0078d4;
+    z-index: 1500; // lower than sidenav
+    position: relative;
+}
+
+
+.azc-textBox {
+    height: 23px
+}
+
+.fxc-search-icon {
+    top: 5px;
+    left: 7px;
+    height: 12px;
+    width: 12px;
+    position: absolute;
+    z-index: 1
+}
+
+.azc-textBox-wrapper {
+    width: 100%
+}
+
+.azc-input {
+    border-style: solid;
+    border-width: 1px;
+    box-sizing: border-box;
+    font-size: 13px;
+    height: 23px;
+    outline: 0;
+    padding: 2px 8px 4px;
+    width: 100%
+}
+
+.azc-input:focus-visible {
+    border: 1px solid #0078d4 !important;
+    box-shadow: inset 0 0 0 1px #0078d4 !important;
+}
+
+.azc-textBox-wrapper [placeholder] {
+    text-overflow: ellipsis
+}
+
+.fxc-inputhasvalue ::placeholder {
+    color: transparent !important
+}
+
+.fxc-has-search-icon input {
+    padding-left: 24px !important;
+    position: relative
+}
+
+.azc-fabric .azc-textBox {
+    height: 24px
+}
+
+.azc-fabric .azc-textBox .azc-input {
+    height: 24px;
+    padding: 3px 8px 5px
+}
+
+.azc-fabric .azc-input {
+    font-size: 13px;
+    line-height: 18px
+}
+
+.azc-input:focus-visible {
+    border: 1px solid #0078d4 !important;
+    box-shadow: inset 0 0 0 1px #0078d4 !important;
+}

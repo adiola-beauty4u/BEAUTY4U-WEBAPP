@@ -3,11 +3,31 @@ import { BlankComponent } from './layouts/blank/blank.component';
 import { FullComponent } from './layouts/full/full.component';
 import { roleGuard } from './services/authentication/role.guard';
 import { ResetpasswordComponent } from './pages/authentication/resetpassword/resetpassword.component';
+import { Beauty4uComponent } from './layouts/beauty4u/beauty4u.component';
 
 export const routes: Routes = [
   {
     path: '',
     component: FullComponent,
+    children: [
+    ],
+  },
+  {
+    path: '',
+    component: BlankComponent,
+    children: [
+      {
+        path: 'authentication',
+        loadChildren: () =>
+          import('./pages/authentication/authentication.routes').then(
+            (m) => m.AuthenticationRoutes
+          ),
+      },
+    ],
+  },
+  {
+    path: '',
+    component: Beauty4uComponent,
     children: [
       {
         path: '',
@@ -42,17 +62,11 @@ export const routes: Routes = [
         component: ResetpasswordComponent,
         canActivate: [roleGuard([])]
       },
-    ],
-  },
-  {
-    path: '',
-    component: BlankComponent,
-    children: [
       {
-        path: 'authentication',
+        path: 'testpages',
         loadChildren: () =>
-          import('./pages/authentication/authentication.routes').then(
-            (m) => m.AuthenticationRoutes
+          import('./pages/testpages/testpages.routes').then(
+            (m) => m.TestPagesRoutes
           ),
       },
     ],

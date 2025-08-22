@@ -36,6 +36,7 @@
             ],
             "styles": [
               "src/styles.scss",
+              "src/beauty4u.scss",
               "src/assets/scss/style.scss"
             ],
             "scripts": [],
@@ -147,7 +148,8 @@
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/beauty4u.scss"
             ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
