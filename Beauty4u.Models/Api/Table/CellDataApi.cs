@@ -15,5 +15,7 @@ namespace Beauty4u.Models.Api.Table
         public string Tooltip { get; set; } = string.Empty;
         public string CssClass { get; set; } = string.Empty;
         public string CssIcon { get; set; } = string.Empty;
+        public Dictionary<string, string> SlideInDetails { get; set; } = new Dictionary<string, string>();
+        public object? SlideInCommandParameter { get; set; }
     }
 }

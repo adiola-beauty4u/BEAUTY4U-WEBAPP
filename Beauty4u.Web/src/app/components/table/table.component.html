@@ -1,0 +1,145 @@
+<div *ngIf="tableData && !viewSlideIn" class="tableComponent">
+    <div class="table-toolbar d-flex align-items-center  mb-2">
+        <!-- Left side -->
+        <div class="d-flex align-items-center gap-2">
+            <h5 class="table-title mb-0">{{ tableData.tableName }}</h5>
+            <span class="text-muted small">(Total Rows: {{ filteredRows.length }})</span>
+        </div>
+
+        <!-- Center / Right side -->
+        <div class="d-flex align-items-center gap-2">
+            <input type="text" class="form-control azc-input" placeholder="Search..." [(ngModel)]="searchText"
+                (input)="page = 1" />
+
+            <button class="btn btn-icon" (click)="toggleTable()" title="Toggle Table">
+                <i class="bi bi-arrows-collapse"></i>
+            </button>
+        </div>
+    </div>
+
+    <table class="table" *ngIf="!hideTable">
+        <thead class="table-light">
+            <tr>
+                <th *ngFor="let col of tableData.columns" (click)="!col.isCommand && sort(col)" style="cursor:pointer">
+                    {{ col.header }}
+                    <span *ngIf="sortColumn === col.fieldName">
+                        {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                    </span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of pagedRows">
+                <td *ngFor="let col of tableData.columns" [class.text-center]="col.isCommand">
+                    <ng-container *ngIf="col.isCommand && !col.isSlideInColumn">
+                        <button class="btn btn-primary btn-sm"
+                            (click)="methodList[col.commandName] && methodList[col.commandName](row.cells[col.fieldName].commandParameter)">
+                            {{ row.cells[col.fieldName].textValue }}
+                        </button>
+                    </ng-container>
+                    <ng-container *ngIf="col.slideInCommand">
+                        <a href="javascript:void(0)" class="text-primary fw-semibold"
+                            (click)="gotoSlideIn(col, row.cells[col.fieldName].slideInCommandParameter)">
+                            {{ row.cells[col.fieldName].textValue }}
+                        </a>
+                    </ng-container>
+                    <ng-container *ngIf="!col.isCommand && !col.slideInCommand">
+                        <span [innerHTML]="highlightValue(row, col)"></span>
+                    </ng-container>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <nav class="pagination-footer">
+        <div class="table-footer d-flex align-items-center justify-content-end">
+            <span class="me-2 text-muted small">Items per page:</span>
+            <select class="form-select form-select-sm w-auto me-3" [(ngModel)]="pageSize" (change)="page = 1">
+                <option *ngFor="let size of pageSizes" [value]="size">{{ size }}</option>
+            </select>
+
+            <span class="me-3 small text-muted">
+                {{ startItem() }}–{{ endItem() }} of {{ filteredRows.length }}
+            </span>
+
+            <button class="btn btn-icon me-1" [disabled]="page === 1" (click)="goToPage(page - 1)">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+
+            <button class="btn btn-icon" [disabled]="page === totalPages()" (click)="goToPage(page + 1)">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+    </nav>
+</div>
+
+<div *ngIf="viewSlideIn" class="tableComponent">
+    <div class="row g-0">
+        <div class="col-md-3">
+            <div class="button-row-end">
+                <a href="javascript:void(0)" class="text-muted fs-5 ms-2" (click)="closeSlideIn()">✕</a>
+            </div>
+            <div class="row">
+                <!-- Left side -->
+                <div class="d-flex align-items-center gap-2">
+                    <h3 class="mb-0 fw-semibold">{{ slideInColumn?.slideInTitle }}</h3>
+
+                </div>
+            </div>
+            <div class="row">
+                <!-- Center / Right side -->
+                <span class="text-muted small">(Total Rows: {{ filteredRows.length }})</span>
+                <div class="d-flex align-items-center gap-2">
+                    <input type="text" class="form-control azc-input" placeholder="Search..." [(ngModel)]="searchText"
+                        (input)="page = 1" />
+                </div>
+            </div>
+
+            <table class="table" *ngIf="!hideTable">
+                <thead class="table-light">
+                    <tr>
+                        <th (click)="sort(slideInColumn)" style="cursor:pointer">
+                            {{ slideInDisplay?.header }}
+                            <span *ngIf="sortColumn === slideInDisplay?.fieldName">
+                                {{ sortDirection === 'asc' ? '▲' : '▼' }}
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let row of pagedRows">
+                        <td>
+                            <a href="javascript:void(0)" class="text-primary fw-semibold"
+                                (click)="callSlideInCommand(row.cells[slideInColumn?.fieldName || ''].slideInCommandParameter)">
+                                {{ row.cells[slideInDisplay?.fieldName || ''].textValue }}
+                            </a>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <nav class="pagination-footer">
+                <div class="table-footer d-flex align-items-center justify-content-end">
+                    <span class="me-2 text-muted small">Items per page:</span>
+                    <select class="form-select form-select-sm w-auto me-3" [(ngModel)]="pageSize" (change)="page = 1">
+                        <option *ngFor="let size of pageSizes" [value]="size">{{ size }}</option>
+                    </select>
+
+                    <span class="me-3 small text-muted">
+                        {{ startItem() }}–{{ endItem() }} of {{ filteredRows.length }}
+                    </span>
+
+                    <button class="btn btn-icon me-1" [disabled]="page === 1" (click)="goToPage(page - 1)">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+
+                    <button class="btn btn-icon" [disabled]="page === totalPages()" (click)="goToPage(page + 1)">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </nav>
+        </div>
+        <div class="col-md-9">
+            <ng-container *ngTemplateOutlet="slideInContent"></ng-container>
+        </div>
+    </div>
+</div>

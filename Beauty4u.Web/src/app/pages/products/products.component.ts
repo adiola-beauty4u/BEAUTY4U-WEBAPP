@@ -14,7 +14,7 @@ import { ProductService } from 'src/app/services/product.service';
 import { ProductSearchRequest } from 'src/interfaces/product-search-request';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ChildTableComponent } from 'src/app/components/child-table/child-table.component';
-import { TableGroup, CellData, ColumnDef, RowData } from 'src/interfaces/table-data';
+import { TableData, CellData, ColumnDef, RowData } from 'src/interfaces/table-data';
 import { PromotionService } from 'src/app/services/promotion.service';
 import { ModalService } from 'src/app/services/modal.service';
 
@@ -37,8 +37,8 @@ import { ModalService } from 'src/app/services/modal.service';
 })
 export class ProductsComponent implements OnInit {
   productSearchForm: FormGroup;
-  output: TableGroup;
-  productPromotions: TableGroup;
+  output: TableData;
+  productPromotions: TableData;
 
   defaultPageSize: 10;
 
@@ -116,7 +116,7 @@ export class ProductsComponent implements OnInit {
     });
   }
 
-  getDisplayedColumns(group: TableGroup): string[] {
+  getDisplayedColumns(group: TableData): string[] {
     return group?.columns.map(c => c.fieldName);
   }
 

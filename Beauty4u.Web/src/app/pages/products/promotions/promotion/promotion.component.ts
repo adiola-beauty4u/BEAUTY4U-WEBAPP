@@ -19,7 +19,7 @@ import { ItemValue } from 'src/interfaces/item-value';
 import { SysCodesSelectComponent } from 'src/app/components/syscodes-select/syscodes-select.component';
 import { RadioListComponent } from 'src/app/components/radio-list/radio-list.component';
 import { ProductsComponent } from '../../products.component';
-import { TableGroup, CellData, ColumnDef, RowData } from 'src/interfaces/table-data';
+import { TableData, CellData, ColumnDef, RowData } from 'src/interfaces/table-data';
 import { ChildTableComponent } from 'src/app/components/child-table/child-table.component';
 import { ItemGroupSelectComponent } from 'src/app/components/item-group-select/item-group-select.component';
 import { VendorSelectComponent } from 'src/app/components/vendor-select/vendor-select.component';
@@ -67,16 +67,17 @@ export class PromotionComponent implements OnInit {
   promotionRules: {
     promoRuleId: number;
     promoSearchForm: FormGroup;
-    productResults: TableGroup;
+    productResults: TableData;
   }[] = [];
 
-  promotionProductsTable: TableGroup = {
+  promotionProductsTable: TableData = {
     tableName: '',
     columns: [],
-    rows: []
+    rows: [],
+    tableGroups: []
   };
 
-  productPromotions!: TableGroup;
+  productPromotions!: TableData;
 
   @ViewChild('productPromoContent', { static: true }) templateRef!: TemplateRef<any>;
   @ViewChild(ItemGroupSelectComponent) itemGroupSelect!: ItemGroupSelectComponent;
@@ -207,7 +208,7 @@ export class PromotionComponent implements OnInit {
     });
   }
 
-  getDisplayedColumns(group: TableGroup): string[] {
+  getDisplayedColumns(group: TableData): string[] {
     return group?.columns.map(c => c.fieldName);
   }
 
@@ -266,9 +267,9 @@ export class PromotionComponent implements OnInit {
       productResults: {
         tableName: '',
         columns: [],
-        rows: [] = [],
-        invalidRows: 0
-      } as TableGroup
+        rows: [],
+        tableGroups: []
+      } as TableData
     });
   }
 

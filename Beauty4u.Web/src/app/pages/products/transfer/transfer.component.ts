@@ -22,6 +22,8 @@ import { ExpandableTableComponent } from 'src/app/components/expandable-table/ex
 import { LoadingService } from 'src/app/services/loading.service';
 import { ConfirmDialogComponent } from 'src/app/pages/ui-components/confirm-dialog/confirm-dialog.component';
 import { ProductTransferRequest } from 'src/interfaces/product-transfer-request';
+import { MultiTableComponent } from 'src/app/components/multi-table/multi-table.component';
+import { TableData } from 'src/interfaces/table-data';
 
 export interface StoreWithSelection extends StoreDto {
   selected: boolean;
@@ -57,6 +59,7 @@ export class TransferComponent implements OnInit {
   tableGroupValues: any[] = [];
   tablePreviewValues: any[] = [];
   tableGroupResultValues: any[] = [];
+  productSearchResult: TableData;
 
   stores: StoreWithSelection[] = [];
   allSelected = false;
@@ -86,6 +89,7 @@ export class TransferComponent implements OnInit {
     this.loadingService.show("Searching products...");
     this.productService.transferSearch(request).subscribe({
       next: (data) => {
+        this.productSearchResult = data.tableData;
         this.productList = data.products;
         this.tableGroupValues = data.tableData.tableGroups;
         this.products = data;

@@ -55,6 +55,13 @@ export class AutocompleteComponent implements ControlValueAccessor, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['items']) {
       this.filteredItems = this.items;
+
+      // 🔹 Ensure input reflects current value or clears if none
+      if (this.inputEl) {
+        this.inputEl.nativeElement.value = this.control.value
+          ? this.displayItem(this.control.value)
+          : '';
+      }
     }
   }
 
@@ -77,9 +84,25 @@ export class AutocompleteComponent implements ControlValueAccessor, OnChanges {
   }
 
   // ControlValueAccessor
+  // ControlValueAccessor
   writeValue(value: ItemValue | null): void {
     this.control.setValue(value);
+
+    if (value === null) {
+      // 🔹 Case 1: reset to blank
+      this.filteredItems = this.items;
+      if (this.inputEl) {
+        this.inputEl.nativeElement.value = '';
+      }
+    } else {
+      // 🔹 Case 2: set default value (e.g. "All")
+      this.filteredItems = this.items;
+      if (this.inputEl) {
+        this.inputEl.nativeElement.value = this.displayItem(value);
+      }
+    }
   }
+
   registerOnChange(fn: any): void {
     this.onChange = fn;
   }
@@ -143,6 +166,9 @@ export class AutocompleteComponent implements ControlValueAccessor, OnChanges {
   }
 
   selectItem(item: ItemValue | null): void {
+    if (!item) {
+      this.filteredItems = this.items;
+    }
     this.control.setValue(item);
     this.inputEl.nativeElement.value = this.displayItem(item);
     this.onChange(item);

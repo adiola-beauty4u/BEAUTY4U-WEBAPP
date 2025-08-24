@@ -396,8 +396,8 @@ namespace Beauty4u.Business.Services
                             Header = "View Items",
                             FieldName = "Items",
                             DataType = ColumnDataType.Int,
-                            IsCommand = true,
-                            CommandName = "viewItems"
+                            SlideInCommand = "viewItems",
+                            SlideInTitle = "View Promo Items"
                         });
                         tableData.Columns.Add(new ColumnData()
                         {
@@ -409,7 +409,9 @@ namespace Beauty4u.Business.Services
                         {
                             Header = "Promo Name",
                             FieldName = nameof(PromotionDto.PromoName),
-                            DataType = ColumnDataType.String
+                            DataType = ColumnDataType.String,
+                            IsSlideInColumn = true,
+                            
                         });
                         tableData.Columns.Add(new ColumnData()
                         {
@@ -573,7 +575,7 @@ namespace Beauty4u.Business.Services
                             {
                                 RawValue = "View Items",
                                 TextValue = "View Items",
-                                CommandParameter = new { promo = row },
+                                SlideInCommandParameter = new { promo = row },
                                 CssClass = "cell-center"
 
                             });

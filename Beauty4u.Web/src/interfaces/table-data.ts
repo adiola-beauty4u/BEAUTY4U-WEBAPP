@@ -4,6 +4,8 @@ export interface CellData {
     tooltip?: string;
     cssClass?: string;
     cssIcon?: string;
+    commandParameter?: any;
+    slideInCommandParameter?: any;
 }
 
 export interface RowData {
@@ -16,10 +18,16 @@ export interface RowData {
 export interface ColumnDef {
     fieldName: string;
     header: string;
+    isCommand: boolean;
+    commandName: string;
+    isSlideInColumn: boolean;
+    slideInCommand: string;
+    slideInTitle: string;
 }
 
-export interface TableGroup {
+export interface TableData {
     tableName: string;
     columns: ColumnDef[];
     rows: RowData[];
+    tableGroups: TableData[];
 }

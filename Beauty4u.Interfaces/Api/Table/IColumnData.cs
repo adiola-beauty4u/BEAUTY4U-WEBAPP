@@ -5,7 +5,8 @@
         //ColumnDataType DataType { get; set; }
         string FieldName { get; set; }
         string Header { get; set; }
-        bool IsCommand { get; set; }
-        string CommandName { get; set; }
+        bool IsSlideInColumn { get; set; }
+        string SlideInCommand { get; set; }
+        string SlideInTitle { get; set; }
     }
 }

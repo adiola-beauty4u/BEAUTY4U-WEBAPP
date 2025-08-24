@@ -181,3 +181,64 @@ app-topstrip {
     border: 1px solid #0078d4 !important;
     box-shadow: inset 0 0 0 1px #0078d4 !important;
 }
+
+/* Input styling (Azure-like) */
+.azc-input.form-control {
+    border-radius: 6px;
+    border: 1px solid #d0d0d0;
+    box-shadow: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.azc-input.form-control:focus {
+    border-color: #0078d4;
+    /* Azure blue */
+    box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.25);
+}
+
+/* Dropdown container */
+.list-group {
+    border: 1px solid #e1dfdd;
+    border-radius: 6px;
+    overflow: hidden;
+    font-size: 0.95rem;
+}
+
+/* Dropdown items */
+.list-group-item {
+    cursor: pointer;
+    border: none;
+    padding: 8px 12px;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+/* Hover effect */
+.list-group-item:hover {
+    background-color: #f3f2f1;
+    /* light gray, Azure style */
+    color: #000;
+}
+
+/* Active/selected style */
+.list-group-item.active,
+.list-group-item:active {
+    background-color: #0078d4;
+    color: #fff;
+    font-weight: 500;
+}
+
+/* Special style for 'All' option */
+.list-group-item:first-child {
+    font-style: italic;
+    color: #555;
+}
+
+/* Smooth scrollbar for long lists */
+.list-group::-webkit-scrollbar {
+    width: 6px;
+}
+
+.list-group::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}

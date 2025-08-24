@@ -1,0 +1,11 @@
+<div class="mb-4 flex justify-end">
+    <button (click)="toggleTables()" *ngIf="tableData.tableGroups.length > 0">
+        {{ hideAll ? 'Expand All' : 'Collapse All' }}
+    </button>
+</div>
+<div *ngIf="hideAll">
+    <div *ngFor="let group of tableData.tableGroups; let i = index">
+        <app-table [tableData]="group" [pageSize]="50" [methodList]="methodList" [showInvalidCount]="showInvalidCount"
+            [enableRowTransfer]="enableRowTransfer" [enableRowDelete]="enableRowDelete"></app-table>
+    </div>
+</div>

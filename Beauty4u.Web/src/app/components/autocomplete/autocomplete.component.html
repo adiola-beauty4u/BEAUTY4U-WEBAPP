@@ -1,12 +1,12 @@
 <div class="mb-3">
-    <label class="form-label">Store</label>
+    <label class="form-label fw-semibold">Store</label>
     <input #inputEl type="text" class="azc-input form-control" [placeholder]="placeholder"
         [value]="displayItem(control.value)" (input)="onInput($event)" (focus)="openDropdown()" autocomplete="off" />
 
     <!-- Dropdown rendered via CDK Overlay -->
     <ng-template #dropdownTemplate>
-        <ul class="list-group shadow-sm bg-white rounded mt-1"
-            style="max-height:250px; overflow-y:auto; width: 100%; min-width:200px;">
+        <ul class="list-group shadow bg-white rounded mt-1"
+            style="max-height:250px; overflow-y:auto; width:100%; min-width:200px;">
 
             <li *ngIf="addAll" class="list-group-item list-group-item-action" (mousedown)="selectItem(null)">
                 All
@@ -14,7 +14,7 @@
 
             <li *ngFor="let item of filteredItems" class="list-group-item list-group-item-action"
                 (mousedown)="selectItem(item)">
-                {{ item.displayText }} ({{ item.value }})
+                {{ item.displayText }} <span class="text-muted">({{ item.value }})</span>
             </li>
         </ul>
     </ng-template>

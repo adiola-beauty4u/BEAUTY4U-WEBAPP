@@ -46,52 +46,89 @@
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">Promo No.</label>
-                    <input type="text" class="azc-input form-control" formControlName="promoNo" placeholder="Promo No" />
+                    <input type="text" class="azc-input form-control" formControlName="promoNo"
+                        placeholder="Promo No" />
                 </div>
-                 <div class="col-md-2">
+                <div class="col-md-2">
                     <label class="form-label">Promo Name.</label>
-                    <input type="text" class="azc-input form-control" formControlName="promoName" placeholder="Promo Name" />
+                    <input type="text" class="azc-input form-control" formControlName="promoName"
+                        placeholder="Promo Name" />
                 </div>
                 <div class="col-md-4">
                     <app-store-autocomplete [formGroup]="searchForm" formControlName="store"></app-store-autocomplete>
                 </div>
                 <div class="col-md-4">
-                    <app-syscodes-select [formGroup]="searchForm" formControlName="promoType" sysCodeClass="6"
+                    <app-syscodes-autocomplete [formGroup]="searchForm" formControlName="promoType" sysCodeClass="6"
                         sysCodeLabel="Promotion Type"
-                        sysCodePlaceHolder="Type to search Promotion"></app-syscodes-select>
+                        sysCodePlaceHolder="Type to search Promotion"></app-syscodes-autocomplete>
                 </div>
                 <div class="col-md-4">
                     <app-radio-list label="Status" formControlName="promoStatus" [items]="promoStatusItems"
                         orientation="horizontal">
                     </app-radio-list>
                 </div>
+            </div>
 
-                <!-- Action Buttons -->
-                <div class="col-12 d-flex justify-content-end gap-2 pt-2">
-                    <button mat-flat-button color="primary" type="button" (click)="search()" class="py-1 px-3 small">
-                        Search
-                    </button>
-                    <button mat-flat-button color="primary" type="button" (click)="new()" class="py-1 px-3 small">
-                        New
-                    </button>
-                    <button mat-stroked-button color="warn" type="button" (click)="clear()" class="py-1 px-3 small">
-                        Clear
-                    </button>
-                </div>
-
+            <div class="m-t-20 button-row-end">
+                <button class="btn btn-primary btn-sm" (click)="search()">
+                    Search
+                </button>
+                <button class="btn btn-secondary btn-sm" (click)="new()">
+                    New
+                </button>
+                <button class="btn btn-warn btn-sm" (click)="clear()">
+                    Clear
+                </button>
             </div>
         </form>
     </mat-expansion-panel>
 
-    <!-- Child Table -->
-    <app-child-table #childTable *ngIf="output" [group]="output" [showInvalidCount]="false"
-        [methodList]="{ viewItems: viewItems.bind(this) }" [displayedColumns]="getDisplayedColumns(output)"
-        [pageSize]="10">
-    </app-child-table>
+    <app-table [tableData]="output" [pageSize]="50" [methodList]="{ viewItems: viewItems.bind(this) }"
+        [slideInContent]="promoItemsContent"></app-table>
 
-    <ng-template #promoItemsContent let-name="name">
-        <app-child-table #promotionsTable *ngIf="promoItems" [group]="promoItems" [showInvalidCount]="false"
-            [displayedColumns]="getDisplayedColumns(promoItems)" [pageSize]="10">
-        </app-child-table>
+    <ng-template #promoItemsContent>
+        <div class="container-fluid py-3">
+            <div class="row g-3">
+                <!-- Left Column -->
+                <div class="col-md-6">
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Promo No:</label>
+                        <div>{{ selectedPromo?.promoNo }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Promo Name:</label>
+                        <div>{{ selectedPromo?.promoName }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Registered Date:</label>
+                        <div>{{ selectedPromo?.registerDate }}</div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-6">
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Start Date:</label>
+                        <div>{{ selectedPromo?.startDate }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">End Date:</label>
+                        <div>{{ selectedPromo?.endDate }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Store List:</label>
+                        <div>{{ selectedPromo?.storeList }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <hr class="my-3">
+
+            <!-- Items Table -->
+            <app-table #promotionsTable *ngIf="promoItems" [tableData]="promoItems" [pageSize]="50">
+            </app-table>
+        </div>
     </ng-template>
+
 </mat-accordion>

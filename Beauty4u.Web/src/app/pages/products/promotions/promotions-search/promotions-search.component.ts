@@ -12,17 +12,17 @@ import { MatChipsModule, MatChipListbox } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { LoadingService } from 'src/app/services/loading.service';
 import { ChildTableComponent } from 'src/app/components/child-table/child-table.component';
-import { TableGroup, CellData, ColumnDef, RowData } from 'src/interfaces/table-data';
+import { TableData, CellData, ColumnDef, RowData } from 'src/interfaces/table-data';
 import { PromotionService } from 'src/app/services/promotion.service';
 import { ModalService } from 'src/app/services/modal.service';
-import { VendorSelectComponent } from 'src/app/components/vendor-select/vendor-select.component';
-import { StoreSelectComponent } from 'src/app/components/store-select/store-select.component';
 import { SysCodesSelectComponent } from 'src/app/components/syscodes-select/syscodes-select.component';
 import { RadioListComponent } from 'src/app/components/radio-list/radio-list.component';
 import { PromotionSearchParams } from 'src/interfaces/promotion-search-request';
 import { Router } from '@angular/router';
 import { FlatpickrDirective } from 'src/directives/flatpickr.directive';
 import { StoreAutocompleteComponent } from 'src/app/components/store-autocomplete/store-autocomplete.component';
+import { SyscodesAutocompleteComponent } from 'src/app/components/syscodes-autocomplete/syscodes-autocomplete.component';
+import { TableComponent } from 'src/app/components/table/table.component';
 
 import { ItemValue } from 'src/interfaces/item-value';
 
@@ -35,24 +35,23 @@ import { ItemValue } from 'src/interfaces/item-value';
     ReactiveFormsModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatButton,
     MatAccordion,
     MatExpansionModule,
     MatChipsModule, MatIconModule, MatChipListbox,
-    ChildTableComponent,
-    StoreSelectComponent,
-    SysCodesSelectComponent,
     RadioListComponent,
     FlatpickrDirective,
-    StoreAutocompleteComponent
+    StoreAutocompleteComponent,
+    SyscodesAutocompleteComponent,
+    TableComponent
   ],
   templateUrl: './promotions-search.component.html',
   styleUrl: './promotions-search.component.scss'
 })
 export class PromotionsSearchComponent implements OnInit, AfterViewInit {
   searchForm: FormGroup;
-  output?: TableGroup;
-  promoItems?: TableGroup;
+  output!: TableData;
+  promoItems?: TableData;
+  selectedPromo: any;
 
   @ViewChild('promoItemsContent', { static: true }) promoItemsTemplateRef!: TemplateRef<any>;
   @ViewChild(MatExpansionPanel) filterPanel!: MatExpansionPanel;
@@ -84,10 +83,10 @@ export class PromotionsSearchComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
- 
+
   }
 
-  getDisplayedColumns(group: TableGroup): string[] {
+  getDisplayedColumns(group: TableData): string[] {
     return group?.columns.map(c => c.fieldName);
   }
 
@@ -96,7 +95,8 @@ export class PromotionsSearchComponent implements OnInit, AfterViewInit {
     this.promotionService.searchProductPromotionsByPromoNo(row?.promo?.promoNo).subscribe({
       next: data => {
         this.promoItems = data;
-        this.modalService.openModal(`(${row?.promo?.promoNo}) ${row?.promo?.promoName}`, this.promoItemsTemplateRef, {});
+        this.selectedPromo = row.promo;
+        // this.modalService.openModal(`(${row?.promo?.promoNo}) ${row?.promo?.promoName}`, this.promoItemsTemplateRef, {});
         this.loadingService.hide();
       },
       error: err => {
@@ -118,7 +118,9 @@ export class PromotionsSearchComponent implements OnInit, AfterViewInit {
       promoStatus: { displayText: "Active", value: "active" }
     });
 
-    this.output = undefined;
+    this.output = { columns: [], tableName: '', rows: [], tableGroups: [] } as TableData;
+    this.promoItems = { columns: [], tableName: '', rows: [], tableGroups: [] } as TableData;
+    this.selectedPromo = null;
   }
   search(): void {
     const request: PromotionSearchParams = {
