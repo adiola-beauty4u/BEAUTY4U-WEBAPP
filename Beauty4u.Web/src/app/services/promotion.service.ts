@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 
 import { PromotionSearchParams } from 'src/interfaces/promotion-search-request';
+import { PromotionCreateRequest } from 'src/interfaces/promotion-create-request';
 
 @Injectable({
   providedIn: 'root'
@@ -23,5 +24,9 @@ export class PromotionService {
 
   searchPromotions(promoSearchParams: PromotionSearchParams): Observable<any> {
     return this.http.post(this.promotionsUrl + '/search-promo', promoSearchParams);
+  }
+
+  createPromotion(promotionCreateRequest: PromotionCreateRequest): Observable<any> {
+    return this.http.post(this.promotionsUrl + '/create-promo', promotionCreateRequest);
   }
 }

@@ -9,5 +9,6 @@
         string CssClass { get; set; }
         bool IsNew { get; set; }
         bool IsChanged { get; set; }
+        object? AdditionalData { get; set; }
     }
 }

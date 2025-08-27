@@ -27,7 +27,7 @@ import { ItemValue } from 'src/interfaces/item-value';
   ]
 })
 export class AutocompleteComponent implements ControlValueAccessor, OnChanges {
-  @Input() label: string = 'Select Store';
+  @Input() label: string;
   @Input() placeholder: string = 'Search...';
   @Input() items: ItemValue[] = [];
   @Input() addAll: boolean = false; // 👈 optional “All” flag

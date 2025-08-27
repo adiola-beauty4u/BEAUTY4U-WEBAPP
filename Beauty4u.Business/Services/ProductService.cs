@@ -1536,7 +1536,15 @@ namespace Beauty4u.Business.Services
                 {
                     Header = "SKU",
                     FieldName = "Sku",
-                    DataType = ColumnDataType.String
+                    DataType = ColumnDataType.String,
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Product",
+                    FieldName = "Product",
+                    DataType = ColumnDataType.String,
+                    IsSlideInColumn = true,
+                    IsHidden = true
                 });
                 tableData.Columns.Add(new ColumnData()
                 {
@@ -1556,8 +1564,8 @@ namespace Beauty4u.Business.Services
                     Header = "View Promotions",
                     FieldName = "Promotions",
                     DataType = ColumnDataType.Int,
-                    IsCommand = true,
-                    CommandName = "getPromotions"
+                    SlideInCommand = "getPromotions",
+                    SlideInTitle = "View Promo Items"
                 });
                 foreach (var row in output)
                 {
@@ -1636,11 +1644,18 @@ namespace Beauty4u.Business.Services
                     {
                         RawValue = "View Promotions",
                         TextValue = "View Promotions",
-                        CommandParameter = new { product = row },
+                        SlideInCommandParameter = new { product = row },
                         Tooltip = "View Promotions",
                         CssClass = "cell-center"
 
                     });
+
+                    rowData.Cells.Add("Product", new CellData()
+                    {
+                        RawValue = row.Sku,
+                        TextValue = $"{row.StyleDesc} - (Sku: {row.Sku}, UPC: {row.UPC})",
+                    });
+
                     tableData.Rows.Add(rowData);
                 }
                 return tableData;
@@ -1651,7 +1666,6 @@ namespace Beauty4u.Business.Services
                 return new TableData();
             }
         }
-
         public async Task<ITableData> SearchProductsForPromoAsync(IPromotionProductSearchParams searchParams)
         {
             try
@@ -1665,6 +1679,16 @@ namespace Beauty4u.Business.Services
                     FieldName = "Vendor Name",
                     DataType = ColumnDataType.String
                 });
+
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Product",
+                    FieldName = "Product",
+                    DataType = ColumnDataType.String,
+                    IsSlideInColumn = true,
+                    IsHidden = true
+                });
+
                 tableData.Columns.Add(new ColumnData()
                 {
                     Header = "Brand",
@@ -1737,16 +1761,16 @@ namespace Beauty4u.Business.Services
                     Header = "View Promotions",
                     FieldName = "Promotions",
                     DataType = ColumnDataType.Int,
-                    IsCommand = true,
-                    CommandName = "getPromotions"
+                    SlideInCommand = "getPromotions"
                 });
+
 
                 foreach (var row in output)
                 {
                     var rowData = new RowData()
                     {
                         Cells = new Dictionary<string, ICellData>(),
-                        RowKey = row.Sku
+                        RowKey = row.Sku,
                     };
 
                     rowData.Cells.Add("Vendor Name", new CellData()
@@ -1833,11 +1857,19 @@ namespace Beauty4u.Business.Services
                     {
                         RawValue = "View Promotions",
                         TextValue = "View Promotions",
-                        CommandParameter = new { product = row },
+                        SlideInCommandParameter = new { product = row },
                         Tooltip = "View Promotions",
                         CssClass = "cell-center"
 
                     });
+
+                    rowData.Cells.Add("Product", new CellData()
+                    {
+                        RawValue = row.Sku,
+                        TextValue = $"{row.StyleDesc} - (Sku: {row.Sku}, UPC: {row.UPC})",
+                    });
+
+                    rowData.AdditionalData = new { sku = row.Sku, NewPrice = newPrice, PromoType = searchParams.PromoType, PromoRate = searchParams.PromoRate };
                     tableData.Rows.Add(rowData);
                 }
                 return tableData;

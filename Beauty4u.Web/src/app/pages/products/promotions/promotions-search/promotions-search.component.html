@@ -36,47 +36,60 @@
         <!-- Panel Body -->
         <form [formGroup]="searchForm" class="container-fluid py-3 small">
             <div class="row g-3">
-                <div class="col-md-2">
-                    <label class="form-label">Start</label>
-                    <input type="text" formControlName="fromDate" class="azc-input form-control" appFlatpickr />
+                <div class="col-md-4">
+                    <!-- Date From -->
+                    <mat-form-field appearance="outline" class="w-36">
+                        <mat-label>Start</mat-label>
+                        <input matInput [matDatepicker]="fromPicker" formControlName="fromDate">
+                        <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #fromPicker></mat-datepicker>
+                    </mat-form-field>
+
+                    <span class="text-xs font-medium text-gray-600"> to </span>
+
+                    <!-- Date To -->
+                    <mat-form-field appearance="outline" class="w-36">
+                        <mat-label>End</mat-label>
+                        <input matInput [matDatepicker]="toPicker" formControlName="toDate">
+                        <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #toPicker></mat-datepicker>
+                    </mat-form-field>
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label">End</label>
-                    <input type="text" formControlName="toDate" class="azc-input form-control" appFlatpickr />
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <mat-label>Promo No</mat-label>
+                        <input matInput formControlName="promoNo" placeholder="Promo No" />
+                    </mat-form-field>
                 </div>
-                <div class="col-md-2">
-                    <label class="form-label">Promo No.</label>
-                    <input type="text" class="azc-input form-control" formControlName="promoNo"
-                        placeholder="Promo No" />
+                <div class="col-md-3">
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <mat-label>Promo Name</mat-label>
+                        <input matInput formControlName="promoName" placeholder="Promo Name" />
+                    </mat-form-field>
                 </div>
-                <div class="col-md-2">
-                    <label class="form-label">Promo Name.</label>
-                    <input type="text" class="azc-input form-control" formControlName="promoName"
-                        placeholder="Promo Name" />
+                <div class="col-md-3">
+                    <app-store-select [formGroup]="searchForm" formControlName="store"></app-store-select>
                 </div>
                 <div class="col-md-4">
-                    <app-store-autocomplete [formGroup]="searchForm" formControlName="store"></app-store-autocomplete>
-                </div>
-                <div class="col-md-4">
-                    <app-syscodes-autocomplete [formGroup]="searchForm" formControlName="promoType" sysCodeClass="6"
+                    <app-syscodes-select [formGroup]="searchForm" formControlName="promoType" sysCodeClass="6"
                         sysCodeLabel="Promotion Type"
-                        sysCodePlaceHolder="Type to search Promotion"></app-syscodes-autocomplete>
+                        sysCodePlaceHolder="Type to search Promotion"></app-syscodes-select>
                 </div>
                 <div class="col-md-4">
-                    <app-radio-list label="Status" formControlName="promoStatus" [items]="promoStatusItems"
-                        orientation="horizontal">
+                    <app-radio-list label="Status" [inline]="true" formControlName="promoStatus"
+                        [items]="promoStatusItems" orientation="horizontal">
                     </app-radio-list>
                 </div>
             </div>
 
             <div class="m-t-20 button-row-end">
-                <button class="btn btn-primary btn-sm" (click)="search()">
+                <button mat-flat-button color="primary" type="button" (click)="search()" class="py-1 px-3 small">
                     Search
                 </button>
-                <button class="btn btn-secondary btn-sm" (click)="new()">
+                <button mat-flat-button color="primary" type="button" (click)="new()" class="py-1 px-3 small">
                     New
                 </button>
-                <button class="btn btn-warn btn-sm" (click)="clear()">
+                <button mat-stroked-button color="warn" type="button" (click)="clear()" class="py-1 px-3 small">
                     Clear
                 </button>
             </div>
@@ -89,6 +102,9 @@
     <ng-template #promoItemsContent>
         <div class="container-fluid py-3">
             <div class="row g-3">
+                <h2>{{ selectedPromo?.promoName }}</h2>
+            </div>
+            <div class="row g-3">
                 <!-- Left Column -->
                 <div class="col-md-6">
                     <div class="mb-2">
@@ -96,28 +112,24 @@
                         <div>{{ selectedPromo?.promoNo }}</div>
                     </div>
                     <div class="mb-2">
-                        <label class="fw-semibold text-muted">Promo Name:</label>
-                        <div>{{ selectedPromo?.promoName }}</div>
+                        <label class="fw-semibold text-muted">Start Date:</label>
+                        <div>{{ selectedPromo?.startDate }}</div>
                     </div>
                     <div class="mb-2">
-                        <label class="fw-semibold text-muted">Registered Date:</label>
-                        <div>{{ selectedPromo?.registerDate }}</div>
+                        <label class="fw-semibold text-muted">Store List:</label>
+                        <div>{{ selectedPromo?.storeList }}</div>
                     </div>
                 </div>
 
                 <!-- Right Column -->
                 <div class="col-md-6">
                     <div class="mb-2">
-                        <label class="fw-semibold text-muted">Start Date:</label>
-                        <div>{{ selectedPromo?.startDate }}</div>
+                        <label class="fw-semibold text-muted">Promo Date:</label>
+                        <div>{{ selectedPromo?.promoDate }}</div>
                     </div>
                     <div class="mb-2">
                         <label class="fw-semibold text-muted">End Date:</label>
                         <div>{{ selectedPromo?.endDate }}</div>
-                    </div>
-                    <div class="mb-2">
-                        <label class="fw-semibold text-muted">Store List:</label>
-                        <div>{{ selectedPromo?.storeList }}</div>
                     </div>
                 </div>
             </div>
@@ -130,5 +142,20 @@
             </app-table>
         </div>
     </ng-template>
+
+    <ng-template #newPromoType>
+        <div class="p-4">
+            <div class="flex flex-col sm:flex-row gap-3 mt-5">
+                <button mat-flat-button color="primary" type="button" (click)="addByProduct()" class="flex-1 py-2 m-t-20">
+                    <mat-icon class="mr-2">shopping_cart</mat-icon>
+                    Add by Product Selection
+                </button>  <button mat-stroked-button color="warn" type="button" (click)="addByRules()" class="flex-1 py-2 m-t-20">
+                    <mat-icon class="mr-2">tune</mat-icon>
+                    Add by Vendor, Category, Brand
+                </button>
+            </div>
+        </div>
+    </ng-template>
+
 
 </mat-accordion>

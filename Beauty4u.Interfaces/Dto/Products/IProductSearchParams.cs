@@ -11,5 +11,6 @@
         string? StyleDesc { get; set; }
         string? UPC { get; set; }
         string? VendorCode { get; set; }
+        string? RetailPrice { get; set; }
     }
 }

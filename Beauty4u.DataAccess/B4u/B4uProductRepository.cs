@@ -346,6 +346,7 @@ namespace Beauty4u.DataAccess.B4u
             command.Parameters.AddWithValue("@Color", productSearchParams.Color);
             command.Parameters.AddWithValue("@UPC", productSearchParams.UPC);
             command.Parameters.AddWithValue("@Sku", productSearchParams.Sku);
+            command.Parameters.AddWithValue("@RetailPrice", productSearchParams.RetailPrice);
 
             var dataTable = new DataTable();
             using (var reader = await command.ExecuteReaderAsync())

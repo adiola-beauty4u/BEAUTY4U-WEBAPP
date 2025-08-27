@@ -7,5 +7,6 @@ export interface ProductSearchRequest {
     color: string,
     size: string,
     upc: string,
-    sku: string
+    sku: string,
+    retailPrice?: string;
 }

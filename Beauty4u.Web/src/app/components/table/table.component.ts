@@ -1,7 +1,8 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges, TemplateRef } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, TemplateRef, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableData, ColumnDef, RowData, CellData } from 'src/interfaces/table-data';
+import { ColumnDataType } from 'src/interfaces/column-data-type';
 
 @Component({
   selector: 'app-table',
@@ -17,8 +18,14 @@ export class TableComponent implements OnInit, OnChanges {
   @Input() pageSize = 100;
   @Input() methodList: { [key: string]: (row: any) => void } = {};
   @Input() showInvalidCount = false;
+  @Input() transferLabel: string = '';
   @Input() enableRowTransfer = false;
   @Input() enableRowDelete = false;
+
+  @Output() rowTransferred = new EventEmitter<any>();
+  @Output() rowsTransferred = new EventEmitter<any[]>();
+  @Output() rowDeleted = new EventEmitter<any>();
+  @Output() rowsDeleted = new EventEmitter<any[]>();
 
   searchText: string = '';
   page: number = 1;
@@ -31,6 +38,8 @@ export class TableComponent implements OnInit, OnChanges {
   slideInTable: TableData;
   slideInColumn: ColumnDef | undefined;
   slideInDisplay: ColumnDef | undefined;
+
+  ColumnDataType = ColumnDataType;
 
   ngOnInit(): void {
   }
@@ -125,9 +134,16 @@ export class TableComponent implements OnInit, OnChanges {
   }
 
   gotoSlideIn(col: ColumnDef | undefined, row: any): void {
+
+    if (!col) {
+      console.warn("gotoSlideIn called without a valid column");
+      return;
+    }
+
     this.slideInDisplay = this.getFirstSlideInColumn();
     this.viewSlideIn = true;
-    this.slideInColumn = col;
+    this.slideInColumn = { ...col };
+    this.slideInColumn.isHidden = false; //ensure column will show
     this.callSlideInCommand(row)
   }
 
@@ -137,10 +153,56 @@ export class TableComponent implements OnInit, OnChanges {
 
   callSlideInCommand(row: any): void {
     this.methodList[this.slideInColumn?.slideInCommand!]?.(row);
-
   }
 
   getFirstSlideInColumn(): ColumnDef | undefined {
     return this.tableData?.columns.find(col => col.isSlideInColumn);
   }
+
+  onDeleteRow(row: any) {
+    const index = this.tableData?.rows?.indexOf(row);
+    if (index >= 0) {
+      this.tableData.rows.splice(index, 1);
+      //this.applySearch(); // refresh filteredData & pagedData
+      this.rowDeleted.emit(row); // notify parent
+    }
+  }
+
+  onDeleteAll() {
+    // rows that match filter
+    const rowsToDelete = this.filteredRows;
+
+    const remainingRows = this.tableData.rows.filter(
+      row => !rowsToDelete.includes(row)
+    );
+
+    this.tableData = { ...this.tableData, rows: remainingRows };
+
+    this.rowsDeleted.emit(rowsToDelete);
+  }
+
+  onTransferRow(row: any) {
+    const index = this.tableData?.rows?.indexOf(row);
+    if (index >= 0) {
+      this.tableData.rows.splice(index, 1);
+      //this.applySearch(); // refresh filteredData & pagedData
+      this.rowTransferred.emit(row); // notify parent
+    }
+  }
+
+  onTransferAll() {
+    // rows that match filter
+    const rowsToTransfer = this.filteredRows;
+
+    // emit only the filtered rows
+    this.rowsTransferred.emit(rowsToTransfer);
+
+    // keep all rows that are NOT in filteredRows
+    const remainingRows = this.tableData.rows.filter(
+      row => !rowsToTransfer.includes(row)
+    );
+
+    this.tableData = { ...this.tableData, rows: remainingRows };
+  }
+
 }

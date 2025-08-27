@@ -43,21 +43,21 @@
                                         [readonly]="true" />
                                 </mat-form-field>
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-4">
                                 <mat-form-field appearance="outline" class="w-100 m-0">
                                     <mat-label>Promo Name</mat-label>
                                     <input matInput formControlName="promoName" placeholder="Promo Name" />
                                 </mat-form-field>
                             </div>
-                            <div class="col-md-2">
+                            <!-- <div class="col-md-2">
                                 <mat-form-field appearance="outline" class="w-36">
                                     <mat-label>Register</mat-label>
-                                    <input matInput [matDatepicker]="registerPicker" formControlName="registerDate">
+                                    <input matInput [matDatepicker]="registerPicker" formControlName="registerDate" [disabled]="true">
                                     <mat-datepicker-toggle matSuffix [for]="registerPicker"></mat-datepicker-toggle>
                                     <mat-datepicker #registerPicker></mat-datepicker>
                                 </mat-form-field>
 
-                            </div>
+                            </div> -->
                             <div class="col-md-4">
                                 <!-- Date From -->
                                 <mat-form-field appearance="outline" class="w-36">
@@ -108,105 +108,288 @@
                         </div>
                     </mat-step>
                     <mat-step>
-                        <ng-template matStepLabel>Promotion Rules</ng-template>
-                        <div class="m-t-20 button-row-end">
-                            <button mat-stroked-button color="warn" (click)="addPromotionRule()">
-                                <mat-icon>add_circle</mat-icon> Add Rule
-                            </button>
-                        </div>
-                        <mat-accordion class="w-100">
-                            <mat-expansion-panel *ngFor="let rule of promotionRules; let i = index">
-                                <mat-expansion-panel-header>
-                                    <mat-panel-title>
-                                        Rule #{{ i + 1 }}
-                                    </mat-panel-title>
-                                    <mat-panel-description>
-                                        <mat-chip-listbox aria-label="Selected Filters"
-                                            class="d-flex flex-wrap gap-1 small">
-                                            <mat-chip *ngIf="rule.promoSearchForm.value.promoType?.displayText"
-                                                color="primary" selected>
-                                                PromoType: {{ rule.promoSearchForm.value.promoType?.displayText }}
-                                            </mat-chip>
-                                            <mat-chip *ngIf="rule.promoSearchForm.value.promoRate" color="primary"
-                                                selected>
-                                                PromoRate: {{ rule.promoSearchForm.value.promoRate | number:'1.2-2' }}
-                                            </mat-chip>
-                                            <mat-chip *ngIf="rule.promoSearchForm.value.itemGroupCode" color="primary"
-                                                selected>
-                                                Category: {{ rule.promoSearchForm.value.itemGroupCode.name }}
-                                            </mat-chip>
-                                            <mat-chip *ngIf="rule.promoSearchForm.value.vendor?.displayText"
-                                                color="primary" selected>
-                                                Vendor: {{ rule.promoSearchForm.value.vendor.displayText }}
-                                            </mat-chip>
-                                            <mat-chip *ngIf="rule.promoSearchForm.value.brand?.displayText"
-                                                color="primary" selected>
-                                                Brand: {{ rule.promoSearchForm.value.brand.displayText }}
-                                            </mat-chip>
-                                            <mat-chip *ngIf="rule.productResults" color="primary" selected>
-                                                Item Count: {{ (rule.productResults && rule.productResults.rows) ?
-                                                rule.productResults.rows.length : 0 }}
-                                            </mat-chip>
-                                        </mat-chip-listbox>
-                                    </mat-panel-description>
-                                </mat-expansion-panel-header>
-                                <form [formGroup]="rule.promoSearchForm" class="container-fluid py-3 small">
-                                    <div class="row g-3">
-                                        <div class="col-md-3">
-                                            <app-syscodes-select [formGroup]="rule.promoSearchForm"
-                                                formControlName="promoType" sysCodeClass="6"
-                                                sysCodeLabel="Promotion Type"
-                                                sysCodePlaceHolder="Type to search Promotion"
-                                                [addAll]="false"></app-syscodes-select>
+                        <ng-template matStepLabel>
+                            {{ addProductsByRules ? 'Promotion Rules': 'Add Products'}}
+                        </ng-template>
+                        <ng-content *ngIf="addProductsByRules">
+                            <div class="m-t-20 button-row-end">
+                                <button mat-stroked-button color="warn" (click)="addPromotionRule()">
+                                    <mat-icon>add_circle</mat-icon> Add Rule
+                                </button>
+                            </div>
+                            <mat-accordion class="w-100">
+                                <mat-expansion-panel *ngFor="let rule of promotionRules; let i = index">
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                            Rule #{{ i + 1 }} - 
+                                            <mat-chip-listbox aria-label="Selected Filters"
+                                                class="d-flex flex-wrap gap-1 small">
+                                                <mat-chip *ngIf="rule.promoSearchForm.value.promoType?.displayText"
+                                                    color="primary" selected>
+                                                    PromoType: {{ rule.promoSearchForm.value.promoType?.displayText }}
+                                                </mat-chip>
+                                                <mat-chip *ngIf="rule.promoSearchForm.value.promoRate" color="primary"
+                                                    selected>
+                                                    PromoRate: {{ rule.promoSearchForm.value.promoRate | number:'1.2-2'
+                                                    }}
+                                                </mat-chip>
+                                                <mat-chip *ngIf="rule.promoSearchForm.value.itemGroupCode"
+                                                    color="primary" selected>
+                                                    Category: {{ rule.promoSearchForm.value.itemGroupCode.name }}
+                                                </mat-chip>
+                                                <mat-chip *ngIf="rule.promoSearchForm.value.vendor?.displayText"
+                                                    color="primary" selected>
+                                                    Vendor: {{ rule.promoSearchForm.value.vendor.displayText }}
+                                                </mat-chip>
+                                                <mat-chip *ngIf="rule.promoSearchForm.value.brand?.displayText"
+                                                    color="primary" selected>
+                                                    Brand: {{ rule.promoSearchForm.value.brand.displayText }}
+                                                </mat-chip>
+                                                <mat-chip
+                                                    *ngIf="rule.promoSearchForm.value.retailPriceCondition?.displayText"
+                                                    color="primary" selected>
+                                                    Retail Price: {{
+                                                    rule.promoSearchForm.value.retailPriceCondition.displayText + ' ' +
+                                                    rule.promoSearchForm.value.retailPriceRate }}
+                                                </mat-chip>
+                                                <mat-chip *ngIf="rule.productResults" color="primary" selected>
+                                                    Item Count: {{ (rule.productResults && rule.productResults.rows) ?
+                                                    rule.productResults.rows.length : 0 }}
+                                                </mat-chip>
+                                            </mat-chip-listbox>
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+                                    <form [formGroup]="rule.promoSearchForm" class="container-fluid py-3 small">
+                                        <div class="m-t-20 button-row-end">
+                                            <button mat-stroked-button color="warn" (click)="deletePromotionRule(rule)">
+                                                <mat-icon>remove_circle</mat-icon> Delete Rule
+                                            </button>
                                         </div>
-                                        <div class="col-md-3">
-                                            <mat-form-field appearance="outline" class="w-100 m-0">
-                                                <mat-label>Promo Rate</mat-label>
-                                                <input matInput type="number" formControlName="promoRate" decimalFormat
-                                                    step="0.01" min="0.00" placeholder="Promo Rate" />
-                                            </mat-form-field>
+                                        <div class="row g-3">
+                                            <div class="col-md-3">
+                                                <app-syscodes-select [formGroup]="rule.promoSearchForm"
+                                                    formControlName="promoType" sysCodeClass="6"
+                                                    sysCodeLabel="Promotion Type"
+                                                    sysCodePlaceHolder="Type to search Promotion"
+                                                    [addAll]="false"></app-syscodes-select>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <mat-form-field appearance="outline" class="w-100 m-0">
+                                                    <mat-label>Promo Rate</mat-label>
+                                                    <input matInput type="number" formControlName="promoRate"
+                                                        decimalFormat step="0.01" min="0.00" placeholder="Promo Rate" />
+                                                </mat-form-field>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <label class="fw-medium text-primary">Category:</label>
-                                            <app-item-group-select
-                                                [selectedValue]="rule.promoSearchForm.get('itemGroupCode')!"></app-item-group-select>
-                                        </div>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="fw-medium text-primary">Category:</label>
+                                                <app-item-group-select
+                                                    [selectedValue]="rule.promoSearchForm.get('itemGroupCode')!"></app-item-group-select>
+                                            </div>
 
-                                        <div class="col-md-3">
-                                            <label class="fw-medium text-primary">Vendor:</label>
-                                            <app-vendor-select [formGroup]="rule.promoSearchForm"
-                                                formControlName="vendor"></app-vendor-select>
+                                            <div class="col-md-3">
+                                                <label class="fw-medium text-primary">Vendor:</label>
+                                                <app-vendor-select [formGroup]="rule.promoSearchForm"
+                                                    formControlName="vendor"></app-vendor-select>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="fw-medium text-primary">Brand:</label>
+                                                <app-brand-select [formGroup]="rule.promoSearchForm"
+                                                    formControlName="brand"></app-brand-select>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <app-select-control [formGroup]="rule.promoSearchForm"
+                                                    formControlName="retailPriceCondition"
+                                                    [selectItems]="retailPriceConditions" label="Retail Price Condition"
+                                                    placeHolder="Retail Price Condition"></app-select-control>
+                                                <mat-form-field appearance="outline" class="w-100 m-0">
+                                                    <mat-label>Retail Price</mat-label>
+                                                    <input matInput type="number" formControlName="retailPriceRate"
+                                                        decimalFormat step="0.01" min="0.00"
+                                                        placeholder="Retail Price" />
+                                                </mat-form-field>
+                                            </div>
                                         </div>
-                                        <div class="col-md-3">
-                                            <label class="fw-medium text-primary">Brand:</label>
-                                            <app-brand-select [formGroup]="rule.promoSearchForm"
-                                                formControlName="brand"></app-brand-select>
+                                        <div class="col-12 d-flex justify-content-end gap-2 pt-2">
+                                            <button mat-flat-button color="primary" type="button"
+                                                (click)="viewRuleProducts(rule)" class="py-1 px-3 small"
+                                                [disabled]="rule.promoSearchForm.invalid">
+                                                View Products
+                                            </button>
+                                            <button mat-stroked-button color="warn" type="button"
+                                                (click)="clearRuleProductSearch(rule, i)" class="py-1 px-3 small">
+                                                Clear
+                                            </button>
                                         </div>
-                                    </div>
-                                    <div class="col-12 d-flex justify-content-end gap-2 pt-2">
-                                        <button mat-flat-button color="primary" type="button"
-                                            (click)="viewRuleProducts(rule)" class="py-1 px-3 small">
-                                            View Products
-                                        </button>
-                                        <button mat-stroked-button color="warn" type="button"
-                                            (click)="clearRuleProductSearch(rule, i)" class="py-1 px-3 small">
-                                            Clear
-                                        </button>
-                                    </div>
-                                </form>
+                                    </form>
+                                    <app-table [tableData]="rule.productResults" [pageSize]="50"
+                                        [methodList]="{ getPromotions: getPromotions.bind(this) }"></app-table>
+                                    <!-- <app-child-table *ngIf="rule.productResults" [group]="rule.productResults"
+                                        [showInvalidCount]="false"
+                                        [methodList]="{ getPromotions: getPromotions.bind(this) }"
+                                        [displayedColumns]="getDisplayedColumns(rule.productResults)" [pageSize]="10"
+                                        [enableRowDelete]="true" (rowDeleted)="onRowDeleted($event)">
+                                    </app-child-table> -->
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </ng-content>
+                        <ng-content *ngIf="!addProductsByRules">
+                            <mat-accordion class="w-100">
+                                <mat-expansion-panel>
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                            Selected Products ({{ selectedProducts.rows.length }})
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
+                                    <app-table *ngIf="selectedProducts" [tableData]="selectedProducts" [pageSize]="50"
+                                        [enableRowDelete]="true" (rowsDeleted)="onRowsDeleted($event)"
+                                        [methodList]="{ getPromotions: getPromotions.bind(this) }"
+                                        [slideInContent]="productPromoContent">
+                                    </app-table>
+                                </mat-expansion-panel>
+                                <mat-expansion-panel>
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title>
+                                            Search Products
+                                        </mat-panel-title>
+                                        <mat-panel-description>
+                                            <mat-chip-listbox aria-label="Selected Filters"
+                                                class="d-flex flex-wrap gap-1 small">
+                                                <mat-chip *ngIf="productSearchForm.value.promoType?.displayText"
+                                                    color="primary" selected>
+                                                    PromoType: {{ productSearchForm.value.promoType?.displayText }}
+                                                </mat-chip>
+                                                <mat-chip *ngIf="productSearchForm.value?.promoRate" color="primary"
+                                                    selected>
+                                                    PromoRate: {{ productSearchForm.value?.promoRate | number:'1.2-2'
+                                                    }}
+                                                </mat-chip>
+                                                <mat-chip *ngIf="productSearchForm.value.itemGroupCode" color="primary"
+                                                    selected>
+                                                    Category: {{ productSearchForm.value.itemGroupCode.name }}
+                                                </mat-chip>
+                                                <mat-chip *ngIf="productSearchForm.value.vendor?.displayText"
+                                                    color="primary" selected>
+                                                    Vendor: {{ productSearchForm.value.vendor.displayText }}
+                                                </mat-chip>
+                                                <mat-chip *ngIf="productSearchForm.value.brand?.displayText"
+                                                    color="primary" selected>
+                                                    Brand: {{ productSearchForm.value.brand.displayText }}
+                                                </mat-chip>
+                                            </mat-chip-listbox>
+                                        </mat-panel-description>
+                                    </mat-expansion-panel-header>
+                                    <form [formGroup]="productSearchForm" class="container-fluid py-3 small">
+                                        <div class="row g-3">
+                                            <div class="col-md-3">
+                                                <app-syscodes-select [formGroup]="productSearchForm"
+                                                    formControlName="promoType" sysCodeClass="6"
+                                                    sysCodeLabel="Promotion Type"
+                                                    sysCodePlaceHolder="Type to search Promotion"
+                                                    [addAll]="false"></app-syscodes-select>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <mat-form-field appearance="outline" class="w-100 m-0">
+                                                    <mat-label>Promo Rate</mat-label>
+                                                    <input matInput type="number" formControlName="promoRate"
+                                                        decimalFormat step="0.01" min="0.00" placeholder="Promo Rate" />
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="fw-medium text-primary">Category:</label>
+                                                <app-item-group-select
+                                                    [selectedValue]="productSearchForm.get('itemGroupCode')!"></app-item-group-select>
+                                            </div>
 
-                                <app-child-table *ngIf="rule.productResults" [group]="rule.productResults"
-                                    [showInvalidCount]="false"
-                                    [methodList]="{ getPromotions: getPromotions.bind(this) }"
-                                    [displayedColumns]="getDisplayedColumns(rule.productResults)" [pageSize]="10"
-                                    [enableRowDelete]="true" (rowDeleted)="onRowDeleted($event)">
-                                </app-child-table>
-                            </mat-expansion-panel>
-                        </mat-accordion>
+                                            <div class="col-md-3">
+                                                <label class="fw-medium text-primary">Vendor:</label>
+                                                <app-vendor-select [formGroup]="productSearchForm"
+                                                    formControlName="vendor"></app-vendor-select>
+                                            </div>
 
+                                            <div class="col-md-3">
+                                                <label class="fw-medium text-primary">Brand:</label>
+                                                <app-brand-select [formGroup]="productSearchForm"
+                                                    formControlName="brand"></app-brand-select>
+                                            </div>
 
+                                            <div class="col-md-6">
+                                                <label class="fw-medium">Style Code:</label>
+                                                <mat-form-field appearance="outline" class="w-100 m-0">
+                                                    <input matInput formControlName="styleCode" />
+                                                </mat-form-field>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label class="fw-medium">Description:</label>
+                                                <mat-form-field appearance="outline" class="w-100 m-0">
+                                                    <input matInput formControlName="styleDesc" />
+                                                </mat-form-field>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <label class="fw-medium">Color:</label>
+                                                <mat-form-field appearance="outline" class="w-100 m-0">
+                                                    <input matInput formControlName="color" />
+                                                </mat-form-field>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <label class="fw-medium">Size:</label>
+                                                <mat-form-field appearance="outline" class="w-100 m-0">
+                                                    <input matInput formControlName="size" />
+                                                </mat-form-field>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <label class="fw-medium">UPC:</label>
+                                                <mat-form-field appearance="outline" class="w-100 m-0">
+                                                    <input matInput formControlName="upc" />
+                                                </mat-form-field>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <label class="fw-medium">SKU:</label>
+                                                <mat-form-field appearance="outline" class="w-100 m-0">
+                                                    <input matInput formControlName="sku" />
+                                                </mat-form-field>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <app-select-control [formGroup]="productSearchForm"
+                                                    formControlName="retailPriceCondition"
+                                                    [selectItems]="retailPriceConditions" label="Retail Price Condition"
+                                                    placeHolder="Retail Price Condition"></app-select-control>
+                                                <mat-form-field appearance="outline" class="w-100 m-0">
+                                                    <mat-label>Retail Price</mat-label>
+                                                    <input matInput type="number" formControlName="retailPriceRate"
+                                                        decimalFormat step="0.01" min="0.00"
+                                                        placeholder="Retail Price" />
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 d-flex justify-content-end gap-2 pt-2">
+                                            <button mat-flat-button color="primary" type="button"
+                                                (click)="viewProducts()" class="py-1 px-3 small">
+                                                Search Products
+                                            </button>
+                                            <button mat-stroked-button color="warn" type="button"
+                                                (click)="clearProductSearch()" class="py-1 px-3 small">
+                                                Clear
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <app-table [tableData]="promotionProductsTable" [pageSize]="50"
+                                        [slideInContent]="productPromoContent"
+                                        [methodList]="{ getPromotions: getPromotions.bind(this) }"
+                                        [enableRowTransfer]="true" (rowTransferred)="onRowTransfer($event)"
+                                        (rowsTransferred)="onRowsTransfer($event)"
+                                        [transferLabel]="transferLabel"></app-table>
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </ng-content>
                         <div class="m-t-20 button-row-end">
                             <button mat-stroked-button color="warn" matStepperPrevious>
                                 <mat-icon>arrow_back</mat-icon> Back
@@ -266,10 +449,26 @@
                                         <div>{{ promoForm.value.promoRate | number:'1.2-2' }}</div>
                                     </div>
                                 </div>
+                                <div class="row g-3">
+                                    <div class="col-md-12" *ngIf="!addProductsByRules">
+                                        <app-table *ngIf="selectedProducts" [tableData]="selectedProducts"
+                                            [pageSize]="50" [methodList]="{ getPromotions: getPromotions.bind(this) }"
+                                            [slideInContent]="productPromoContent">
+                                        </app-table>
+                                    </div>
+                                    <div class="col-md-12" *ngIf="addProductsByRules">
+                                        <app-table *ngIf="productPromotions" [tableData]="productPromotions"
+                                            [pageSize]="50" [enableRowDelete]="true"
+                                            (rowsDeleted)="onRowsDeleted($event)"
+                                            [methodList]="{ getPromotions: getPromotions.bind(this) }"
+                                            [slideInContent]="productPromoContent">
+                                        </app-table>
+                                    </div>
+                                </div>
                             </mat-card-content>
                         </mat-card>
 
-                        <mat-card class="mb-4 shadow-sm">
+                        <mat-card class="mb-4 shadow-sm" *ngIf="addProductsByRules">
                             <mat-card-header>
                                 <mat-card-title>Promotion Rules</mat-card-title>
                             </mat-card-header>
@@ -296,6 +495,11 @@
                                             selected>
                                             Brand: {{ rule.promoSearchForm.value.brand.displayText }}
                                         </mat-chip>
+                                        <mat-chip *ngIf="rule.promoSearchForm.value.retailPriceCondition?.displayText"
+                                            color="primary" selected>
+                                            Retail Price: {{ rule.promoSearchForm.value.retailPriceCondition.displayText
+                                            + ' ' + rule.promoSearchForm.value.retailPriceRate }}
+                                        </mat-chip>
                                         <div class="mb-2">
                                             <strong>Promo Rate:</strong> {{ rule.promoSearchForm.value.promoRate |
                                             number:'1.2-2' }}
@@ -310,15 +514,15 @@
                         </mat-card>
 
 
-                        <app-child-table *ngIf="promotionProductsTable" [group]="promotionProductsTable"
+                        <!-- <app-child-table *ngIf="promotionProductsTable" [group]="promotionProductsTable"
                             [showInvalidCount]="false" [methodList]="{ getPromotions: getPromotions.bind(this) }"
                             [displayedColumns]="getDisplayedColumns(promotionProductsTable)" [pageSize]="50">
-                        </app-child-table>
+                        </app-child-table> -->
                         <div class="m-t-20 button-row-end">
                             <button mat-stroked-button color="warn" matStepperPrevious>
                                 <mat-icon>arrow_back</mat-icon> Back
                             </button>
-                            <button mat-flat-button color="primary">
+                            <button mat-flat-button color="primary" (click)="confirmCreatePromo()">
                                 Confirm &
                                 Save
                             </button>
@@ -330,8 +534,43 @@
 
     </mat-card-content>
     <ng-template #productPromoContent let-name="name">
-        <app-child-table #promotionsTable *ngIf="productPromotions" [group]="productPromotions"
-            [showInvalidCount]="false" [displayedColumns]="getDisplayedColumns(productPromotions)" [pageSize]="10">
-        </app-child-table>
+        <div class="container-fluid py-3">
+            <div class="row g-3">
+                <h2>{{ selectedProduct?.styleDesc }}</h2>
+            </div>
+            <div class="row g-3">
+                <!-- Left Column -->
+                <div class="col-md-6">
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Vendor:</label>
+                        <div>({{ selectedProduct?.vendorCode }}) {{ selectedProduct?.vendorName }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Sku:</label>
+                        <div>{{ selectedProduct?.sku }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Style Code:</label>
+                        <div>{{ selectedProduct?.styleCode }}</div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-6">
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Brand:</label>
+                        <div>{{ selectedProduct?.brand }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">UPC:</label>
+                        <div>{{ selectedProduct?.upc }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <hr class="my-3">
+            <app-table [tableData]="productPromotions" [pageSize]="50"></app-table>
+        </div>
     </ng-template>
 </mat-card>

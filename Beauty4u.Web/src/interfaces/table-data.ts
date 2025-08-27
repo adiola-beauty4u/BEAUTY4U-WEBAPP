@@ -13,6 +13,7 @@ export interface RowData {
     cssClass?: string;
     rowKey?: string;
     cells: { [key: string]: CellData };
+    additionalData? : any;
 }
 
 export interface ColumnDef {
@@ -23,6 +24,8 @@ export interface ColumnDef {
     isSlideInColumn: boolean;
     slideInCommand: string;
     slideInTitle: string;
+    isHidden: boolean;
+    dataType: number;
 }
 
 export interface TableData {

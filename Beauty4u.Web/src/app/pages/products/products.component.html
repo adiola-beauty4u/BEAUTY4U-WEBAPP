@@ -118,15 +118,49 @@
         </form>
     </mat-expansion-panel>
 
-    <!-- Child Table -->
-    <app-child-table #childTable *ngIf="output" [group]="output" [showInvalidCount]="false"
-        [methodList]="{ getPromotions: getPromotions.bind(this) }" [displayedColumns]="getDisplayedColumns(output)"
-        [pageSize]="10" [enableRowSelection]="enableRowSelection" (selectedChange)="onRowsSelected($event)">
-    </app-child-table>
+    <app-table [tableData]="output" [pageSize]="50" [methodList]="{ getPromotions: getPromotions.bind(this) }"
+        [enableRowTransfer]="enableRowTransfer" (rowTransferred)="onRowTransferred($event)" (rowsTransferred)="onRowsTransferred($event)" [transferLabel]="transferLabel"
+        [enableRowDelete]="enableRowDelete" (rowDeleted)="onRowsDeleted($event)"
+        [slideInContent]="customContent"></app-table>
 
     <ng-template #customContent let-name="name">
-        <app-child-table #promotionsTable *ngIf="productPromotions" [group]="productPromotions"
-            [showInvalidCount]="false" [displayedColumns]="getDisplayedColumns(productPromotions)" [pageSize]="10">
-        </app-child-table>
+        <div class="container-fluid py-3">
+            <div class="row g-3">
+                <h2>{{ selectedProduct?.styleDesc }}</h2>
+            </div>
+            <div class="row g-3">
+                <!-- Left Column -->
+                <div class="col-md-6">
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Vendor:</label>
+                        <div>({{ selectedProduct?.vendorCode }}) {{ selectedProduct?.vendorName }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Sku:</label>
+                        <div>{{ selectedProduct?.sku }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Style Code:</label>
+                        <div>{{ selectedProduct?.styleCode }}</div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-6">
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Brand:</label>
+                        <div>{{ selectedProduct?.brand }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">UPC:</label>
+                        <div>{{ selectedProduct?.upc }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <hr class="my-3">
+            <app-table [tableData]="productPromotions" [pageSize]="50"></app-table>
+        </div>
     </ng-template>
 </mat-accordion>

@@ -182,3 +182,11 @@
     background: #f3f2f1;
     cursor: not-allowed;
 }
+
+.slide-in-content {
+    max-height: 300px;
+    overflow-y: auto;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}

@@ -13,10 +13,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { ProductService } from 'src/app/services/product.service';
 import { ProductSearchRequest } from 'src/interfaces/product-search-request';
 import { LoadingService } from 'src/app/services/loading.service';
-import { ChildTableComponent } from 'src/app/components/child-table/child-table.component';
 import { TableData, CellData, ColumnDef, RowData } from 'src/interfaces/table-data';
 import { PromotionService } from 'src/app/services/promotion.service';
 import { ModalService } from 'src/app/services/modal.service';
+import { TableComponent } from 'src/app/components/table/table.component';
 
 @Component({
   selector: 'app-products',
@@ -31,7 +31,7 @@ import { ModalService } from 'src/app/services/modal.service';
     MatAccordion,
     MatExpansionModule,
     MatChipsModule, MatIconModule, MatChipListbox,
-    ChildTableComponent],
+    TableComponent],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss'
 })
@@ -42,15 +42,21 @@ export class ProductsComponent implements OnInit {
 
   defaultPageSize: 10;
 
+  selectedProduct: any;
+
   @Input() addAll = true;
   @Input() enableRowSelection = false;
+  @Input() enableRowTransfer = false;
   @Input() enableRowDelete = false;
+  @Input() transferLabel = '';
 
   @Output() rowsSelected = new EventEmitter<any[]>();
+  @Output() rowTransferred = new EventEmitter<any>();
+  @Output() rowsTransferred = new EventEmitter<any[]>();
+  @Output() rowsDeleted = new EventEmitter<any[]>();
   @Output() columnsReady = new EventEmitter<any[]>();
 
   @ViewChild(ItemGroupSelectComponent) itemGroupSelect!: ItemGroupSelectComponent;
-  @ViewChild(ChildTableComponent) childTable!: ChildTableComponent;
   @ViewChild('customContent', { static: true }) templateRef!: TemplateRef<any>;
   @ViewChild(MatExpansionPanel) filterPanel!: MatExpansionPanel;
 
@@ -81,9 +87,7 @@ export class ProductsComponent implements OnInit {
   clear(): void {
     this.productSearchForm.reset();
     this.itemGroupSelect.clear();
-    this.output.rows = [];
-    this.childTable.clear();
-    this.childTable.refresh();
+    this.output = { tableName: '', rows: [], columns: [], tableGroups: [] } as TableData;
   }
 
   search(): void {
@@ -124,8 +128,9 @@ export class ProductsComponent implements OnInit {
     this.loadingService.show("Getting promotions..");
     this.promotionService.searchProductPromotionsBySku(row?.product?.sku).subscribe({
       next: data => {
+        this.selectedProduct = row.product;
         this.productPromotions = data;
-        this.modalService.openModal(row?.product?.styleDesc, this.templateRef, {});
+        //this.modalService.openModal(row?.product?.styleDesc, this.templateRef, {});
         this.loadingService.hide();
       },
       error: err => {
@@ -137,5 +142,16 @@ export class ProductsComponent implements OnInit {
 
   onRowsSelected(rows: any[]) {
     this.rowsSelected.emit(rows);
+  }
+
+  onRowTransferred(row: any) {
+    this.rowTransferred.emit(row);
+  }
+  onRowsTransferred(rows: any[]) {
+    this.rowsTransferred.emit(rows);
+  }
+
+  onRowsDeleted(rows: any[]) {
+    this.rowsDeleted.emit(rows);
   }
 }

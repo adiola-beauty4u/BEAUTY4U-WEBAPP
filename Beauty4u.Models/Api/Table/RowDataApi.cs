@@ -16,5 +16,6 @@ namespace Beauty4u.Models.Api.Table
         public string CssClass { get; set; } = string.Empty;
         public bool IsNew { get; set; }
         public bool IsChanged { get; set; }
+        public object? AdditionalData { get; set; }
     }
 }

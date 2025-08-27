@@ -2,6 +2,7 @@
 using AutoMapper;
 using Beauty4u.Business.Services;
 using Beauty4u.Interfaces.Services;
+using Beauty4u.Models.Api.Promotions;
 using Beauty4u.Models.Api.Table;
 using Beauty4u.Models.Dto.ItemGroup;
 using Beauty4u.Models.Dto.Promotions;
@@ -45,6 +46,13 @@ namespace Beauty4u.WebApi.Controllers.v1
         {
             var output = await _promotionService.SearchPromotionsAsync(promoSearchParams);
             return Ok(_mapper.Map<TableDataApi>(output));
+        }
+
+        [HttpPost("create-promo")]
+        public async Task<IActionResult> CreatePromo([FromBody] PromotionCreateRequest promotionCreateRequest)
+        {
+            await _promotionService.CreatePromotions(promotionCreateRequest);
+            return Ok();
         }
     }
 }

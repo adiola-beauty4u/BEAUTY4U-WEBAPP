@@ -8,5 +8,6 @@
         bool IsSlideInColumn { get; set; }
         string SlideInCommand { get; set; }
         string SlideInTitle { get; set; }
+        bool IsHidden { get; set; }
     }
 }

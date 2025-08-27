@@ -18,5 +18,6 @@ namespace Beauty4u.Models.Dto.Products
         public string? Size { get; set; }
         public string? UPC { get; set; }
         public string? Sku { get; set; }
+        public string? RetailPrice { get; set; }
     }
 }

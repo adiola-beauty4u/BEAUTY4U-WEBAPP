@@ -1,12 +1,12 @@
-import { Component, OnInit, ViewChild, TemplateRef, AfterViewInit, ElementRef } from '@angular/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { Component, OnInit, ViewChild, TemplateRef, AfterViewInit, ElementRef, Input, Output, EventEmitter } from '@angular/core';
+import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { MatInput } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatButtonModule } from '@angular/material/button';
 import { MatAccordion, MatExpansionModule, MatExpansionPanel } from '@angular/material/expansion';
 import { MatChipsModule, MatChipListbox } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,6 +25,7 @@ import { SyscodesAutocompleteComponent } from 'src/app/components/syscodes-autoc
 import { TableComponent } from 'src/app/components/table/table.component';
 
 import { ItemValue } from 'src/interfaces/item-value';
+import { StoreSelectComponent } from 'src/app/components/store-select/store-select.component';
 
 @Component({
   selector: 'app-promotions',
@@ -39,10 +40,12 @@ import { ItemValue } from 'src/interfaces/item-value';
     MatExpansionModule,
     MatChipsModule, MatIconModule, MatChipListbox,
     RadioListComponent,
-    FlatpickrDirective,
-    StoreAutocompleteComponent,
-    SyscodesAutocompleteComponent,
-    TableComponent
+    TableComponent,
+    MatLabel,
+    MatInput,
+    StoreSelectComponent,
+    SysCodesSelectComponent,
+    MatButtonModule
   ],
   templateUrl: './promotions-search.component.html',
   styleUrl: './promotions-search.component.scss'
@@ -53,7 +56,18 @@ export class PromotionsSearchComponent implements OnInit, AfterViewInit {
   promoItems?: TableData;
   selectedPromo: any;
 
+  @Input() enableRowTransfer = false;
+  @Input() enableRowDelete = false;
+  @Input() transferLabel = '';
+
+  @Output() rowsSelected = new EventEmitter<any[]>();
+  @Output() rowTransferred = new EventEmitter<any>();
+  @Output() rowsTransferred = new EventEmitter<any[]>();
+  @Output() rowsDeleted = new EventEmitter<any[]>();
+  @Output() columnsReady = new EventEmitter<any[]>();
+
   @ViewChild('promoItemsContent', { static: true }) promoItemsTemplateRef!: TemplateRef<any>;
+  @ViewChild('newPromoType', { static: true }) newPromoType!: TemplateRef<any>;
   @ViewChild(MatExpansionPanel) filterPanel!: MatExpansionPanel;
 
 
@@ -80,6 +94,9 @@ export class PromotionsSearchComponent implements OnInit, AfterViewInit {
       promoName: '',
       promoStatus: { displayText: "Active", value: "active" }
     });
+
+    const columns = this.output?.columns;
+    this.columnsReady.emit(columns);
   }
 
   ngAfterViewInit(): void {
@@ -136,6 +153,8 @@ export class PromotionsSearchComponent implements OnInit, AfterViewInit {
     this.promotionService.searchPromotions(request).subscribe({
       next: data => {
         this.output = data;
+        const columns = data?.columns;
+        this.columnsReady.emit(columns);
         this.filterPanel.close();
         this.loadingService.hide();
       },
@@ -147,6 +166,33 @@ export class PromotionsSearchComponent implements OnInit, AfterViewInit {
   }
 
   new(): void {
+    this.modalService.openModal(`Create New Promo`, this.newPromoType, {});
+  }
+
+  addByProduct(): void {
     this.router.navigate(['/products/promotion']);
+    this.modalService.closeModal();
+  }
+  addByRules(): void {
+    this.router.navigate(
+      ['/products/promotion'],
+      { queryParams: { addBy: 'rules' } }
+    );
+    this.modalService.closeModal();
+  }
+
+  onRowsSelected(rows: any[]) {
+    this.rowsSelected.emit(rows);
+  }
+
+  onRowTransferred(row: any) {
+    this.rowTransferred.emit(row);
+  }
+  onRowsTransferred(rows: any[]) {
+    this.rowsTransferred.emit(rows);
+  }
+
+  onRowsDeleted(rows: any[]) {
+    this.rowsDeleted.emit(rows);
   }
 }
