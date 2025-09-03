@@ -1,0 +1,36 @@
+.main-container {
+    height: 100vh;
+}
+
+.top-strip {
+    background-color: #0078d4;
+    /* Azure blue */
+    height: 48px;
+    display: flex;
+    align-items: center;
+    color: #fff;
+}
+
+.sidebar {
+    width: 240px;
+    background-color: #1f1f1f;
+    color: #fff;
+}
+
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+mat-nav-list a {
+    color: #fff !important;
+}
+
+mat-nav-list a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.profile-btn-dd mat-icon {
+    color: #fff !important;
+}

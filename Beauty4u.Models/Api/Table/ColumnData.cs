@@ -15,5 +15,9 @@ namespace Beauty4u.Models.Api.Table
         public ColumnDataType DataType { get; set; } = ColumnDataType.String;
         public bool IsCommand { get; set; }
         public string CommandName { get; set; } = string.Empty;
+        public bool IsSlideInColumn { get; set; }
+        public string SlideInCommand { get; set; } = string.Empty;
+        public string SlideInTitle { get; set; } = string.Empty;
+        public bool IsHidden { get; set; }
     }
 }

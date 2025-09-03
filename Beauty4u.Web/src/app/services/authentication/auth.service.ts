@@ -64,6 +64,14 @@ export class AuthService {
     return payload?.UserCode || null;
   }
 
+  getUserName(): string | null {
+    const token = this.getAccessToken();
+    if (!token) return null;
+
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload?.UserName || null;
+  }
+
   refreshToken(): Observable<any> {
     if (this.refreshing) return this.refreshSubject.asObservable();
 

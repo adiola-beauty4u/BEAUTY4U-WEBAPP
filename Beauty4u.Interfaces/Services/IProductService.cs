@@ -20,5 +20,6 @@ namespace Beauty4u.Interfaces.Services
         Task<IBulkProductPreviewResult> BulkRegisterPreviewAsync(IBulkProduct bulkProductRequest);
         Task<ITableData> SearchProductsAsync(IProductSearchParams searchParams);
         Task<List<ISearchProductResult>> ProductSearchBySkuListAsync(List<string> skuList);
+        Task<ITableData> SearchProductsForPromoAsync(IPromotionProductSearchParams searchParams);
     }
 }

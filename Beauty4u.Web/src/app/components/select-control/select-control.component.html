@@ -1,10 +1,8 @@
 <mat-form-field appearance="outline" class="select-form-field">
     <mat-label>{{ label }}</mat-label>
-    <input type="text" matInput [placeholder]="placeHolder" [matAutocomplete]="auto" [formControl]="control"
-        (blur)="onTouched()" autocomplete="off" />
-
+    <input type="text" matInput [formControl]="control" [placeholder]="placeHolder" [matAutocomplete]="auto" />
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayItem" autoActiveFirstOption>
-        <mat-option [value]="null">All</mat-option>
+        <mat-option [value]="null" *ngIf="addAll">All</mat-option>
         <mat-option *ngFor="let item of filteredItems" [value]="item">
             {{ item.displayText }} ({{ item.value }})
         </mat-option>

@@ -15,5 +15,12 @@ namespace Beauty4u.Models.Dto.Promotions
         public string IsActive { get; set; } = string.Empty;
         public decimal NewPrice { get; set; }
         public decimal CurrentRetailPrice { get; set; }
+        public int? PromoRuleId { get; set; }
+        public string? RulePromoType { get; set; }
+        public decimal? RulePromoRate { get; set; }
+        public string? RuleVendorName { get; set; }
+        public string? RuleCategory { get; set; }
+        public string? RuleBrand { get; set; }
+        public string? RuleRetailPrice { get; set; }
     }
 }

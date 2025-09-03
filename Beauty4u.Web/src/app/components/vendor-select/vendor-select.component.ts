@@ -23,18 +23,18 @@ import { ItemValue } from 'src/interfaces/item-value';
     SelectControlComponent],
   templateUrl: './vendor-select.component.html',
   styleUrl: './vendor-select.component.scss',
-    providers: [
-      {
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => VendorSelectComponent),
-        multi: true
-      }
-    ]
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => VendorSelectComponent),
+      multi: true
+    }
+  ]
 })
 export class VendorSelectComponent implements ControlValueAccessor {
   @Input({ required: true }) formGroup!: FormGroup;
   @Input({ required: true }) formControlName!: string;
-
+  @Input() defaultValue: any;
   control = new FormControl();
 
   vendors: VendorDto[] = [];

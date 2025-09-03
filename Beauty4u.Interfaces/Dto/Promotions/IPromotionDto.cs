@@ -1,4 +1,7 @@
-﻿namespace Beauty4u.Interfaces.Dto.Promotions
+﻿
+using Beauty4u.Models.Dto.Promotions;
+
+namespace Beauty4u.Interfaces.Dto.Promotions
 {
     public interface IPromotionDto
     {
@@ -18,5 +21,12 @@
         DateTime WriteDate { get; set; }
         string WriteUser { get; set; }
         string IsActive { get; set; }
+        List<IPromotionRuleDto> PromotionRules { get; set; }
+        string StoreCodeList { get; set; }
+        List<string> StoreCodes { get; set; }
+        int PromoRuleCount { get; set; }
+        int SumQty { get; set; }
+        decimal SumAmt { get; set; }
+        decimal SumAdd { get; set; }
     }
 }

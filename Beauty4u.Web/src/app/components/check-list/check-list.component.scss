@@ -1,0 +1,12 @@
+.vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.horizontal {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    flex-wrap: wrap;
+}

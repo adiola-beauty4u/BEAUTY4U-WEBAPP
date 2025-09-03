@@ -4,21 +4,34 @@ export interface CellData {
     tooltip?: string;
     cssClass?: string;
     cssIcon?: string;
+    commandParameter?: any;
+    slideInCommandParameter?: any;
 }
 
 export interface RowData {
     tooltip?: string;
     cssClass?: string;
+    rowKey?: string;
     cells: { [key: string]: CellData };
+    additionalData? : any;
+    groupValue?: string;
 }
 
 export interface ColumnDef {
     fieldName: string;
     header: string;
+    isCommand: boolean;
+    commandName: string;
+    isSlideInColumn: boolean;
+    slideInCommand: string;
+    slideInTitle: string;
+    isHidden: boolean;
+    dataType: number;
 }
 
-export interface TableGroup {
+export interface TableData {
     tableName: string;
     columns: ColumnDef[];
     rows: RowData[];
+    tableGroups: TableData[];
 }

@@ -31,6 +31,11 @@ builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile($"appsettings.{machineName}.json", optional: true, reloadOnChange: true);
 
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+});
+
 // Add services to the container.
 builder.Services.AddMemoryCache();
 
@@ -101,6 +106,8 @@ app.MapScalarApiReference();
 //}
 
 app.UseHttpsRedirection();
+
+app.UseResponseCompression();
 
 app.UseCors("AllowFrontend");
 

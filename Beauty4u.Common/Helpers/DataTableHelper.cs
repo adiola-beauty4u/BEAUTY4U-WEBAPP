@@ -145,6 +145,33 @@ namespace Beauty4u.Common.Helpers
             }
             return list;
         }
+        public static DataTable ToDataTable<T>(List<T> items)
+        {
+            var dataTable = new DataTable(typeof(T).Name);
+
+            // Get all properties of T
+            var props = typeof(T).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+            // Create DataTable columns
+            foreach (var prop in props)
+            {
+                Type propType = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+                dataTable.Columns.Add(prop.Name, propType);
+            }
+
+            // Add rows
+            foreach (var item in items)
+            {
+                var values = new object[props.Length];
+                for (int i = 0; i < props.Length; i++)
+                {
+                    values[i] = props[i].GetValue(item) ?? DBNull.Value;
+                }
+                dataTable.Rows.Add(values);
+            }
+
+            return dataTable;
+        }
 
 
         public static DataTable StringListParameter(List<string> stringList)
@@ -180,6 +207,14 @@ namespace Beauty4u.Common.Helpers
             }
 
             return result;
+        }
+
+        public static List<string> ToStringList(this DataTable table, string columnName)
+        {
+            return table.AsEnumerable()
+                .Where(row => row[columnName] != DBNull.Value)
+                .Select(row => row[columnName].ToString()!)
+                .ToList();
         }
     }
 }

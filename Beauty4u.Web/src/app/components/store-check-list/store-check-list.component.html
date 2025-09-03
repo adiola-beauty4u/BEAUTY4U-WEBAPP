@@ -1,0 +1,5 @@
+<div [formGroup]="formGroup" class="autocomplete-wrapper">
+    <app-check-list [items]="storeValues" [formGroup]="formGroup" [formControlName]="formControlName"
+        label="Select Store" [addAll]="true" [selectAllIfNull]="selectAllIfNull" [defaultValue]="defaultValue">
+    </app-check-list>
+</div>

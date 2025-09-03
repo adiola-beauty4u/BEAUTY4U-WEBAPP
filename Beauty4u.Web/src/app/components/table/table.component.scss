@@ -1,0 +1,198 @@
+.tableComponent {
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 13px;
+    color: #323130;
+    background-color: #fff;
+    border: 1px solid #edebe9;
+    border-radius: 4px;
+    padding: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.tableComponent .row {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+/* Search box */
+.tableComponent .azc-input {
+    border: 1px solid #edebe9;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 13px;
+    transition: border-color 0.2s;
+}
+
+.tableComponent .azc-input:focus {
+    border-color: #0078d4;
+    outline: none;
+    box-shadow: 0 0 0 1px #0078d4;
+}
+
+/* Table */
+.tableComponent table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tableComponent thead {
+    background-color: #f3f2f1;
+    border-bottom: 1px solid #edebe9;
+}
+
+.tableComponent table thead th {
+    position: sticky;
+    top: 0;
+    /* adjust if you have a navbar/header, e.g., top: 56px; */
+    z-index: 10;
+    background-color: #f8f9fa;
+    /* Bootstrap light background */
+    color: #323130;
+    /* Azure dark gray */
+    font-weight: 600;
+    box-shadow: inset 0 -1px 0 #e1dfdd, 0 2px 4px rgba(0, 0, 0, .05);
+}
+
+// .tableComponent th {
+//     text-align: left;
+//     font-weight: 600;
+//     padding: 10px;
+//     color: #323130;
+//     cursor: pointer;
+//     user-select: none;
+// }
+
+.tableComponent th:hover {
+    background-color: #e1dfdd;
+}
+
+.tableComponent td {
+    padding: 10px;
+    border-top: 1px solid #edebe9;
+    vertical-align: middle;
+}
+
+/* Hover row */
+.tableComponent tbody tr:hover {
+    background-color: #faf9f8;
+}
+
+/* Command buttons */
+.tableComponent .btn {
+    background-color: #0078d4;
+    border: none;
+    color: white;
+    padding: 4px 10px;
+    font-size: 12px;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+
+.tableComponent .btn:hover {
+    background-color: #106ebe;
+}
+
+/* Pagination */
+.tableComponent .pagination {
+    margin-top: 15px;
+}
+
+.tableComponent .page-item .page-link {
+    color: #323130;
+    border: 1px solid #edebe9;
+    margin: 0 2px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.tableComponent .page-item.active .page-link {
+    background-color: #0078d4;
+    color: #fff;
+    border-color: #0078d4;
+}
+
+.tableComponent .page-item.disabled .page-link {
+    color: #a19f9d;
+    pointer-events: none;
+    background-color: #f3f2f1;
+}
+
+/* Page size dropdown */
+.tableComponent select.form-select {
+    font-size: 12px;
+    border: 1px solid #edebe9;
+    border-radius: 4px;
+    padding: 4px 8px;
+    background-color: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.tableComponent select.form-select:focus {
+    border-color: #0078d4;
+    outline: none;
+    box-shadow: 0 0 0 1px #0078d4;
+}
+
+/* Pagination UL */
+.pagination-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #323130;
+}
+
+.page-size-select {
+    width: 70px;
+    padding: 2px 6px;
+    font-size: 13px;
+    border: 1px solid #edebe9;
+    border-radius: 4px;
+}
+
+.range-label {
+    margin: 0 8px;
+    min-width: 100px;
+    text-align: center;
+}
+
+.nav-btn {
+    border: 1px solid #edebe9;
+    background: #fff;
+    color: #323130;
+    font-size: 13px;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.nav-btn:hover:not(:disabled) {
+    background: #f3f2f1;
+}
+
+.nav-btn:disabled {
+    color: #a19f9d;
+    background: #f3f2f1;
+    cursor: not-allowed;
+}
+
+.slide-in-content {
+    max-height: 300px;
+    overflow-y: auto;
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.slide-in-left-pane {
+    display: block;
+    max-height: 75vh; 
+    overflow-y: auto; 
+}

@@ -1,4 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+@import "flatpickr/dist/themes/material_blue.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
 
 html,
 body {
@@ -224,14 +226,21 @@ body {
 }
 
 .mat-mdc-dialog-content {
-  max-height: 80vh !important; /* adjust as needed */
-  padding: 1rem;    /* adjust padding */
-  overflow-y: auto; /* ensure scrolling if content is large */
+  max-height: 80vh !important;
+  /* adjust as needed */
+  padding: 1rem;
+  /* adjust padding */
+  overflow-y: auto;
+  /* ensure scrolling if content is large */
 }
 
 .autocomplete-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 400px;
+}
+
+.mt-6 {
+  margin-top: 6px;
 }

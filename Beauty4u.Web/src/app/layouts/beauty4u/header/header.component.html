@@ -1,0 +1,42 @@
+<header class="azure-header navbar navbar-expand-lg">
+    <div class="container-fluid px-3">
+        <!-- Branding -->
+        <a class="navbar-brand d-flex align-items-center fw-bold text-white" routerLink="/">
+            <img src="assets/azure-logo.svg" alt="Azure" class="me-2" width="24" height="24">
+            Azure Portal
+        </a>
+
+        <!-- Collapsed Menu -->
+        <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarHeader">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Search + Icons -->
+        <div class="collapse navbar-collapse" id="navbarHeader">
+            <!-- Global Search -->
+            <form class="d-flex ms-lg-4 flex-grow-1 my-2 my-lg-0">
+                <input class="form-control form-control-sm azure-search" type="search"
+                    placeholder="Search resources, services, docs..." aria-label="Search">
+            </form>
+
+            <!-- Right Controls -->
+            <ul class="navbar-nav ms-auto d-flex align-items-center">
+                <li class="nav-item mx-2">
+                    <button class="btn btn-sm btn-outline-light">🔔</button>
+                </li>
+                <li class="nav-item mx-2">
+                    <button class="btn btn-sm btn-outline-light">⚙️</button>
+                </li>
+                <li class="nav-item mx-2">
+                    <button class="btn btn-sm btn-outline-light" (click)="toggleDarkMode()">
+                        {{ darkMode ? '☀️' : '🌙' }}
+                    </button>
+                </li>
+                <li class="nav-item mx-2">
+                    <img src="assets/avatar.png" alt="User" class="rounded-circle" width="32" height="32">
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>

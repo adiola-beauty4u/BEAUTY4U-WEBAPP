@@ -1,0 +1,187 @@
+<mat-accordion class="w-100">
+    <mat-expansion-panel [expanded]="true" class="m-0">
+
+        <!-- Panel Summary with Filter Chips -->
+        <mat-expansion-panel-header class="py-1 min-h-10">
+            <mat-panel-title class="text-primary fw-medium small">
+                Search Filters
+            </mat-panel-title>
+            <mat-panel-description>
+                <mat-chip-listbox aria-label="Selected Filters" class="d-flex flex-wrap gap-1 small">
+                    <mat-chip *ngIf="searchForm.value.fromDate" color="primary" selected>
+                        Start Date: {{ searchForm.value.fromDate | date: 'yyyy-MM-dd' }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.toDate" color="primary" selected>
+                        End Date: {{ searchForm.value.toDate | date: 'yyyy-MM-dd' }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.promoNo" color="primary" selected>
+                        Promo No: {{ searchForm.value.promoNo }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.promoName" color="primary" selected>
+                        Promo Name: {{ searchForm.value.promoName }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.store?.displayText" color="primary" selected>
+                        Store: {{ searchForm.value.store?.displayText }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.promoType?.displayText" color="primary" selected>
+                        PromoType: {{ searchForm.value.promoType?.displayText }}
+                    </mat-chip>
+                    <mat-chip *ngIf="searchForm.value.promoStatus?.value" color="primary" selected>
+                        Status: {{ searchForm.value.promoStatus?.displayText }}
+                    </mat-chip>
+                </mat-chip-listbox>
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <!-- Panel Body -->
+        <form [formGroup]="searchForm" class="container-fluid py-3 small">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <!-- Date From -->
+                    <mat-form-field appearance="outline" class="w-36">
+                        <mat-label>Start</mat-label>
+                        <input matInput [matDatepicker]="fromPicker" formControlName="fromDate">
+                        <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #fromPicker></mat-datepicker>
+                    </mat-form-field>
+
+                    <span class="text-xs font-medium text-gray-600"> to </span>
+
+                    <!-- Date To -->
+                    <mat-form-field appearance="outline" class="w-36">
+                        <mat-label>End</mat-label>
+                        <input matInput [matDatepicker]="toPicker" formControlName="toDate">
+                        <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+                        <mat-datepicker #toPicker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-2">
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <mat-label>Promo No</mat-label>
+                        <input matInput formControlName="promoNo" placeholder="Promo No" />
+                    </mat-form-field>
+                </div>
+                <div class="col-md-3">
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <mat-label>Promo Name</mat-label>
+                        <input matInput formControlName="promoName" placeholder="Promo Name" />
+                    </mat-form-field>
+                </div>
+                <div class="col-md-3">
+                    <app-store-select [formGroup]="searchForm" formControlName="store"></app-store-select>
+                </div>
+                <div class="col-md-4">
+                    <app-syscodes-select [formGroup]="searchForm" formControlName="promoType" sysCodeClass="6"
+                        sysCodeLabel="Promotion Type"
+                        sysCodePlaceHolder="Type to search Promotion"></app-syscodes-select>
+                </div>
+                <div class="col-md-4">
+                    <app-radio-list label="Status" [inline]="true" formControlName="promoStatus"
+                        [items]="promoStatusItems" orientation="horizontal">
+                    </app-radio-list>
+                </div>
+            </div>
+
+            <div class="m-t-20 button-row-end">
+                <button mat-flat-button color="primary" type="button" (click)="search()" class="py-1 px-3 small">
+                    Search
+                </button>
+                <button mat-flat-button color="primary" type="button" (click)="new()" class="py-1 px-3 small">
+                    New
+                </button>
+                <button mat-stroked-button color="warn" type="button" (click)="clear()" class="py-1 px-3 small">
+                    Clear
+                </button>
+            </div>
+        </form>
+    </mat-expansion-panel>
+
+    <app-table [tableData]="output" [pageSize]="50" [methodList]="{ viewItems: viewItems.bind(this) }"
+        [slideInContent]="promoItemsContent"></app-table>
+
+    <ng-template #promoItemsContent>
+        <div class="container-fluid py-3">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <h2>{{ selectedPromo?.promoName }}</h2>
+                </div>
+                <div class="col-md-6 button-row-end">
+                    <button mat-stroked-button color="warn" type="button" (click)="editPromo()" class="py-1 px-3 small">
+                        Edit
+                    </button>
+                    <button mat-stroked-button color="secondary" type="button" (click)="transferPromo()"
+                        class="py-1 px-3 small">
+                        Transfer to Stores
+                    </button>
+                </div>
+            </div>
+            <div class="row g-3">
+                <!-- Left Column -->
+                <div class="col-md-6">
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Promo No:</label>
+                        <div>{{ selectedPromo?.promoNo }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Start Date:</label>
+                        <div>{{ selectedPromo?.startDate }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Store List:</label>
+                        <div>{{ selectedPromo?.storeList }}</div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-6">
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Promo Date:</label>
+                        <div>{{ selectedPromo?.promoDate }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">End Date:</label>
+                        <div>{{ selectedPromo?.endDate }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <hr class="my-3">
+
+            <!-- Items Table -->
+            <app-table #promotionsTable *ngIf="promoItems" [groupingEnabled]="isInlineGrouped" [tableData]="promoItems"
+                [pageSize]="50">
+            </app-table>
+        </div>
+    </ng-template>
+
+    <ng-template #newPromoType>
+        <div class="p-4">
+            <div class="flex flex-col sm:flex-row gap-3 mt-5">
+                <button mat-flat-button color="primary" type="button" (click)="addByProduct()"
+                    class="flex-1 py-2 m-t-20">
+                    <mat-icon class="mr-2">shopping_cart</mat-icon>
+                    Add by Product Selection
+                </button> <button mat-stroked-button color="warn" type="button" (click)="addByRules()"
+                    class="flex-1 py-2 m-t-20">
+                    <mat-icon class="mr-2">tune</mat-icon>
+                    Add by Vendor, Category, Brand
+                </button>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #promoTransferContent let-name="name">
+        <form [formGroup]="promoTransferForm" class="container-fluid py-3 small">
+            <app-store-check-list [formGroup]="promoTransferForm" formControlName="storeList"
+                [selectAllIfNull]="false"></app-store-check-list>
+            <div class="button-row-end">
+                <button mat-stroked-button color="secondary" type="button" (click)="confirmStoreTransfer()"
+                    class="py-1 px-3 small">
+                    Transfer to Stores
+                </button>
+            </div>
+        </form>
+    </ng-template>
+
+</mat-accordion>

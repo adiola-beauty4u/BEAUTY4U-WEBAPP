@@ -1,0 +1,79 @@
+:host {
+    --azure-blue: #0078d4;
+    --surface: #ffffff;
+    --text: #222;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --hover: rgba(0, 120, 212, .08);
+    --focus: rgba(0, 120, 212, .25);
+    display: block;
+}
+
+.azure-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .06);
+}
+
+.title {
+    margin: 0 0 8px;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.azure-field .form-control {
+    border-radius: 10px 0 0 10px;
+    border: 1px solid var(--border);
+    font-size: 14px;
+}
+
+.azure-field .form-control:focus {
+    border-color: var(--azure-blue);
+    box-shadow: 0 0 0 3px var(--focus);
+}
+
+.azure-field .input-group-text {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: none;
+    border-radius: 0 10px 10px 0;
+    color: var(--muted);
+}
+
+/* Flatpickr popup themed like Azure */
+.flatpickr-calendar {
+    border-radius: 12px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .18);
+    border: 1px solid var(--border);
+}
+
+.flatpickr-months {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.flatpickr-weekday {
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.flatpickr-day {
+    border-radius: 10px;
+}
+
+.flatpickr-day:hover {
+    background: var(--hover);
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+    background: var(--azure-blue);
+    color: #fff;
+}
+
+.flatpickr-day.inRange {
+    background: rgba(0, 120, 212, .14);
+}

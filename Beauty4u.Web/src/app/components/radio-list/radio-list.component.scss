@@ -17,3 +17,24 @@ mat-radio-group.horizontal {
     display: flex;
     gap: 1rem;
 }
+
+.radio-inline {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.radio-inline label {
+    margin: 0;
+    font-weight: 500;
+}
+
+.radio-stacked {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.radio-stacked label {
+    font-weight: 500;
+}

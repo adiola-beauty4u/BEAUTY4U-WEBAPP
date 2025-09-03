@@ -7,18 +7,27 @@ import { ModalContainerComponent } from '../components/modal-container/modal-con
 })
 export class ModalService {
   private dialog = inject(MatDialog);
+  private dialogRef?: MatDialogRef<ModalContainerComponent>;
 
   openModal(
     title: string,
     content: string | TemplateRef<any>,
     context: any = {}
   ): MatDialogRef<ModalContainerComponent> {
-    return this.dialog.open(ModalContainerComponent, {
+
+    this.dialogRef = this.dialog.open(ModalContainerComponent, {
       data: { title, content, context },
-      width: '90vw',
-      height: '90vh',
       maxWidth: '90vw',
       maxHeight: '90vh',
     });
+
+    return this.dialogRef;
+  }
+
+  closeModal(result?: any): void {
+    if (this.dialogRef) {
+      this.dialogRef.close(result);
+      this.dialogRef = undefined;
+    }
   }
 }

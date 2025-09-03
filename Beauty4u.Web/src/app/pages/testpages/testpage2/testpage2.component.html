@@ -1,0 +1,117 @@
+<div class="nsg-container">
+    <h5 class="mb-4 fw-bold">AllowAnyB4UWebInbound</h5>
+    <form [formGroup]="ruleForm" class="row g-3">
+
+        <!-- Source -->
+        <div class="col-12 row">
+            <label class="col-sm-4 col-form-label">Source</label>
+            <div class="col-sm-8">
+                <select class="form-select" formControlName="source">
+                    <option value="Any">Any</option>
+                    <option value="IP">IP Address</option>
+                    <option value="Subnet">Subnet</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Source Port Ranges -->
+        <div class="col-12 row">
+            <label class="col-sm-4 col-form-label">Source port ranges</label>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" formControlName="sourcePortRanges" placeholder="*">
+            </div>
+            <div class="col-sm-8">
+                <input formControlName="sourcePortRanges" name="testonly" class="azc-input" type="text" placeholder="">
+                <app-datepicker></app-datepicker>
+            </div>
+        </div>
+
+        <!-- Destination -->
+        <div class="col-12 row">
+            <label class="col-sm-4 col-form-label">Destination</label>
+            <div class="col-sm-8">
+                <select class="form-select" formControlName="destination">
+                    <option value="Any">Any</option>
+                    <option value="IP">IP Address</option>
+                    <option value="Subnet">Subnet</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Service -->
+        <div class="col-12 row">
+            <label class="col-sm-4 col-form-label">Service</label>
+            <div class="col-sm-8">
+                <select class="form-select" formControlName="service">
+                    <option value="Custom">Custom</option>
+                    <option value="HTTP">HTTP</option>
+                    <option value="HTTPS">HTTPS</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Destination Port Ranges -->
+        <div class="col-12 row">
+            <label class="col-sm-4 col-form-label">Destination port ranges</label>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" formControlName="destinationPortRanges" placeholder="8001">
+            </div>
+        </div>
+
+        <!-- Protocol -->
+        <div class="col-12 row">
+            <label class="col-sm-4 col-form-label">Protocol</label>
+            <div class="col-sm-8 pt-2">
+                <div class="form-check form-check-inline" *ngFor="let proto of protocols">
+                    <input class="form-check-input" type="radio" [value]="proto" formControlName="protocol">
+                    <label class="form-check-label">{{proto}}</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action -->
+        <div class="col-12 row">
+            <label class="col-sm-4 col-form-label">Action</label>
+            <div class="col-sm-8 pt-2">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" value="Allow" formControlName="action">
+                    <label class="form-check-label">Allow</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" value="Deny" formControlName="action">
+                    <label class="form-check-label">Deny</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Priority -->
+        <div class="col-12 row">
+            <label class="col-sm-4 col-form-label">Priority</label>
+            <div class="col-sm-8">
+                <input type="number" class="form-control" formControlName="priority" placeholder="1000">
+            </div>
+        </div>
+
+        <!-- Name -->
+        <div class="col-12 row">
+            <label class="col-sm-4 col-form-label">Name</label>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" formControlName="name" placeholder="AllowAnyB4UWebInbound">
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="col-12 row">
+            <label class="col-sm-4 col-form-label">Description</label>
+            <div class="col-sm-8">
+                <textarea rows="2" class="form-control" formControlName="description"></textarea>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="col-12 text-end mt-3">
+            <button type="button" class="btn btn-primary" (click)="onSave()">Save</button>
+            <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">Cancel</button>
+        </div>
+    </form>
+</div>
