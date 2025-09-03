@@ -14,6 +14,7 @@ import { FormControl, ReactiveFormsModule, AbstractControl } from '@angular/form
 })
 export class ItemGroupSelectComponent implements OnInit {
   @Input({ required: true }) selectedValue!: AbstractControl;
+  @Input() defaultValue?: string; // 👈 optional default value (code)
 
   itemGroups: ItemGroup[] = [];
 
@@ -25,7 +26,14 @@ export class ItemGroupSelectComponent implements OnInit {
 
   ngOnInit(): void {
     this.itemGroupService.getItemGroups().subscribe({
-      next: data => (this.itemGroups = data),
+      next: data => {
+        this.itemGroups = data;
+
+        // 👇 if defaultValue exists, try to preselect
+        if (this.defaultValue) {
+          this.setDefaultSelection(this.defaultValue);
+        }
+      },
       error: err => console.error('Item Group API error', err)
     });
   }
@@ -54,18 +62,21 @@ export class ItemGroupSelectComponent implements OnInit {
   }
 
   updateSelectedCode(): void {
-    var selectedDesc = "";
+    let selectedDesc = '';
     if (this.selectedLevel3?.code) {
-      selectedDesc = this.selectedLevel1?.name + " - " + this.selectedLevel2?.name + " - " + this.selectedLevel3?.name;
+      selectedDesc = `${this.selectedLevel1?.name} - ${this.selectedLevel2?.name} - ${this.selectedLevel3?.name}`;
     } else if (this.selectedLevel2?.code) {
-      selectedDesc = this.selectedLevel1?.name + " - " + this.selectedLevel2?.name;
+      selectedDesc = `${this.selectedLevel1?.name} - ${this.selectedLevel2?.name}`;
     } else if (this.selectedLevel1?.code) {
       selectedDesc = this.selectedLevel1?.name;
     }
+
     const selectedCode =
       this.selectedLevel3?.code ??
       this.selectedLevel2?.code ??
-      this.selectedLevel1?.code ?? '';
+      this.selectedLevel1?.code ??
+      '';
+
     this.selectedValue.setValue({ code: selectedCode, name: selectedDesc });
   }
 
@@ -74,5 +85,33 @@ export class ItemGroupSelectComponent implements OnInit {
     this.selectedLevel2 = undefined;
     this.selectedLevel3 = undefined;
     this.selectedValue.reset();
+  }
+
+  // 🔹 helper: recursively search for default code
+  private setDefaultSelection(defaultCode: string): void {
+    for (const level1 of this.itemGroups) {
+      if (level1.code === defaultCode) {
+        this.selectedLevel1 = level1;
+        this.updateSelectedCode();
+        return;
+      }
+      for (const level2 of level1.childItemGroups ?? []) {
+        if (level2.code === defaultCode) {
+          this.selectedLevel1 = level1;
+          this.selectedLevel2 = level2;
+          this.updateSelectedCode();
+          return;
+        }
+        for (const level3 of level2.childItemGroups ?? []) {
+          if (level3.code === defaultCode) {
+            this.selectedLevel1 = level1;
+            this.selectedLevel2 = level2;
+            this.selectedLevel3 = level3;
+            this.updateSelectedCode();
+            return;
+          }
+        }
+      }
+    }
   }
 }

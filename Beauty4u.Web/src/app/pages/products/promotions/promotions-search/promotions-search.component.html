@@ -102,7 +102,18 @@
     <ng-template #promoItemsContent>
         <div class="container-fluid py-3">
             <div class="row g-3">
-                <h2>{{ selectedPromo?.promoName }}</h2>
+                <div class="col-md-6">
+                    <h2>{{ selectedPromo?.promoName }}</h2>
+                </div>
+                <div class="col-md-6 button-row-end">
+                    <button mat-stroked-button color="warn" type="button" (click)="editPromo()" class="py-1 px-3 small">
+                        Edit
+                    </button>
+                    <button mat-stroked-button color="secondary" type="button" (click)="transferPromo()"
+                        class="py-1 px-3 small">
+                        Transfer to Stores
+                    </button>
+                </div>
             </div>
             <div class="row g-3">
                 <!-- Left Column -->
@@ -138,7 +149,8 @@
             <hr class="my-3">
 
             <!-- Items Table -->
-            <app-table #promotionsTable *ngIf="promoItems" [tableData]="promoItems" [pageSize]="50">
+            <app-table #promotionsTable *ngIf="promoItems" [groupingEnabled]="isInlineGrouped" [tableData]="promoItems"
+                [pageSize]="50">
             </app-table>
         </div>
     </ng-template>
@@ -146,10 +158,12 @@
     <ng-template #newPromoType>
         <div class="p-4">
             <div class="flex flex-col sm:flex-row gap-3 mt-5">
-                <button mat-flat-button color="primary" type="button" (click)="addByProduct()" class="flex-1 py-2 m-t-20">
+                <button mat-flat-button color="primary" type="button" (click)="addByProduct()"
+                    class="flex-1 py-2 m-t-20">
                     <mat-icon class="mr-2">shopping_cart</mat-icon>
                     Add by Product Selection
-                </button>  <button mat-stroked-button color="warn" type="button" (click)="addByRules()" class="flex-1 py-2 m-t-20">
+                </button> <button mat-stroked-button color="warn" type="button" (click)="addByRules()"
+                    class="flex-1 py-2 m-t-20">
                     <mat-icon class="mr-2">tune</mat-icon>
                     Add by Vendor, Category, Brand
                 </button>
@@ -157,5 +171,17 @@
         </div>
     </ng-template>
 
+    <ng-template #promoTransferContent let-name="name">
+        <form [formGroup]="promoTransferForm" class="container-fluid py-3 small">
+            <app-store-check-list [formGroup]="promoTransferForm" formControlName="storeList"
+                [selectAllIfNull]="false"></app-store-check-list>
+            <div class="button-row-end">
+                <button mat-stroked-button color="secondary" type="button" (click)="confirmStoreTransfer()"
+                    class="py-1 px-3 small">
+                    Transfer to Stores
+                </button>
+            </div>
+        </form>
+    </ng-template>
 
 </mat-accordion>

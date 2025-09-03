@@ -12,5 +12,6 @@ namespace Beauty4u.Models.Api.Promotions
         public decimal RetailPrice { get; set; }
         public decimal Price { get; set; }
         public decimal Cost { get; set; }
+        public int? PromoRuleId { get; set; }
     }
 }

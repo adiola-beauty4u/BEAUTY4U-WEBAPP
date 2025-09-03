@@ -7,5 +7,6 @@ namespace Beauty4u.Models.Api.Auth
     {
         public string PromoType { get; set; } = string.Empty;
         public decimal PromoRate { get; set; }
+        public bool FromPromoPage { get; set; }
     }
 }

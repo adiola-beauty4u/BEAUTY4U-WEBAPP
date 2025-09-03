@@ -1,0 +1,16 @@
+<div [ngClass]="{ 'checkbox-inline': inline, 'checkbox-stacked': !inline }">
+    <label *ngIf="label">{{ label }}</label>
+    <div [class.vertical]="orientation === 'vertical'" [class.horizontal]="orientation === 'horizontal'">
+
+        <!-- Optional "All" checkbox -->
+        <mat-checkbox *ngIf="addAll" [checked]="allSelected" (change)="toggleAll($event.checked)" [disabled]="disabled">
+            All
+        </mat-checkbox>
+
+        <!-- Checklist items -->
+        <mat-checkbox *ngFor="let item of items" [checked]="isSelected(item.value)"
+            (change)="toggleItem(item.value, $event.checked)" [disabled]="disabled">
+            {{ item.displayText }}
+        </mat-checkbox>
+    </div>
+</div>

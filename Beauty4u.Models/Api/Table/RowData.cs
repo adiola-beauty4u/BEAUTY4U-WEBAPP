@@ -18,5 +18,6 @@ namespace Beauty4u.Models.Api.Table
         public bool IsNew { get; set; }
         public bool IsChanged { get; set; }
         public object? AdditionalData { get; set; }
+        public string GroupValue { get; set; } = string.Empty;
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Beauty4u.Models.Dto.Promotions
 {
-    public class PromotionRules
+    public class PromotionRuleDto : IPromotionRuleDto
     {
         public int PromoRuleId { get; set; }
         public string PromoType { get; set; } = string.Empty;

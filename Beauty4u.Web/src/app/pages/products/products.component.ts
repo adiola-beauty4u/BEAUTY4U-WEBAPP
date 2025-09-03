@@ -124,7 +124,7 @@ export class ProductsComponent implements OnInit {
     return group?.columns.map(c => c.fieldName);
   }
 
-  getPromotions(row: any) {
+  getPromotions(rowData: RowData, row: any) {
     this.loadingService.show("Getting promotions..");
     this.promotionService.searchProductPromotionsBySku(row?.product?.sku).subscribe({
       next: data => {

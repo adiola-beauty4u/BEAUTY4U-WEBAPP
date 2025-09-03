@@ -14,6 +14,7 @@ export interface RowData {
     rowKey?: string;
     cells: { [key: string]: CellData };
     additionalData? : any;
+    groupValue?: string;
 }
 
 export interface ColumnDef {

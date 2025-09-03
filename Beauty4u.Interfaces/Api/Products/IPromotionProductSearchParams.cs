@@ -6,5 +6,6 @@ namespace Beauty4u.Interfaces.Api.Products
     {
         decimal PromoRate { get; set; }
         string PromoType { get; set; }
+        bool FromPromoPage { get; set; }
     }
 }

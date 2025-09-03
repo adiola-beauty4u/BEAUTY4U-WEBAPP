@@ -1,6 +1,6 @@
 <mat-card class="cardWithShadow">
     <mat-card-header>
-        <mat-card-title>New Promotion</mat-card-title>
+        <mat-card-title> {{ promoNo ? 'Update Promotion' : 'New Promotion' }} </mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
@@ -80,10 +80,10 @@
                             <div class="col-md-2">
                                 <app-syscodes-select [formGroup]="promoForm" formControlName="promoType"
                                     sysCodeClass="6" sysCodeLabel="Promotion Type"
-                                    sysCodePlaceHolder="Type to search Promotion"
+                                    sysCodePlaceHolder="Type to search Promotion" [defaultValue]="promoType"
                                     [addAll]="false"></app-syscodes-select>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-1">
                                 <mat-form-field appearance="outline" class="w-100 m-0">
                                     <mat-label>Promo Rate</mat-label>
                                     <input matInput type="number" formControlName="promoRate" decimalFormat step="0.01"
@@ -102,7 +102,8 @@
                                 <mat-icon>cancel</mat-icon> Clear
                             </button>
 
-                            <button mat-flat-button color="primary" [disabled]="promoForm.invalid" matStepperNext>
+                            <button mat-flat-button color="primary" [disabled]="promoForm.invalid || promoNotFound"
+                                matStepperNext>
                                 Next
                             </button>
                         </div>
@@ -121,7 +122,7 @@
                                 <mat-expansion-panel *ngFor="let rule of promotionRules; let i = index">
                                     <mat-expansion-panel-header>
                                         <mat-panel-title>
-                                            Rule #{{ i + 1 }} - 
+                                            Rule #{{ i + 1 }} -
                                             <mat-chip-listbox aria-label="Selected Filters"
                                                 class="d-flex flex-wrap gap-1 small">
                                                 <mat-chip *ngIf="rule.promoSearchForm.value.promoType?.displayText"
@@ -170,8 +171,8 @@
                                                 <app-syscodes-select [formGroup]="rule.promoSearchForm"
                                                     formControlName="promoType" sysCodeClass="6"
                                                     sysCodeLabel="Promotion Type"
-                                                    sysCodePlaceHolder="Type to search Promotion"
-                                                    [addAll]="false"></app-syscodes-select>
+                                                    sysCodePlaceHolder="Type to search Promotion" [addAll]="false"
+                                                    [defaultValue]="rule.promoType"></app-syscodes-select>
                                             </div>
                                             <div class="col-md-3">
                                                 <mat-form-field appearance="outline" class="w-100 m-0">
@@ -185,24 +186,28 @@
                                             <div class="col-md-6">
                                                 <label class="fw-medium text-primary">Category:</label>
                                                 <app-item-group-select
-                                                    [selectedValue]="rule.promoSearchForm.get('itemGroupCode')!"></app-item-group-select>
+                                                    [selectedValue]="rule.promoSearchForm.get('itemGroupCode')!"
+                                                    [defaultValue]="rule.itemGroup"></app-item-group-select>
                                             </div>
 
                                             <div class="col-md-3">
                                                 <label class="fw-medium text-primary">Vendor:</label>
                                                 <app-vendor-select [formGroup]="rule.promoSearchForm"
-                                                    formControlName="vendor"></app-vendor-select>
+                                                    formControlName="vendor"
+                                                    [defaultValue]="rule.vendorCode"></app-vendor-select>
                                             </div>
                                             <div class="col-md-3">
                                                 <label class="fw-medium text-primary">Brand:</label>
                                                 <app-brand-select [formGroup]="rule.promoSearchForm"
-                                                    formControlName="brand"></app-brand-select>
+                                                    formControlName="brand"
+                                                    [defaultValue]="rule.brand"></app-brand-select>
                                             </div>
                                             <div class="col-md-3">
                                                 <app-select-control [formGroup]="rule.promoSearchForm"
                                                     formControlName="retailPriceCondition"
                                                     [selectItems]="retailPriceConditions" label="Retail Price Condition"
-                                                    placeHolder="Retail Price Condition"></app-select-control>
+                                                    placeHolder="Retail Price Condition"
+                                                    [defaultValue]="rule.retailPriceCondition"></app-select-control>
                                                 <mat-form-field appearance="outline" class="w-100 m-0">
                                                     <mat-label>Retail Price</mat-label>
                                                     <input matInput type="number" formControlName="retailPriceRate"
@@ -573,4 +578,5 @@
             <app-table [tableData]="productPromotions" [pageSize]="50"></app-table>
         </div>
     </ng-template>
+
 </mat-card>

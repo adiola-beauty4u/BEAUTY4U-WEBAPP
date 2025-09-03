@@ -10,10 +10,12 @@ using Beauty4u.Interfaces.DataAccess.Api;
 using Beauty4u.Interfaces.Dto.Products;
 using Beauty4u.Interfaces.Services;
 using Beauty4u.Models.Api.Products;
+using Beauty4u.Models.Api.Promotions;
 using Beauty4u.Models.Api.Table;
 using Beauty4u.Models.Common;
 using Beauty4u.Models.DataAccess.B4u;
 using Beauty4u.Models.Dto.Products;
+using Beauty4u.Models.Dto.Promotions;
 using Beauty4u.Models.Requests;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -1675,9 +1677,83 @@ namespace Beauty4u.Business.Services
                 var tableData = new TableData();
                 tableData.Columns.Add(new ColumnData()
                 {
-                    Header = "Vendor Name",
-                    FieldName = "Vendor Name",
+                    Header = "Vendor",
+                    FieldName = "Vendor",
                     DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Brand",
+                    FieldName = nameof(ProductPromotion.Brand),
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Style Code",
+                    FieldName = nameof(ProductPromotion.StyleCode),
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Product Description",
+                    FieldName = nameof(ProductPromotion.StyleDesc),
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Category",
+                    FieldName = nameof(ProductPromotion.Category),
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Color",
+                    FieldName = nameof(ProductPromotion.Color),
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Size",
+                    FieldName = nameof(ProductPromotion.Size),
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Cost",
+                    FieldName = nameof(ProductPromotion.Cost),
+                    DataType = ColumnDataType.Decimal
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Current Retail Price",
+                    FieldName = nameof(ProductPromotion.CurrentRetailPrice),
+                    DataType = ColumnDataType.Decimal
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "New Promotion Price",
+                    FieldName = nameof(ProductPromotion.NewPrice),
+                    DataType = ColumnDataType.Decimal
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "Sku",
+                    FieldName = nameof(ProductPromotion.Sku),
+                    DataType = ColumnDataType.String
+                });
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "UPC",
+                    FieldName = nameof(ProductPromotion.UPC),
+                    DataType = ColumnDataType.String
+                });
+
+                tableData.Columns.Add(new ColumnData()
+                {
+                    Header = "View Promotions",
+                    FieldName = "Promotions",
+                    DataType = ColumnDataType.Int,
+                    SlideInCommand = "getPromotions"
                 });
 
                 tableData.Columns.Add(new ColumnData()
@@ -1689,81 +1765,6 @@ namespace Beauty4u.Business.Services
                     IsHidden = true
                 });
 
-                tableData.Columns.Add(new ColumnData()
-                {
-                    Header = "Brand",
-                    FieldName = "Brand",
-                    DataType = ColumnDataType.String
-                });
-                tableData.Columns.Add(new ColumnData()
-                {
-                    Header = "Style Code",
-                    FieldName = "Style Code",
-                    DataType = ColumnDataType.String
-                });
-                tableData.Columns.Add(new ColumnData()
-                {
-                    Header = "Product Description",
-                    FieldName = "Product Description",
-                    DataType = ColumnDataType.String
-                });
-                tableData.Columns.Add(new ColumnData()
-                {
-                    Header = "Size",
-                    FieldName = "Size",
-                    DataType = ColumnDataType.String
-                });
-                tableData.Columns.Add(new ColumnData()
-                {
-                    Header = "Color",
-                    FieldName = "Color",
-                    DataType = ColumnDataType.String
-                });
-                tableData.Columns.Add(new ColumnData()
-                {
-                    Header = "Category",
-                    FieldName = "Category",
-                    DataType = ColumnDataType.String
-                });
-                tableData.Columns.Add(new ColumnData()
-                {
-                    Header = "UPC",
-                    FieldName = "UPC",
-                    DataType = ColumnDataType.String
-                });
-                tableData.Columns.Add(new ColumnData()
-                {
-                    Header = "SKU",
-                    FieldName = "Sku",
-                    DataType = ColumnDataType.String
-                });
-                tableData.Columns.Add(new ColumnData()
-                {
-                    Header = "Cost",
-                    FieldName = "Cost",
-                    DataType = ColumnDataType.Decimal
-                });
-                tableData.Columns.Add(new ColumnData()
-                {
-                    Header = "Retail Price",
-                    FieldName = "Retail Price",
-                    DataType = ColumnDataType.Decimal
-                });
-                tableData.Columns.Add(new ColumnData()
-                {
-                    Header = "New Price",
-                    FieldName = "New Price",
-                    DataType = ColumnDataType.Decimal
-                });
-
-                tableData.Columns.Add(new ColumnData()
-                {
-                    Header = "View Promotions",
-                    FieldName = "Promotions",
-                    DataType = ColumnDataType.Int,
-                    SlideInCommand = "getPromotions"
-                });
-
 
                 foreach (var row in output)
                 {
@@ -1773,7 +1774,7 @@ namespace Beauty4u.Business.Services
                         RowKey = row.Sku,
                     };
 
-                    rowData.Cells.Add("Vendor Name", new CellData()
+                    rowData.Cells.Add("Vendor", new CellData()
                     {
                         RawValue = row.VendorName,
                         TextValue = row.VendorName,
@@ -1783,12 +1784,12 @@ namespace Beauty4u.Business.Services
                         RawValue = row.Brand,
                         TextValue = row.Brand,
                     });
-                    rowData.Cells.Add("Style Code", new CellData()
+                    rowData.Cells.Add(nameof(row.StyleCode), new CellData()
                     {
                         RawValue = row.StyleCode,
                         TextValue = row.StyleCode,
                     });
-                    rowData.Cells.Add("Product Description", new CellData()
+                    rowData.Cells.Add(nameof(row.StyleDesc), new CellData()
                     {
                         RawValue = row.StyleDesc,
                         TextValue = row.StyleDesc,
@@ -1825,7 +1826,7 @@ namespace Beauty4u.Business.Services
                         TextValue = $"${row.Cost:N2}",
                     });
 
-                    rowData.Cells.Add("Retail Price", new CellData()
+                    rowData.Cells.Add("CurrentRetailPrice", new CellData()
                     {
                         RawValue = row.RetailPrice,
                         TextValue = $"${row.RetailPrice:N2}",
@@ -1847,7 +1848,7 @@ namespace Beauty4u.Business.Services
                             break;
                     }
 
-                    rowData.Cells.Add("New Price", new CellData()
+                    rowData.Cells.Add("NewPrice", new CellData()
                     {
                         RawValue = newPrice,
                         TextValue = $"${newPrice:N2}",
@@ -1869,7 +1870,7 @@ namespace Beauty4u.Business.Services
                         TextValue = $"{row.StyleDesc} - (Sku: {row.Sku}, UPC: {row.UPC})",
                     });
 
-                    rowData.AdditionalData = new { sku = row.Sku, NewPrice = newPrice, PromoType = searchParams.PromoType, PromoRate = searchParams.PromoRate };
+                    rowData.AdditionalData = new { sku = row.Sku, Price = newPrice, RetailPrice = row.RetailPrice, Cost = row.Cost, PromoType = searchParams.PromoType, PromoRate = searchParams.PromoRate, PromoRuleId = 0 };
                     tableData.Rows.Add(rowData);
                 }
                 return tableData;

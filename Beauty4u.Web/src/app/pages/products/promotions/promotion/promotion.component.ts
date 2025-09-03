@@ -29,10 +29,11 @@ import { PromotionProductSearchParams } from 'src/interfaces/product-for-promoti
 import { PromotionRule } from 'src/interfaces/promotion-rule';
 import { DecimalFormatDirective } from 'src/directives/decimal-format.directive';
 import { TableComponent } from 'src/app/components/table/table.component';
-import { PromotionCreateRequest } from 'src/interfaces/promotion-create-request';
+import { PromotionRequest } from 'src/interfaces/promotion-request';
 import { ConfirmDialogComponent } from 'src/app/pages/ui-components/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { SelectControlComponent } from 'src/app/components/select-control/select-control.component';
+import { GetProductPromotionRequest } from 'src/interfaces/get-product-promotion-request';
 
 @Component({
   selector: 'app-promotion',
@@ -58,7 +59,7 @@ import { SelectControlComponent } from 'src/app/components/select-control/select
     DecimalFormatDirective,
     MatStepper,
     TableComponent,
-    SelectControlComponent
+    SelectControlComponent,
   ],
   templateUrl: './promotion.component.html',
   styleUrl: './promotion.component.scss'
@@ -69,12 +70,21 @@ export class PromotionComponent implements OnInit {
   promoForm: FormGroup;
   productSearchForm: FormGroup;
 
+  promoNo: string = '';
+  promoType?: string;
+  promoNotFound: boolean = false;
+
   transferLabel = 'Add';
 
   addProductsByRules: boolean = false;
 
   promotionRules: {
     promoRuleId: number;
+    brand: string;
+    vendorCode: string;
+    itemGroup: string;
+    retailPriceCondition: string;
+    promoType: string;
     promoSearchForm: FormGroup;
     productResults: TableData;
   }[] = [];
@@ -138,6 +148,8 @@ export class PromotionComponent implements OnInit {
 
     this.route.queryParamMap.subscribe(params => {
       this.addProductsByRules = (params.get('addBy') ?? '') == 'rules';
+
+      this.promoNo = params.get('promono') ?? '';
     });
 
     this.productSearchForm = this.fb.group({
@@ -155,6 +167,10 @@ export class PromotionComponent implements OnInit {
       retailPriceCondition: [null],
       retailPriceRate: this.fb.control<string>(''),
     });
+
+    if (this.promoNo) {
+      this.getPromotion();
+    }
   }
 
   clear(): void {
@@ -282,6 +298,11 @@ export class PromotionComponent implements OnInit {
   addPromotionRule(): void {
     this.promotionRules.push({
       promoRuleId: 0,
+      brand: '',
+      vendorCode: '',
+      itemGroup: '',
+      retailPriceCondition: '',
+      promoType: '',
       promoSearchForm: this.fb.group({
         vendor: [null],
         itemGroupCode: this.fb.control<string>(''),
@@ -345,14 +366,13 @@ export class PromotionComponent implements OnInit {
   }
 
   onRowsTransfer(rows: any[]) {
-    const newRows = rows.filter(row =>
-      !this.selectedProducts.rows.some(r => r.rowKey === row.rowKey)
-    );
+    const existing = this.selectedProducts.rows;
+    const newRows = rows.filter(row => !existing.some(r => r.rowKey === row.rowKey));
 
-    this.selectedProducts.rows = [
-      ...this.selectedProducts.rows,
-      ...newRows
-    ];
+    this.selectedProducts = {
+      ...this.selectedProducts,
+      rows: [...existing, ...newRows] // always new ref
+    };
   }
 
   onProductColumnsReady(cols: any[]) {
@@ -370,8 +390,8 @@ export class PromotionComponent implements OnInit {
   confirmCreatePromo() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
-        title: 'Confirm Promo Creation',
-        message: 'Create promotion?',
+        title: 'Confirm Promo ' + (this.promoNo ? 'Update' : 'Creation'),
+        message: (this.promoNo ? 'Update' : 'Create') + ' promotion?',
         icon: 'warning' // optional: pass 'info', 'error', etc.
       },
       width: '400px',
@@ -380,13 +400,17 @@ export class PromotionComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.createPromo();
+        if (this.promoNo) {
+          this.updatePromo();
+        } else {
+          this.createPromo();
+        }
       }
     });
   }
 
   createPromo() {
-    var promotionCreateRequest: PromotionCreateRequest = {
+    var promotionCreateRequest: PromotionRequest = {
       promoName: this.promoForm.value.promoName,
       fromDate: this.promoForm.value.fromDate,
       toDate: this.promoForm.value.toDate,
@@ -399,7 +423,7 @@ export class PromotionComponent implements OnInit {
         return {
           promoType: formValue.promoType?.value,
           promoRate: formValue.promoRate,
-          vendor: formValue.vendor?.value,
+          vendorCode: formValue.vendor?.value,
           itemGroup: formValue.itemGroupCode?.code,
           brand: formValue.brand?.value,
           retailPriceCondition: formValue.retailPriceCondition?.value,
@@ -419,6 +443,134 @@ export class PromotionComponent implements OnInit {
       },
       error: (err) => {
         console.error('Promotion create failed:', err);
+        this.loadingService.hide();
+      }
+    });
+  }
+
+  updatePromo() {
+    var promotionRequest: PromotionRequest = {
+      promoNo: this.promoNo,
+      promoName: this.promoForm.value.promoName,
+      fromDate: this.promoForm.value.fromDate,
+      toDate: this.promoForm.value.toDate,
+      promoRate: this.promoForm.value.promoRate,
+      promoType: this.promoForm.value.promoType?.value,
+      promoStatus: this.promoForm.value.promoStatus?.value == 'active'
+    };
+    if (this.addProductsByRules) {
+      promotionRequest.promotionRules = this.promotionRules.map(rule => {
+        const formValue = rule.promoSearchForm.value;
+        return {
+          promoRuleId: rule.promoRuleId,
+          promoType: formValue.promoType?.value,
+          promoRate: formValue.promoRate,
+          vendorCode: rule.promoSearchForm.value.vendor?.value,
+          itemGroup: formValue.itemGroupCode?.code,
+          brand: formValue.brand?.value,
+          retailPriceCondition: formValue.retailPriceCondition?.value,
+          retailPriceRate: formValue.retailPriceRate || 0,
+        };
+      });
+    } else {
+      promotionRequest.promotionItems = this.selectedProducts.rows.map(row => { return row.additionalData });
+    }
+
+    this.loadingService.show("Saving promotion...");
+    this.promotionService.updatePromotion(promotionRequest).subscribe({
+      next: (data) => {
+        alert("Promotion successfully saved.")
+        this.loadingService.hide();
+        this.router.navigate(['/products/promotions']);
+      },
+      error: (err) => {
+        console.error('Promotion create failed:', err);
+        this.loadingService.hide();
+      }
+    });
+  }
+
+  getPromotion() {
+    this.loadingService.show("Getting promotion..");
+    this.promotionService.getPromotion(this.promoNo).subscribe({
+      next: data => {
+        if (data) {
+          this.promoForm.setValue({
+            promoNo: data.promoNo,
+            promoName: data.promoName,
+            registerDate: data.promoDate,
+            fromDate: data.startDate,
+            toDate: data.endDate,
+            promoType: data.promoType,
+            promoStatus: data.status
+              ? { displayText: 'Active', value: 'active' }
+              : { displayText: 'Inactive', value: 'inactive' },
+            promoRate: data.dc,
+            store: ''
+          });
+          this.promoType = data.promoType;
+          this.addProductsByRules = data.promotionRules.length > 0;
+          if (this.addProductsByRules && Array.isArray(data.promotionRules)) {
+            data.promotionRules.forEach((element: any) => {
+              this.promotionRules.push({
+                promoRuleId: element.promoRuleId,
+                brand: element.brand,
+                vendorCode: element.vendorCode,
+                itemGroup: element.itemGroup,
+                retailPriceCondition: element.retailPriceCondition,
+                promoType: element.promoType,
+                promoSearchForm: this.fb.group({
+                  vendor: [null],
+                  itemGroupCode: element.itemGroup,
+                  styleCode: this.fb.control<string>(''),
+                  styleDesc: this.fb.control<string>(''),
+                  brand: [null],
+                  color: this.fb.control<string>(''),
+                  size: this.fb.control<string>(''),
+                  upc: this.fb.control<string>(''),
+                  sku: this.fb.control<string>(''),
+                  promoRate: [element.promoRate, Validators.required],
+                  promoType: [this.promoForm.value.promoType, Validators.required],
+                  retailPriceCondition: [null],
+                  retailPriceRate: element.retailPriceRate,
+                }),
+                productResults: {
+                  tableName: '',
+                  columns: [],
+                  rows: [],
+                  tableGroups: []
+                } as TableData
+              });
+            });
+          } else {
+            this.viewItems(data.promoNo);
+          }
+        } else {
+          this.promoNotFound = true;
+        }
+        this.loadingService.hide();
+      },
+      error: err => {
+        console.error('Promotion API error', err);
+        this.loadingService.hide();
+      }
+    });
+  }
+
+  viewItems(promoNo: string) {
+    this.loadingService.show("Getting promotion..");
+    var getProductPromotionRequest: GetProductPromotionRequest = {
+      promoNo: promoNo,
+      fromPromoPage: false
+    };
+
+    this.promotionService.searchProductPromotionsByPromoNo(getProductPromotionRequest).subscribe({
+      next: data => {
+        this.selectedProducts = data;
+        this.loadingService.hide();
+      },
+      error: err => {
+        console.error('Promotion API error', err);
         this.loadingService.hide();
       }
     });

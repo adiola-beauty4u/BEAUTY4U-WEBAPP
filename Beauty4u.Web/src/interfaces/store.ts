@@ -22,4 +22,6 @@ export interface StoreDto {
   lastUser: string;
   payrollCompanyCode: string;
   apiUrl: string;
+  storeCodeList: string;
+  storeCodes?: string[];
 }

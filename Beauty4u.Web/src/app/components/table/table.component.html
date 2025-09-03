@@ -9,7 +9,7 @@
         <!-- Center / Right side -->
         <div class="d-flex align-items-center gap-2">
             <input type="text" class="form-control azc-input" placeholder="Search..." [(ngModel)]="searchText"
-                (input)="page = 1" />
+                (input)="page = 1; updateFilteredRows()" />
 
             <button class="btn btn-icon" (click)="toggleTable()" title="Toggle Table">
                 <i class="bi bi-arrows-collapse"></i>
@@ -39,49 +39,65 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let row of pagedRows">
-                <td *ngFor="let col of tableData.columns" [class.text-center]="col.isCommand">
-                    <ng-container *ngIf="!col.isHidden">
-                        <ng-container
-                            *ngIf="col.isCommand && !col.isSlideInColumn && col.dataType !== ColumnDataType.Bool">
-                            <button class="btn btn-primary btn-sm"
-                                (click)="methodList[col.commandName] && methodList[col.commandName](row.cells[col.fieldName].commandParameter)">
-                                {{ row.cells[col.fieldName].textValue }}
-                            </button>
-                        </ng-container>
-
-                        <ng-container *ngIf="col.slideInCommand && col.dataType !== ColumnDataType.Bool">
-                            <a href="javascript:void(0)" class="text-primary fw-semibold"
-                                (click)="gotoSlideIn(col, row.cells[col.fieldName].slideInCommandParameter)">
-                                {{ row.cells[col.fieldName].textValue }}
-                            </a>
-                        </ng-container>
-
-                        <ng-container
-                            *ngIf="!col.isCommand && !col.slideInCommand && col.dataType !== ColumnDataType.Bool">
-                            <span [innerHTML]="highlightValue(row, col)"></span>
-                        </ng-container>
-
-                        <ng-container *ngIf="col.dataType === ColumnDataType.Bool">
+            <ng-container *ngFor="let group of groupedRows">
+                <!-- Group header row (only if grouping is enabled) -->
+                <tr *ngIf="groupingEnabled" class="table-group-header bg-light fw-semibold">
+                    <td
+                        [attr.colspan]="tableData.columns.length + (enableRowTransfer ? 1 : 0) + (enableRowDelete ? 1 : 0)">
+                        <a href="javascript:void(0)" (click)="toggleGroup(group)"
+                            class="text-dark text-decoration-none">
                             <i class="bi"
-                                [ngClass]="row.cells[col.fieldName].rawValue ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger'">
-                            </i>
+                                [ngClass]="group.collapsed ? 'bi-caret-right-fill' : 'bi-caret-down-fill'"></i>
+                            {{ group.key }} <span class="text-muted">({{ group.rows.length }})</span>
+                        </a>
+                    </td>
+                </tr>
+
+                <!-- Grouped or flat rows -->
+                <tr *ngFor="let row of group.rows" [hidden]="groupingEnabled && group.collapsed">
+                    <td *ngFor="let col of tableData.columns" [class.text-center]="col.isCommand">
+                        <ng-container *ngIf="!col.isHidden">
+                            <ng-container
+                                *ngIf="col.isCommand && !col.isSlideInColumn && col.dataType !== ColumnDataType.Bool">
+                                <button class="btn btn-primary btn-sm"
+                                    (click)="methodList[col.commandName] && methodList[col.commandName](row.cells[col.fieldName].commandParameter, row)">
+                                    {{ row.cells[col.fieldName].textValue }}
+                                </button>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.slideInCommand && col.dataType !== ColumnDataType.Bool">
+                                <a href="javascript:void(0)" class="text-primary fw-semibold"
+                                    (click)="gotoSlideIn(col, row, row.cells[col.fieldName].slideInCommandParameter)">
+                                    {{ row.cells[col.fieldName].textValue }}
+                                </a>
+                            </ng-container>
+
+                            <ng-container
+                                *ngIf="!col.isCommand && !col.slideInCommand && col.dataType !== ColumnDataType.Bool">
+                                <span [innerHTML]="highlightValue(row, col)"></span>
+                            </ng-container>
+
+                            <ng-container *ngIf="col.dataType === ColumnDataType.Bool">
+                                <i class="bi"
+                                    [ngClass]="row.cells[col.fieldName].rawValue ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger'">
+                                </i>
+                            </ng-container>
+
                         </ng-container>
+                    </td>
 
-                    </ng-container>
-                </td>
-
-                <td *ngIf="enableRowTransfer">
-                    <button class="btn btn-warn btn-sm" (click)="onTransferRow(row)">
-                        {{ transferLabel }}
-                    </button>
-                </td>
-                <td *ngIf="enableRowDelete">
-                    <button class="btn btn-warn btn-sm" (click)="onDeleteRow(row)">
-                        Delete
-                    </button>
-                </td>
-            </tr>
+                    <td *ngIf="enableRowTransfer">
+                        <button class="btn btn-warn btn-sm" (click)="onTransferRow(row)">
+                            {{ transferLabel }}
+                        </button>
+                    </td>
+                    <td *ngIf="enableRowDelete">
+                        <button class="btn btn-warn btn-sm" (click)="onDeleteRow(row)">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            </ng-container>
         </tbody>
     </table>
 
@@ -129,7 +145,7 @@
                 </div>
             </div>
 
-            <table class="table" *ngIf="!hideTable">
+            <table class="table slide-in-left-pane" *ngIf="!hideTable">
                 <thead class="table-light">
                     <tr>
                         <th (click)="sort(slideInColumn)" style="cursor:pointer">
@@ -144,7 +160,7 @@
                     <tr *ngFor="let row of pagedRows">
                         <td>
                             <a href="javascript:void(0)" class="text-primary fw-semibold"
-                                (click)="callSlideInCommand(row.cells[slideInColumn?.fieldName || ''].slideInCommandParameter)">
+                                (click)="callSlideInCommand(row, row.cells[slideInColumn?.fieldName || ''].slideInCommandParameter)">
                                 {{ row.cells[slideInDisplay?.fieldName || ''].textValue }}
                             </a>
                         </td>

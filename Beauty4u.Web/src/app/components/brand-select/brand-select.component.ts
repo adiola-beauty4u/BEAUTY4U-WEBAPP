@@ -33,6 +33,7 @@ import { ItemValue } from 'src/interfaces/item-value';
 export class BrandSelectComponent implements ControlValueAccessor {
   @Input({ required: true }) formGroup!: FormGroup;
   @Input({ required: true }) formControlName!: string;
+  @Input() defaultValue: any;
 
   control = new FormControl();
 

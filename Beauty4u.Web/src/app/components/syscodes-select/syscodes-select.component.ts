@@ -42,6 +42,7 @@ export class SysCodesSelectComponent implements ControlValueAccessor {
   @Input({ required: true }) sysCodeLabel!: string;
   @Input({ required: true }) sysCodePlaceHolder!: string;
   @Input() addAll = true;
+  @Input() defaultValue: any;
 
   control = new FormControl();
   private onChange: any = () => { };

@@ -10,5 +10,6 @@
         bool IsNew { get; set; }
         bool IsChanged { get; set; }
         object? AdditionalData { get; set; }
+        string GroupValue { get; set; }
     }
 }

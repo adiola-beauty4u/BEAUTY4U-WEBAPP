@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef, AfterViewInit, ElementRef, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, AfterViewInit, ElementRef, Input, Output, EventEmitter, inject } from '@angular/core';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
@@ -26,6 +26,11 @@ import { TableComponent } from 'src/app/components/table/table.component';
 
 import { ItemValue } from 'src/interfaces/item-value';
 import { StoreSelectComponent } from 'src/app/components/store-select/store-select.component';
+import { GetProductPromotionRequest } from 'src/interfaces/get-product-promotion-request';
+import { StoreCheckListComponent } from 'src/app/components/store-check-list/store-check-list.component';
+import { ConfirmDialogComponent } from 'src/app/pages/ui-components/confirm-dialog/confirm-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { PromotionTransferRequest } from 'src/interfaces/promotion-transfer-request';
 
 @Component({
   selector: 'app-promotions',
@@ -45,16 +50,21 @@ import { StoreSelectComponent } from 'src/app/components/store-select/store-sele
     MatInput,
     StoreSelectComponent,
     SysCodesSelectComponent,
-    MatButtonModule
+    MatButtonModule,
+    StoreCheckListComponent
   ],
   templateUrl: './promotions-search.component.html',
   styleUrl: './promotions-search.component.scss'
 })
 export class PromotionsSearchComponent implements OnInit, AfterViewInit {
+  dialog = inject(MatDialog);
   searchForm: FormGroup;
   output!: TableData;
   promoItems?: TableData;
-  selectedPromo: any;
+  selectedPromo?: any;
+  selectedRow: RowData;
+  promoTransferForm: FormGroup;
+  isInlineGrouped: boolean = false;
 
   @Input() enableRowTransfer = false;
   @Input() enableRowDelete = false;
@@ -68,6 +78,7 @@ export class PromotionsSearchComponent implements OnInit, AfterViewInit {
 
   @ViewChild('promoItemsContent', { static: true }) promoItemsTemplateRef!: TemplateRef<any>;
   @ViewChild('newPromoType', { static: true }) newPromoType!: TemplateRef<any>;
+  @ViewChild('promoTransferContent', { static: true }) promoTransferContent!: TemplateRef<any>;
   @ViewChild(MatExpansionPanel) filterPanel!: MatExpansionPanel;
 
 
@@ -95,6 +106,11 @@ export class PromotionsSearchComponent implements OnInit, AfterViewInit {
       promoStatus: { displayText: "Active", value: "active" }
     });
 
+    this.promoTransferForm = this.fb.group({
+      promoNo: [''],
+      storeList: [[]]
+    })
+
     const columns = this.output?.columns;
     this.columnsReady.emit(columns);
   }
@@ -107,12 +123,19 @@ export class PromotionsSearchComponent implements OnInit, AfterViewInit {
     return group?.columns.map(c => c.fieldName);
   }
 
-  viewItems(row: any) {
+  viewItems(rowData: RowData, row: any) {
     this.loadingService.show("Getting promotion..");
-    this.promotionService.searchProductPromotionsByPromoNo(row?.promo?.promoNo).subscribe({
+    var getProductPromotionRequest: GetProductPromotionRequest = {
+      promoNo: row?.promo?.promoNo,
+      fromPromoPage: true
+    };
+    this.selectedRow = rowData;
+
+    this.promotionService.searchProductPromotionsByPromoNo(getProductPromotionRequest).subscribe({
       next: data => {
         this.promoItems = data;
         this.selectedPromo = row.promo;
+        this.isInlineGrouped = row.promo.promoRuleCount > 0;
         // this.modalService.openModal(`(${row?.promo?.promoNo}) ${row?.promo?.promoName}`, this.promoItemsTemplateRef, {});
         this.loadingService.hide();
       },
@@ -179,6 +202,69 @@ export class PromotionsSearchComponent implements OnInit, AfterViewInit {
       { queryParams: { addBy: 'rules' } }
     );
     this.modalService.closeModal();
+  }
+  editPromo(): void {
+    this.router.navigate(
+      ['/products/promotion'],
+      { queryParams: { promono: this.selectedPromo.promoNo } }
+    );
+    this.modalService.closeModal();
+  }
+
+  transferToStores() {
+    this.loadingService.show("Transferring products...");
+
+    const promoTransferRequest: PromotionTransferRequest = {
+      storeCodes: this.promoTransferForm.value.storeList,
+      promoNo: this.promoTransferForm.value.promoNo
+    };
+
+    this.promotionService.transferPromotion(promoTransferRequest).subscribe({
+      next: (data) => {
+        this.selectedPromo.storeCodes = data.storeCodes.map((x: any) => x.value);
+        this.selectedPromo.storeList = data.storeCode;
+        this.selectedRow.cells["StoreList"].textValue = data.storeCode;
+        alert("Promo transfer success!")
+
+        this.loadingService.hide();
+      },
+      error: (err) => {
+        console.error('Promo transfer failed:', err);
+        alert("Promo transfer failed!")
+        this.loadingService.hide();
+      }
+    });
+  }
+
+  transferPromo(): void {
+    this.promoTransferForm.reset({
+      promoNo: this.selectedPromo.promoNo,
+      storeList: [...this.selectedPromo.storeCodes],
+    });
+
+    this.modalService.openModal(`Transfer Promotion to Stores`, this.promoTransferContent, {});
+  }
+
+  confirmStoreTransfer(): void {
+    this.modalService.closeModal();
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Confirm Transfer',
+        message: 'Do you want to proceed with the transfer to all the selected stores?',
+        icon: 'warning'
+      },
+      width: '400px',
+      panelClass: 'confirm-dialog-panel'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.transferToStores();
+      }
+    });
+
+    //console.log(this.promoTransferForm.value.storeList);
   }
 
   onRowsSelected(rows: any[]) {

@@ -15,5 +15,11 @@
         bool Status { get; set; }
         decimal CurrentRetailPrice { get; set; }
         int? PromoRuleId { get; set; }
+        string? RulePromoType { get; set; }
+        decimal? RulePromoRate { get; set; }
+        string? RuleVendorName { get; set; }
+        string? RuleCategory { get; set; }
+        string? RuleBrand { get; set; }
+        string? RuleRetailPrice { get; set; }
     }
 }
