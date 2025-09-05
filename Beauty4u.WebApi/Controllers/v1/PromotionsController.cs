@@ -138,5 +138,12 @@ namespace Beauty4u.WebApi.Controllers.v1
                 return BadRequest(new PromoTransferResult() { IsSuccess = false, Message = ex.Message });
             }
         }
+
+        [HttpGet("transfer-all-promo-to-stores")]
+        public async Task<IActionResult> TransferAllPromoToStores()
+        {
+
+            return Ok();
+        }
     }
 }

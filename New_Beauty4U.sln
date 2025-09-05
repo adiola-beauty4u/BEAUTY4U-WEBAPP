@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beauty4u.Business", "Beauty
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beauty4u.ApiAccess", "Beauty4u.ApiAccess\Beauty4u.ApiAccess.csproj", "{97BF56AD-442F-4585-9515-5C54479D3229}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beauty4u.Jobs", "Beauty4u.Jobs\Beauty4u.Jobs.csproj", "{087ADBDE-7B14-442F-A544-A79D64F59448}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,10 @@ Global
 		{97BF56AD-442F-4585-9515-5C54479D3229}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97BF56AD-442F-4585-9515-5C54479D3229}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97BF56AD-442F-4585-9515-5C54479D3229}.Release|Any CPU.Build.0 = Release|Any CPU
+		{087ADBDE-7B14-442F-A544-A79D64F59448}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{087ADBDE-7B14-442F-A544-A79D64F59448}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{087ADBDE-7B14-442F-A544-A79D64F59448}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{087ADBDE-7B14-442F-A544-A79D64F59448}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,6 +84,7 @@ Global
 		{06FD24D4-5A71-C790-260B-30415C72D499} = {11243A6D-2D14-44E2-B3E5-A51AB656CD6F}
 		{5B3ECBD4-5667-2D81-348E-89FAC4188B0E} = {11243A6D-2D14-44E2-B3E5-A51AB656CD6F}
 		{97BF56AD-442F-4585-9515-5C54479D3229} = {A914AD60-69C1-414A-9BCD-96DA77C82655}
+		{087ADBDE-7B14-442F-A544-A79D64F59448} = {B8309821-3164-450F-8815-AE92D31AB5BC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2F9B7CFB-794F-4191-90FC-F78C6872A8E9}
