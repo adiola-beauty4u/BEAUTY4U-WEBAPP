@@ -116,5 +116,24 @@ namespace Beauty4u.ApiAccess.Promotions
                 throw ex;
             }
         }
+
+        public async Task<T> TransferAllPromosApiAsync<T>(string baseAddress, string jwtToken)
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+                var response = await _httpClient.GetAsync($"{baseAddress}{promotionsEndpoint}/transfer-all-promo-to-stores");
+
+                response.EnsureSuccessStatusCode();
+                var stringOutput = await response.Content.ReadAsStringAsync();
+                var output = await response.Content.ReadFromJsonAsync<T>();
+
+                return output;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

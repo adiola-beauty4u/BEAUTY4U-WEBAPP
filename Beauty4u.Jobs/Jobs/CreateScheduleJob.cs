@@ -9,16 +9,17 @@ namespace Beauty4u.Jobs.Jobs
 {
     public class CreateScheduleJob : IJob
     {
+        private readonly ISchedulerFactory _schedulerFactory;
         private readonly IScheduledJobService _scheduledJobService;
-        public CreateScheduleJob(IScheduledJobService scheduledJobService)
+        public CreateScheduleJob(IScheduledJobService scheduledJobService, ISchedulerFactory schedulerFactory)
         {
             _scheduledJobService = scheduledJobService;
+            _schedulerFactory = schedulerFactory;
         }
 
         public async Task Execute(IJobExecutionContext context)
         {
-            var schedulerFactory = new StdSchedulerFactory();
-            var scheduler = await schedulerFactory.GetScheduler();
+            var scheduler = await _schedulerFactory.GetScheduler();
 
             var scheduledJobs = await _scheduledJobService.GetActiveJobsAsync();
             await scheduler.Start();
@@ -26,7 +27,7 @@ namespace Beauty4u.Jobs.Jobs
             foreach (ScheduledJobDto jobDto in scheduledJobs)
             {
                 // 1. Resolve job type by class name
-                var jobType = Type.GetType(jobDto.Name, throwOnError: false, ignoreCase: true);
+                var jobType = Type.GetType($"Beauty4u.Jobs.Jobs.{jobDto.Name}", throwOnError: false, ignoreCase: true);
                 if (jobType == null || !typeof(IJob).IsAssignableFrom(jobType))
                     throw new InvalidOperationException($"Job class '{jobDto.Name}' not found or not an IJob.");
 

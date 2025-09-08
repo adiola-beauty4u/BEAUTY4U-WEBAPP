@@ -12,6 +12,7 @@ namespace Beauty4u.Interfaces.Services
         Task<ITableData> GetProductPromotionsByPromoNoAsync(IGetProductPromotionRequest getProductPromotionRequest);
         Task<ITableData> GetProductPromotionsBySkuAsync(string sku);
         Task<ITableData> SearchPromotionsAsync(IPromoSearchParams promoSearchParams);
+        Task TransferAllPromoToStoresAsync();
         Task TransferPromoAsync(IPromotionRequest promotionRequest);
         Task<List<string>> TransferPromoToStoresAsync(IPromoTransferRequest promoTransferRequest);
         Task UpdatePromoStoreAsync(IPromoTransferRequest promotionRequest);

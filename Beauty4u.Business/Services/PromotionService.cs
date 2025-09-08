@@ -404,7 +404,7 @@ namespace Beauty4u.Business.Services
                             TextValue = $"{row.StyleDesc} - (Sku: {row.Sku}, UPC: {row.UPC})",
                         });
 
-                        rowData.AdditionalData = new { sku = row.Sku, newPrice = row.NewPrice, cost = row.Cost, retailPrice = row.RetailPrice, promoRuleId = row.PromoRuleId };
+                        rowData.AdditionalData = new { sku = row.Sku, Price = row.NewPrice, cost = row.Cost, retailPrice = row.RetailPrice, promoRuleId = row.PromoRuleId };
 
                         if (row.PromoRuleId.HasValue)
                         {
@@ -728,8 +728,15 @@ namespace Beauty4u.Business.Services
                         var promoRules = await _promotionRepository.GetPromoRulesByPromoNoAsync(promoTransferRequest.PromoNo);
                         var storeList = await _storeService.GetAllStoresAsync();
                         var storeDict = storeList.ToDictionary(x => x.Code);
+                        var notConfiguredStores = storeList.Where(x => string.IsNullOrWhiteSpace(x.ApiUrl)).Select(x => x.Code).ToList();
                         var selectedStores = storeList.Where(x => promoTransferRequest.StoreCodes.Contains(x.Code)).ToDictionary(x => x.Code);
-                        var tasks = selectedStores
+                        if (notConfiguredStores.Any(x => promoTransferRequest.StoreCodes.Contains(x)))
+                        {
+                            sb.AppendLine($"Promotion Transfer Request skipped: {promo.PromoNo} - Store not yet configured");
+                            _logger.LogInformation(sb.ToString());
+                            return new List<string>();
+                        }
+                        var tasks = selectedStores.Where(x => !notConfiguredStores.Contains(x.Key))
                                         .Select(store =>
                                         {
                                             var promoRequest = _mapper.Map<PromotionRequest>(promo);
@@ -751,7 +758,7 @@ namespace Beauty4u.Business.Services
 
                         var combinedResults = results.Select(r => r).ToList();
 
-                        var successfulStoreTransfers = combinedResults.Where(x => x.IsSuccess).SelectMany(x => x.StoreCodes.Select(y => y.Value)).Distinct().ToList();
+                        var successfulStoreTransfers = combinedResults.Where(x => x.IsSuccess).SelectMany(x => x.StoreCodes.Select(y => y.Value)).ToList();
 
                         var promoStoreUpdate = new PromoTransferRequest()
                         {
@@ -771,6 +778,7 @@ namespace Beauty4u.Business.Services
                         var promoStoreResults = await Task.WhenAll(tasks);
 
                         var updatedStores = selectedStores.Values.Where(x => successfulStoreTransfers.Contains(x.Code)).Select(x => x.StoreAbbr).ToList();
+                        updatedStores.AddRange(storeList.Where(x => !notConfiguredStores.Contains(x.Code)).Select(x => x.StoreAbbr));
 
                         sb.AppendLine($"Promotion Transfer Request End: {DateTime.Now}");
                         _logger.LogInformation(sb.ToString());
@@ -792,19 +800,24 @@ namespace Beauty4u.Business.Services
             }
 
         }
-
         public async Task TransferAllPromoToStoresAsync()
         {
             var promoSearchParams = new PromoSearchParams();
             promoSearchParams.FromDate = DateTime.Now;
+            promoSearchParams.ToDate = DateTime.Now;
             promoSearchParams.Status = "active";
 
             var data = await _promotionRepository.SearchPromotionsAsync(promoSearchParams);
-            data.Select(promo =>
-            {
+            var tasks = data.Select(async promo =>
+             {
+                 PromoTransferRequest promoTransferRequest = new PromoTransferRequest();
+                 promoTransferRequest.PromoNo = promo.PromoNo;
+                 promoTransferRequest.StoreCodes = promo.StoreCodes;
 
-            });
+                 return await TransferPromoToStoresAsync(promoTransferRequest);
+             });
 
+            var results = await Task.WhenAll(tasks);
         }
     }
 }

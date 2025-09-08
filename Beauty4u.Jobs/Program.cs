@@ -7,6 +7,7 @@ using Scalar.AspNetCore;
 using Serilog;
 using Serilog.Exceptions;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
@@ -56,7 +57,7 @@ builder.Services.AddApiVersioning(options =>
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddSchedulerDI(builder.Configuration);
+builder.Services.AddBusinessDI(builder.Configuration);
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
 builder.Services.AddCors(options =>
 {
@@ -98,6 +99,25 @@ builder.Services.AddQuartz(q =>
 // Quartz background service
 builder.Services.AddQuartzHostedService(opt => opt.WaitForJobsToComplete = true);
 
+builder.Services.AddScoped<TokenService>();
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        var config = builder.Configuration;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = config["Jwt:Issuer"],
+            ValidAudience = config["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!))
+        };
+    });
+
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 app.MapOpenApi();
@@ -132,6 +152,8 @@ app.UseExceptionHandler(errorApp =>
         await context.Response.WriteAsJsonAsync(error);
     });
 });
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

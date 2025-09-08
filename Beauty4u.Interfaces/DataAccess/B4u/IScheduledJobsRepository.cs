@@ -5,6 +5,8 @@ namespace Beauty4u.DataAccess.B4u
 {
     public interface IScheduledJobsRepository
     {
-        Task<List<IScheduledJobDto>> usp_GetActiveJobsAsync();
+        Task CreateScheduledJobLogAsync(IScheduledJobLogDto scheduledJobLogDto);
+        Task<List<IScheduledJobDto>> GetActiveJobsAsync();
+        Task<List<IScheduledJobDto>> GetAllJobsAsync();
     }
 }

@@ -19,7 +19,16 @@ namespace Beauty4u.Business.Services
 
         public async Task<List<IScheduledJobDto>> GetActiveJobsAsync()
         {
-            return await _scheduledJobsRepository.usp_GetActiveJobsAsync();
+            return await _scheduledJobsRepository.GetActiveJobsAsync();
+        }
+        public async Task CreateScheduledJobLogAsync(IScheduledJobLogDto scheduledJobLogDto)
+        {
+            await _scheduledJobsRepository.CreateScheduledJobLogAsync(scheduledJobLogDto);
+        }
+
+        public async Task<List<IScheduledJobDto>> GetAllJobsAsync()
+        {
+            return await _scheduledJobsRepository.GetAllJobsAsync();
         }
     }
 }

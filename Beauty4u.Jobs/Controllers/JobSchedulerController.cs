@@ -89,5 +89,38 @@ namespace Beauty4u.Jobs.Controllers
             await scheduler.Clear();  // removes everything
             return Ok(new { message = "All scheduled jobs have been cancelled." });
         }
+
+        [HttpGet("create-execute-job")]
+        public async Task<IActionResult> CreateExecuteJob(string jobName, DateTime? dateTime)
+        {
+            var scheduler = await _schedulerFactory.GetScheduler();
+            if (!dateTime.HasValue)
+            {
+                dateTime = DateTime.Now.AddMinutes(1); // Start in 1 minute
+            }
+            // 2️⃣ Define job
+            var jobKey = new JobKey($"Create{jobName}", "ApiJobs");
+            var jobType = Type.GetType($"Beauty4u.Jobs.Jobs.{jobName}", throwOnError: false, ignoreCase: true);
+            if (jobType == null || !typeof(IJob).IsAssignableFrom(jobType))
+                throw new InvalidOperationException($"Job class '{jobName}' not found or not an IJob.");
+
+            var job = JobBuilder.Create(jobType)
+                .WithIdentity(jobKey)
+                .WithDescription($"Runs the {jobName} immediately")
+                .Build();
+
+            // 3️⃣ Define trigger that starts immediately (no repeat)
+            var trigger = TriggerBuilder.Create()
+                .WithIdentity($"{jobName}-trigger", "ApiJobs")
+                .ForJob(job)
+                .StartAt(DateBuilder.DateOf(dateTime.Value.Hour, dateTime.Value.Minute, dateTime.Value.Second, dateTime.Value.Day, dateTime.Value.Month, dateTime.Value.Year))
+                .WithSimpleSchedule(x => x.WithRepeatCount(0)) // run once
+                .Build();
+
+            // 4️⃣ Schedule job
+            await scheduler.ScheduleJob(job, trigger);
+
+            return Ok(new { message = $"✅ {jobName} created and started immediately." });
+        }
     }
 }
