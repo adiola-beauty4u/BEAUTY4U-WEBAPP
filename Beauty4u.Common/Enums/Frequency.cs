@@ -14,6 +14,6 @@ namespace Beauty4u.Common.Enums
         Every4Hrs,
         Every6Hrs,
         Every12Hrs,
-        Daily
+        Daily,
     }
 }

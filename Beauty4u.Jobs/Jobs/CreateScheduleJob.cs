@@ -31,7 +31,7 @@ namespace Beauty4u.Jobs.Jobs
                 if (jobType == null || !typeof(IJob).IsAssignableFrom(jobType))
                     throw new InvalidOperationException($"Job class '{jobDto.Name}' not found or not an IJob.");
 
-                var jobKey = new JobKey(jobDto.Name, "DynamicJobs");
+                var jobKey = new JobKey(jobDto.Name, "ScheduledJobs");
 
                 // 2. Define job
                 var job = JobBuilder.Create(jobType)
@@ -41,13 +41,15 @@ namespace Beauty4u.Jobs.Jobs
 
                 // 3. Build trigger based on frequency
                 ITrigger trigger;
+                var startAt = DateBuilder.TodayAt(jobDto.StartHour, jobDto.Minute, 0); // 6 AM today
+                var now = DateTime.Now;
 
                 switch (jobDto.Frequency)
                 {
                     case Frequency.Hourly:
                         trigger = TriggerBuilder.Create()
                             .WithIdentity($"{jobDto.Name}-trigger")
-                            .StartAt(DateBuilder.TodayAt(jobDto.StartHour, jobDto.Minute, 0))
+                            .StartAt(startAt)
                             .WithSimpleSchedule(x => x.WithIntervalInHours(1).RepeatForever())
                             .Build();
                         break;
@@ -55,7 +57,7 @@ namespace Beauty4u.Jobs.Jobs
                     case Frequency.Every2Hrs:
                         trigger = TriggerBuilder.Create()
                             .WithIdentity($"{jobDto.Name}-trigger")
-                            .StartAt(DateBuilder.TodayAt(jobDto.StartHour, jobDto.Minute, 0))
+                            .StartAt(startAt)
                             .WithSimpleSchedule(x => x.WithIntervalInHours(2).RepeatForever())
                             .Build();
                         break;
@@ -63,7 +65,7 @@ namespace Beauty4u.Jobs.Jobs
                     case Frequency.Every3Hrs:
                         trigger = TriggerBuilder.Create()
                             .WithIdentity($"{jobDto.Name}-trigger")
-                            .StartAt(DateBuilder.TodayAt(jobDto.StartHour, jobDto.Minute, 0))
+                            .StartAt(startAt)
                             .WithSimpleSchedule(x => x.WithIntervalInHours(3).RepeatForever())
                             .Build();
                         break;
@@ -71,7 +73,7 @@ namespace Beauty4u.Jobs.Jobs
                     case Frequency.Every4Hrs:
                         trigger = TriggerBuilder.Create()
                             .WithIdentity($"{jobDto.Name}-trigger")
-                            .StartAt(DateBuilder.TodayAt(jobDto.StartHour, jobDto.Minute, 0))
+                            .StartAt(startAt)
                             .WithSimpleSchedule(x => x.WithIntervalInHours(4).RepeatForever())
                             .Build();
                         break;
@@ -79,7 +81,7 @@ namespace Beauty4u.Jobs.Jobs
                     case Frequency.Every6Hrs:
                         trigger = TriggerBuilder.Create()
                             .WithIdentity($"{jobDto.Name}-trigger")
-                            .StartAt(DateBuilder.TodayAt(jobDto.StartHour, jobDto.Minute, 0))
+                            .StartAt(startAt)
                             .WithSimpleSchedule(x => x.WithIntervalInHours(6).RepeatForever())
                             .Build();
                         break;
@@ -87,7 +89,7 @@ namespace Beauty4u.Jobs.Jobs
                     case Frequency.Every12Hrs:
                         trigger = TriggerBuilder.Create()
                             .WithIdentity($"{jobDto.Name}-trigger")
-                            .StartAt(DateBuilder.TodayAt(jobDto.StartHour, jobDto.Minute, 0))
+                            .StartAt(startAt)
                             .WithSimpleSchedule(x => x.WithIntervalInHours(12).RepeatForever())
                             .Build();
                         break;
@@ -95,8 +97,8 @@ namespace Beauty4u.Jobs.Jobs
                     case Frequency.Daily:
                         trigger = TriggerBuilder.Create()
                             .WithIdentity($"{jobDto.Name}-trigger")
-                            .StartAt(DateBuilder.TodayAt(jobDto.StartHour, jobDto.Minute, 0))
-                            .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(jobDto.Hour, jobDto.Minute))
+                            .StartAt(startAt)
+                            .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(jobDto.StartHour, jobDto.Minute))
                             .Build();
                         break;
                     default:
@@ -105,6 +107,12 @@ namespace Beauty4u.Jobs.Jobs
 
                 // 4. Schedule job
                 await scheduler.ScheduleJob(job, trigger);
+
+                // 5. Execute job if initial time schedule has already passed
+                if (startAt < now)
+                {
+                    await scheduler.TriggerJob(job.Key); // fire immediately
+                }
             }
         }
     }

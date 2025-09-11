@@ -1,10 +1,14 @@
 ﻿using Beauty4u.Business.Services;
+using Beauty4u.Interfaces.Api.Promotions;
 using Beauty4u.Interfaces.DataAccess.Api;
 using Beauty4u.Interfaces.Services;
 using Beauty4u.Models.Api.Promotions;
+using Beauty4u.Models.Api.Scheduler;
 using Beauty4u.Models.Dto;
 using Beauty4u.Models.Dto.Users;
+using Newtonsoft.Json;
 using Quartz;
+using System.Text.Json;
 
 namespace Beauty4u.Jobs.Jobs
 {
@@ -32,23 +36,48 @@ namespace Beauty4u.Jobs.Jobs
 
             if (job != null)
             {
+
                 ScheduledJobLogDto scheduledJobLogDto = new ScheduledJobLogDto();
                 scheduledJobLogDto.ScheduledJobId = job.ScheduledJobId;
                 scheduledJobLogDto.JobStart = DateTime.Now;
                 try
                 {
                     var schedulerToken = await _authService.CreateToken(userDto);
-
-                    await _promotionsApi.TransferAllPromosApiAsync<PromoTransferResult>(_hqApi, schedulerToken.AccessToken);
+                    JobDataMap dataMap = context.MergedJobDataMap;
+                    if (dataMap != null)
+                    {
+                        if (dataMap.ContainsKey("JobParameters"))
+                        {
+                            if (dataMap["JobParameters"] is JsonElement element)
+                            {
+                                var promoRequest = element.Deserialize<PromoTransferRequest>();
+                                if (promoRequest != null)
+                                {
+                                    promoRequest.Schedule = null; // Remove schedule to execute immediately
+                                    await _promotionsApi.TransferPromoToStoresAsync<PromoTransferResult>(
+                                        _hqApi,
+                                    schedulerToken.AccessToken,
+                                        promoRequest
+                                    );
+                                }
+                            }
+                        }
+                        else
+                        {
+                            await _promotionsApi.TransferAllPromosApiAsync<PromoTransferResult>(_hqApi, schedulerToken.AccessToken);
+                        }
+                    }
 
                     scheduledJobLogDto.JobEnd = DateTime.Now;
                     scheduledJobLogDto.IsSuccessful = true;
-                    scheduledJobLogDto.Message = "Scheduled promo to store transfer success.";
+                    scheduledJobLogDto.Message = "Scheduled promo transfer to stores success.";
 
                     await _scheduledJobService.CreateScheduledJobLogAsync(scheduledJobLogDto);
+                    _logger.LogInformation("Scheduled promo transfer done.");
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex.Message);
                     scheduledJobLogDto.JobEnd = DateTime.Now;
                     scheduledJobLogDto.IsSuccessful = false;
                     scheduledJobLogDto.Message = ex.Message.Length > 500

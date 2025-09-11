@@ -1840,8 +1840,10 @@ namespace Beauty4u.Business.Services
                             decimal dcPercent = (searchParams.PromoRate / 100);
                             newPrice = (row.RetailPrice - (decimal.Parse((row.RetailPrice * dcPercent).ToString())));
                             break;
-                        case "S":
                         case "D":
+                            newPrice = row.RetailPrice - searchParams.PromoRate;
+                            break;
+                        case "S":
                         case "G":
                         case "B":
                             newPrice = searchParams.PromoRate;

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Beauty4u.Common.Helpers;
+using Beauty4u.Interfaces.Api.Scheduler;
 using Beauty4u.Interfaces.Dto;
 using Beauty4u.Models.Api.Products;
+using Beauty4u.Models.Api.Scheduler;
 using Beauty4u.Models.Dto;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -81,6 +83,32 @@ namespace Beauty4u.DataAccess.B4u
             var results = DataTableHelper.DataTableToList<ScheduledJobDto>(dataTable);
 
             return results.Cast<IScheduledJobDto>().ToList();
+        }
+
+        public async Task<List<IScheduledJobLogDto>> SearchScheduledJobLogsAsync(IScheduledJobLogSearchParams scheduledJobLogSearchParams)
+        {
+            using var conn = new SqlConnection(_connectionString);
+            await conn.OpenAsync();
+
+            using var command = conn.CreateCommand();
+            command.CommandText = "[dbo].[usp_SearchJobScheduledLogs]";
+            command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 300;
+
+            command.Parameters.AddWithValue("@ScheduledJobId", scheduledJobLogSearchParams.ScheduledJobId);
+            command.Parameters.AddWithValue("@IsSuccessful", scheduledJobLogSearchParams.IsSuccessful);
+            command.Parameters.AddWithValue("@JobStart", scheduledJobLogSearchParams.JobStart?.Date);
+            command.Parameters.AddWithValue("@JobEnd", scheduledJobLogSearchParams.JobEnd?.Date.AddDays(1));
+
+            var dataTable = new DataTable();
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                dataTable.Load(reader); // Synchronously loads all rows into DataTable
+            }
+
+            var results = DataTableHelper.DataTableToList<ScheduledJobLogDto>(dataTable);
+
+            return results.Cast<IScheduledJobLogDto>().ToList();
         }
     }
 }

@@ -4,7 +4,7 @@
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayItem" autoActiveFirstOption>
         <mat-option [value]="null" *ngIf="addAll">All</mat-option>
         <mat-option *ngFor="let item of filteredItems" [value]="item">
-            {{ item.displayText }} ({{ item.value }})
+            {{ item.displayText }} @if (includeCodeInDisplay){({{ item.value }})}
         </mat-option>
     </mat-autocomplete>
 </mat-form-field>

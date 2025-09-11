@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Transactions;
 using AutoMapper;
 using Beauty4u.ApiAccess.Products;
+using Beauty4u.ApiAccess.Scheduler;
 using Beauty4u.Common.Enums;
 using Beauty4u.Interfaces.Api.Promotions;
 using Beauty4u.Interfaces.Api.Table;
@@ -15,10 +16,13 @@ using Beauty4u.Interfaces.Dto.Promotions;
 using Beauty4u.Interfaces.Services;
 using Beauty4u.Models.Api.Products;
 using Beauty4u.Models.Api.Promotions;
+using Beauty4u.Models.Api.Scheduler;
 using Beauty4u.Models.Api.Table;
 using Beauty4u.Models.Dto.Promotions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace Beauty4u.Business.Services
 {
@@ -29,12 +33,14 @@ namespace Beauty4u.Business.Services
         private readonly IStoreService _storeService;
         private readonly ICurrentUserService _currentUserService;
         private readonly IPromotionsApi _promotionsApi;
+        private readonly IJobSchedulerApi _jobSchedulerApi;
         private readonly IMapper _mapper;
         private readonly bool _isHq;
         private readonly string _hqApi;
         public PromotionService(IConfiguration configuration, IPromotionRepository promotionRepository,
             ILogger<PromotionService> logger, ICurrentUserService currentUserService,
-            IPromotionsApi promotionsApi, IMapper mapper, IStoreService storeService)
+            IPromotionsApi promotionsApi, IMapper mapper, IStoreService storeService,
+            IJobSchedulerApi jobSchedulerApi)
         {
             _promotionRepository = promotionRepository;
             _logger = logger;
@@ -44,6 +50,7 @@ namespace Beauty4u.Business.Services
             _promotionsApi = promotionsApi;
             _mapper = mapper;
             _storeService = storeService;
+            _jobSchedulerApi = jobSchedulerApi;
         }
 
         public async Task<ITableData> GetProductPromotionsBySkuAsync(string sku)
@@ -483,8 +490,8 @@ namespace Beauty4u.Business.Services
                     });
                     tableData.Columns.Add(new ColumnData()
                     {
-                        Header = "Promo Date",
-                        FieldName = nameof(PromotionDto.PromoDate),
+                        Header = "Register Date",
+                        FieldName = nameof(PromotionDto.WriteDate),
                         DataType = ColumnDataType.Date
                     });
                     tableData.Columns.Add(new ColumnData()
@@ -537,12 +544,6 @@ namespace Beauty4u.Business.Services
                     });
                     tableData.Columns.Add(new ColumnData()
                     {
-                        Header = "Write Date",
-                        FieldName = nameof(PromotionDto.WriteDate),
-                        DataType = ColumnDataType.Date
-                    });
-                    tableData.Columns.Add(new ColumnData()
-                    {
                         Header = "Last Update",
                         FieldName = nameof(PromotionDto.LastUpdate),
                         DataType = ColumnDataType.Date
@@ -566,11 +567,6 @@ namespace Beauty4u.Business.Services
                             TextValue = row.PromoName,
                             SlideInCommandParameter = new { promo = row },
                             Tooltip = "View Promo"
-                        });
-                        rowData.Cells.Add(nameof(PromotionDto.PromoDate), new CellData()
-                        {
-                            RawValue = row.PromoDate,
-                            TextValue = row.PromoDate,
                         });
                         rowData.Cells.Add(nameof(PromotionDto.StartDate), new CellData()
                         {
@@ -710,102 +706,114 @@ namespace Beauty4u.Business.Services
         {
             var currentUser = _currentUserService.GetCurrentUser();
             var requestStart = DateTime.Now;
-
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"Promotion Transfer Request by {currentUser?.Claims["UserCode"]!}");
-            sb.AppendLine($"Promotion Transfer Request Start: {requestStart}");
-
-            var transferRequest = (PromoTransferRequest)promoTransferRequest;
-
             if (currentUser != null)
             {
-                try
+                var storeList = await _storeService.GetAllStoresAsync();
+                var storeDict = storeList.ToDictionary(x => x.Code);
+                var notConfiguredStores = storeList.Where(x => string.IsNullOrWhiteSpace(x.ApiUrl)).Select(x => x.Code).ToList();
+                var selectedStores = storeList.Where(x => promoTransferRequest.StoreCodes.Contains(x.Code)).ToDictionary(x => x.Code);
+
+                if (!promoTransferRequest.Schedule.HasValue)
                 {
-                    var promo = (PromotionDto)await GetByPromoNoAsync(promoTransferRequest.PromoNo);
-                    if (promo != null)
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine($"Promotion Transfer Request by {currentUser?.Claims["UserCode"]!}");
+                    sb.AppendLine($"Promotion Transfer Request Start: {requestStart}");
+
+                    var transferRequest = (PromoTransferRequest)promoTransferRequest;
+                    try
                     {
-                        var items = await _promotionRepository.GetProductPromotionsByPromoNoAsync(promoTransferRequest.PromoNo);
-                        var promoRules = await _promotionRepository.GetPromoRulesByPromoNoAsync(promoTransferRequest.PromoNo);
-                        var storeList = await _storeService.GetAllStoresAsync();
-                        var storeDict = storeList.ToDictionary(x => x.Code);
-                        var notConfiguredStores = storeList.Where(x => string.IsNullOrWhiteSpace(x.ApiUrl)).Select(x => x.Code).ToList();
-                        var selectedStores = storeList.Where(x => promoTransferRequest.StoreCodes.Contains(x.Code)).ToDictionary(x => x.Code);
-                        if (notConfiguredStores.Any(x => promoTransferRequest.StoreCodes.Contains(x)))
+                        var promo = (PromotionDto)await GetByPromoNoAsync(promoTransferRequest.PromoNo);
+                        if (promo != null)
                         {
-                            sb.AppendLine($"Promotion Transfer Request skipped: {promo.PromoNo} - Store not yet configured");
-                            _logger.LogInformation(sb.ToString());
-                            return new List<string>();
-                        }
-                        var tasks = selectedStores.Where(x => !notConfiguredStores.Contains(x.Key))
-                                        .Select(store =>
-                                        {
-                                            var promoRequest = _mapper.Map<PromotionRequest>(promo);
-                                            promoRequest.PromotionRules = promoRules.Cast<PromotionRuleDto>().ToList();
-
-                                            promoRequest.PromotionItems = items.Select(x => new PromotionItems()
+                            var items = await _promotionRepository.GetProductPromotionsByPromoNoAsync(promoTransferRequest.PromoNo);
+                            var promoRules = await _promotionRepository.GetPromoRulesByPromoNoAsync(promoTransferRequest.PromoNo);
+                           
+                            if (notConfiguredStores.Any(x => promoTransferRequest.StoreCodes.Contains(x)))
+                            {
+                                sb.AppendLine($"Promotion Transfer Request skipped: {promo.PromoNo} - Store not yet configured");
+                                _logger.LogInformation(sb.ToString());
+                                return new List<string>();
+                            }
+                            var tasks = selectedStores.Where(x => !notConfiguredStores.Contains(x.Key))
+                                            .Select(store =>
                                             {
-                                                Cost = x.Cost,
-                                                Price = x.NewPrice,
-                                                PromoRuleId = x.PromoRuleId,
-                                                RetailPrice = x.RetailPrice,
-                                                Sku = x.Sku
-                                            }).ToList();
-                                            promoRequest.StoreCode = store.Key;
-                                            return _promotionsApi.TransferPromoToStoreAsync<PromoTransferResult>(store.Value.ApiUrl, currentUser!.JwtToken!, promoRequest);
-                                        }).ToList();
+                                                var promoRequest = _mapper.Map<PromotionRequest>(promo);
+                                                promoRequest.PromotionRules = promoRules.Cast<PromotionRuleDto>().ToList();
 
-                        var results = await Task.WhenAll(tasks);
-
-                        var combinedResults = results.Select(r => r).ToList();
-
-                        var successfulStoreTransfers = combinedResults.Where(x => x.IsSuccess).SelectMany(x => x.StoreCodes.Select(y => y.Value)).ToList();
-
-                        var promoStoreUpdate = new PromoTransferRequest()
-                        {
-                            PromoNo = promoTransferRequest.PromoNo,
-                            StoreCodes = successfulStoreTransfers
-                        };
-
-                        await UpdatePromoStoreAsync(promoStoreUpdate);
-
-                        var promoStoreTasks = storeList.Where(x => !string.IsNullOrWhiteSpace(x.ApiUrl)).Select(
-                                                store =>
+                                                promoRequest.PromotionItems = items.Select(x => new PromotionItems()
                                                 {
-                                                    return _promotionsApi.UpdatePromoStoreAsync<PromoTransferResult>(store.ApiUrl, currentUser!.JwtToken!, promoStoreUpdate);
-                                                })
-                                        .ToList();
+                                                    Cost = x.Cost,
+                                                    Price = x.NewPrice,
+                                                    PromoRuleId = x.PromoRuleId,
+                                                    RetailPrice = x.RetailPrice,
+                                                    Sku = x.Sku
+                                                }).ToList();
+                                                promoRequest.StoreCode = store.Key;
+                                                return _promotionsApi.TransferPromoToStoreAsync<PromoTransferResult>(store.Value.ApiUrl, currentUser!.JwtToken!, promoRequest);
+                                            }).ToList();
 
-                        var promoStoreResults = await Task.WhenAll(tasks);
+                            var results = await Task.WhenAll(tasks);
 
-                        var updatedStores = selectedStores.Values.Where(x => successfulStoreTransfers.Contains(x.Code)).Select(x => x.StoreAbbr).ToList();
-                        updatedStores.AddRange(storeList.Where(x => !notConfiguredStores.Contains(x.Code)).Select(x => x.StoreAbbr));
+                            var combinedResults = results.Select(r => r).ToList();
 
-                        sb.AppendLine($"Promotion Transfer Request End: {DateTime.Now}");
-                        _logger.LogInformation(sb.ToString());
-                        return updatedStores;
+                            var successfulStoreTransfers = combinedResults.Where(x => x.IsSuccess).SelectMany(x => x.StoreCodes.Select(y => y.Value)).ToList();
+
+                            var promoStoreUpdate = new PromoTransferRequest()
+                            {
+                                PromoNo = promoTransferRequest.PromoNo,
+                                StoreCodes = successfulStoreTransfers
+                            };
+
+                            await UpdatePromoStoreAsync(promoStoreUpdate);
+
+                            var promoStoreTasks = storeList.Where(x => !string.IsNullOrWhiteSpace(x.ApiUrl)).Select(
+                                                    store =>
+                                                    {
+                                                        return _promotionsApi.UpdatePromoStoreAsync<PromoTransferResult>(store.ApiUrl, currentUser!.JwtToken!, promoStoreUpdate);
+                                                    })
+                                            .ToList();
+
+                            var promoStoreResults = await Task.WhenAll(tasks);
+
+                            var updatedStores = selectedStores.Values.Where(x => successfulStoreTransfers.Contains(x.Code)).Select(x => x.StoreAbbr).ToList();
+                            updatedStores.AddRange(storeList.Where(x => !notConfiguredStores.Contains(x.Code)).Select(x => x.StoreAbbr));
+
+                            sb.AppendLine($"Promotion Transfer Request End: {DateTime.Now}");
+                            _logger.LogInformation(sb.ToString());
+                            return updatedStores;
+                        }
+                        return new List<string>();
                     }
-                    return new List<string>();
+                    catch (Exception ex)
+                    {
+                        sb.AppendLine($"Promotion Transfer Request Error: {ex.Message}");
+                        sb.AppendLine($"Promotion Transfer Request End: {DateTime.Now}");
+                        _logger.LogError(sb.ToString());
+                        throw;
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    sb.AppendLine($"Promotion Transfer Request Error: {ex.Message}");
-                    sb.AppendLine($"Promotion Transfer Request End: {DateTime.Now}");
-                    _logger.LogError(sb.ToString());
-                    throw;
+                    CreateJobSchedule createJobSchedule = new CreateJobSchedule();
+                    createJobSchedule.ScheduledJob = "PromotionTransferJob";
+                    createJobSchedule.Schedule = promoTransferRequest.Schedule;
+                    createJobSchedule.JobParameters = System.Text.Json.JsonSerializer.SerializeToElement(promoTransferRequest);
+                    await _jobSchedulerApi.CreateExecuteJob(currentUser.JwtToken!, createJobSchedule);
+
+                    return selectedStores.Select(x => x.Value.StoreAbbr).ToList();
                 }
             }
             else
             {
                 return new List<string>();
             }
-
         }
         public async Task TransferAllPromoToStoresAsync()
         {
             var promoSearchParams = new PromoSearchParams();
             promoSearchParams.FromDate = DateTime.Now;
             promoSearchParams.ToDate = DateTime.Now;
-            promoSearchParams.Status = "active";
+            //promoSearchParams.Status = "active";
 
             var data = await _promotionRepository.SearchPromotionsAsync(promoSearchParams);
             var tasks = data.Select(async promo =>

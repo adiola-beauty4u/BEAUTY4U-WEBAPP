@@ -11,5 +11,6 @@ namespace Beauty4u.Interfaces.DataAccess.Api
         Task<T> TransferPromoToStoreAsync<T>(string baseAddress, string jwtToken, IPromotionRequest promotionRequest);
         Task<T> UpdatePromoStoreAsync<T>(string baseAddress, string jwtToken, IPromoTransferRequest promotionRequest);
         Task<T> TransferAllPromosApiAsync<T>(string baseAddress, string jwtToken);
+        Task<T> TransferPromoToStoresAsync<T>(string baseAddress, string jwtToken, IPromoTransferRequest promotionRequest);
     }
 }

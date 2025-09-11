@@ -1,0 +1,40 @@
+.radio-inline {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.radio-stacked {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.vertical .mat-radio-button {
+    display: block;
+}
+
+.horizontal .mat-radio-button {
+    display: inline-block;
+    margin-right: 12px;
+}
+
+.schedule-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.schedule-field {
+    width: 160px;
+}
+
+.time-field {
+    width: 110px;
+}
+
+.error {
+    margin-top: 6px;
+    color: #d32f2f;
+    font-size: 0.85rem;
+}

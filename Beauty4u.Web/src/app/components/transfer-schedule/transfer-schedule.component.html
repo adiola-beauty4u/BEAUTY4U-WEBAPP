@@ -1,0 +1,38 @@
+<div [ngClass]="{ 'radio-inline': inline, 'radio-stacked': !inline }" [formGroup]="form">
+    <label *ngIf="label">{{ label }}</label>
+    <div [class.vertical]="orientation === 'vertical'" [class.horizontal]="orientation === 'horizontal'">
+
+        <!-- Transfer Now -->
+        <mat-radio-group formControlName="mode">
+            <mat-radio-button value="now">Transfer Now</mat-radio-button>
+
+            <mat-radio-button value="schedule">
+                <span class="schedule-container">
+                    Schedule at:
+
+                    <!-- Date picker -->
+                    <mat-form-field appearance="outline" class="schedule-field" floatLabel="auto">
+                        <input matInput [matDatepicker]="picker" placeholder="Date" formControlName="scheduleDate"
+                            [min]="minDate" />
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+
+                    <!-- Time picker -->
+                    <mat-form-field appearance="outline" class="time-field" floatLabel="auto">
+                        <input matInput type="time" formControlName="scheduleTime" />
+                    </mat-form-field>
+                </span>
+            </mat-radio-button>
+        </mat-radio-group>
+    </div>
+
+    <!-- Validation -->
+    <div class="error" *ngIf="
+      form.get('mode')!.value === 'schedule' &&
+      (!form.get('scheduleDate')!.valid || !form.get('scheduleTime')!.valid) &&
+      (form.get('scheduleDate')!.touched || form.get('scheduleTime')!.touched)
+    ">
+        Please select a valid schedule date and time.
+    </div>
+</div>

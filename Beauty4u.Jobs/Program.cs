@@ -76,7 +76,11 @@ builder.Services.AddCors(options =>
 builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    });
 builder.Services.AddOpenApi();
 
 var startHour = builder.Configuration.GetSection("CreateScheduleJobs:StartHour").Get<int>();
@@ -92,7 +96,7 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(opts => opts
         .ForJob(jobKey)
         .WithIdentity("CreateScheduleJob-trigger")
-        .StartAt(DateBuilder.TodayAt(startHour, startMinute, 0)) 
+        .StartNow()
         .WithSimpleSchedule(x => x.WithRepeatCount(0)));
 });
 

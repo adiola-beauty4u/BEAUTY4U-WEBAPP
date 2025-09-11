@@ -11,6 +11,8 @@ namespace Beauty4u.Models.Dto
     {
         public int ScheduledJobLogId { get; set; }
         public int ScheduledJobId { get; set; }
+        public string JobName { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;
         public bool IsSuccessful { get; set; }
         public DateTime JobStart { get; set; }

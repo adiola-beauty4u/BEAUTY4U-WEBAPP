@@ -8,5 +8,7 @@
         string Message { get; set; }
         int ScheduledJobId { get; set; }
         int ScheduledJobLogId { get; set; }
+        string JobName { get; set; }
+        string Description { get; set; }
     }
 }
