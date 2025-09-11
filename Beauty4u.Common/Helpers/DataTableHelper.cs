@@ -116,35 +116,46 @@ namespace Beauty4u.Common.Helpers
                 {
                     if (table.Columns.Contains(prop.Name) && row[prop.Name] != DBNull.Value)
                     {
-                        // Get the underlying type if the property is nullable
                         Type propType = prop.PropertyType;
                         Type underlyingType = Nullable.GetUnderlyingType(propType) ?? propType;
 
-                        // Handle nullable types
+                        object value = row[prop.Name];
+
                         if (underlyingType == typeof(DateTime))
                         {
-                            if (row[prop.Name] is DateTime dateValue)
+                            if (value is DateTime dateValue)
+                                prop.SetValue(item, (DateTime?)dateValue);
+                        }
+                        else if (underlyingType.IsEnum)
+                        {
+                            // handle int or string to enum conversion
+                            if (value is int || value is short || value is byte)
                             {
-                                prop.SetValue(item, (Nullable<DateTime>)dateValue);
+                                prop.SetValue(item, Enum.ToObject(underlyingType, value));
+                            }
+                            else
+                            {
+                                // fallback: parse string
+                                prop.SetValue(item, Enum.Parse(underlyingType, value.ToString()));
                             }
                         }
                         else
                         {
-                            // Handle other types normally
-                            prop.SetValue(item, Convert.ChangeType(row[prop.Name], underlyingType));
+                            prop.SetValue(item, Convert.ChangeType(value, underlyingType));
                         }
                     }
                     else if (Nullable.GetUnderlyingType(prop.PropertyType) != null)
                     {
-                        // Set nullable properties to null if the row value is DBNull
                         prop.SetValue(item, null);
                     }
                 }
 
                 list.Add(item);
             }
+
             return list;
         }
+
         public static DataTable ToDataTable<T>(List<T> items)
         {
             var dataTable = new DataTable(typeof(T).Name);

@@ -5,12 +5,14 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using Beauty4u.ApiAccess.Scheduler;
 using Beauty4u.Interfaces.Api.Promotions;
 using Beauty4u.Interfaces.Api.Table;
 using Beauty4u.Interfaces.DataAccess.Api;
 using Beauty4u.Interfaces.Dto.Products;
 using Beauty4u.Interfaces.Dto.Promotions;
 using Beauty4u.Models.Api.Promotions;
+using Beauty4u.Models.Api.Scheduler;
 using Beauty4u.Models.Api.Table;
 using Beauty4u.Models.Dto.Products;
 using Beauty4u.Models.Dto.Promotions;
@@ -20,11 +22,13 @@ namespace Beauty4u.ApiAccess.Promotions
     public class PromotionsApi : IPromotionsApi
     {
         private readonly HttpClient _httpClient;
+        private readonly IJobSchedulerApi _jobSchedulerApi;
         readonly string promotionsEndpoint = "/promotions";
 
-        public PromotionsApi(HttpClient httpClient)
+        public PromotionsApi(HttpClient httpClient, IJobSchedulerApi jobSchedulerApi)
         {
             _httpClient = httpClient;
+            _jobSchedulerApi = jobSchedulerApi;
         }
 
         public async Task<T> SeachBySkuInApiAsync<T>(string baseAddress, string jwtToken, string sku)
@@ -99,6 +103,24 @@ namespace Beauty4u.ApiAccess.Promotions
             }
         }
 
+        public async Task<T> TransferPromoToStoresAsync<T>(string baseAddress, string jwtToken, IPromoTransferRequest promotionRequest)
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+                var response = await _httpClient.PostAsJsonAsync($"{baseAddress}{promotionsEndpoint}/transfer-promo-to-stores", (PromoTransferRequest)promotionRequest);
+
+                response.EnsureSuccessStatusCode();
+                var output = await response.Content.ReadFromJsonAsync<T>();
+
+                return output;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<T> UpdatePromoStoreAsync<T>(string baseAddress, string jwtToken, IPromoTransferRequest promotionRequest)
         {
             try
@@ -116,5 +138,25 @@ namespace Beauty4u.ApiAccess.Promotions
                 throw ex;
             }
         }
+
+        public async Task<T> TransferAllPromosApiAsync<T>(string baseAddress, string jwtToken)
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+                var response = await _httpClient.GetAsync($"{baseAddress}{promotionsEndpoint}/transfer-all-promo-to-stores");
+
+                response.EnsureSuccessStatusCode();
+                var stringOutput = await response.Content.ReadAsStringAsync();
+                var output = await response.Content.ReadFromJsonAsync<T>();
+
+                return output;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
     }
 }

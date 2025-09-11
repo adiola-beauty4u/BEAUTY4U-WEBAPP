@@ -102,7 +102,6 @@ namespace Beauty4u.DataAccess.B4u
             }
             return results.Cast<IPromotionDto>().ToList();
         }
-
         public async Task CreatePromotionAsync(IPromotionRequest promotionCreateRequest)
         {
             var promoCreateRequest = (PromotionRequest)promotionCreateRequest;
@@ -569,7 +568,6 @@ namespace Beauty4u.DataAccess.B4u
                 } while (!reader.IsClosed && reader.NextResult());
             }
         }
-
         public async Task UpdatePromoStoreAsync(IPromoTransferRequest promoTransferRequest)
         {
             using var conn = new SqlConnection(_connectionString);

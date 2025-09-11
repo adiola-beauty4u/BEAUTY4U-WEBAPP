@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, forwardRef } from '@angular/core';
-import { FormGroup, NG_VALUE_ACCESSOR, ControlValueAccessor, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, NG_VALUE_ACCESSOR, ControlValueAccessor, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -8,7 +8,6 @@ import { MatOptionModule } from '@angular/material/core';
 import { map, startWith } from 'rxjs/operators';
 import { BrandService } from 'src/app/services/brand.service';
 import { SelectControlComponent } from '../select-control/select-control.component';
-import { FormControl } from '@angular/forms';
 import { ItemValue } from 'src/interfaces/item-value';
 
 @Component({

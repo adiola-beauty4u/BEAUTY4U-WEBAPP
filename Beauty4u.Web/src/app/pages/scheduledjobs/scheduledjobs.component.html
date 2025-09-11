@@ -1,0 +1,80 @@
+<mat-tab-group>
+    <mat-tab label="Queued Jobs">
+        <section class="tab-section">
+            <app-table #queuedTable *ngIf="queuedJobs" [tableData]="queuedJobs" [pageSize]="50">
+            </app-table>
+        </section>
+    </mat-tab>
+
+    <mat-tab label="Job History">
+        <section class="tab-section">
+            <mat-accordion class="w-100">
+                <mat-expansion-panel [expanded]="true" class="m-0">
+                    <mat-expansion-panel-header class="py-1">
+                        <mat-panel-title class="text-primary fw-medium small">
+                            Search Filters
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            <mat-chip-listbox aria-label="Selected Filters" class="d-flex flex-wrap gap-1 small">
+                                <mat-chip *ngIf="jobSearchForm.value.jobSchedule" color="primary" selected>
+                                    Job: {{ jobSearchForm.value.jobSchedule.displayText }}
+                                </mat-chip>
+                                <mat-chip *ngIf="jobSearchForm.value.fromDate" color="primary" selected>
+                                    Start Date: {{ jobSearchForm.value.fromDate | date:'yyyy-MM-dd' }}
+                                </mat-chip>
+                                <mat-chip *ngIf="jobSearchForm.value.toDate" color="primary" selected>
+                                    End Date: {{ jobSearchForm.value.toDate | date:'yyyy-MM-dd' }}
+                                </mat-chip>
+                            </mat-chip-listbox>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+
+                    <form [formGroup]="jobSearchForm" class="container-fluid py-3 small">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <app-active-scheduled-job-select [formGroup]="jobSearchForm"
+                                    formControlName="jobSchedule"></app-active-scheduled-job-select>
+                            </div>
+
+                            <div class="col-md-4 d-flex align-items-center gap-2">
+                                <!-- Start -->
+                                <mat-form-field appearance="outline" class="flex-fill">
+                                    <mat-label>Start</mat-label>
+                                    <input matInput [matDatepicker]="fromPicker" formControlName="fromDate">
+                                    <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+                                    <mat-datepicker #fromPicker></mat-datepicker>
+                                </mat-form-field>
+
+                                <span class="text-xs font-medium text-gray-600">to</span>
+
+                                <!-- End -->
+                                <mat-form-field appearance="outline" class="flex-fill">
+                                    <mat-label>End</mat-label>
+                                    <input matInput [matDatepicker]="toPicker" formControlName="toDate">
+                                    <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+                                    <mat-datepicker #toPicker></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-4">
+                                <app-radio-list label="" [inline]="true" formControlName="isSuccessful"
+                                    [items]="isSuccessfulItems" orientation="horizontal">
+                                </app-radio-list>
+                            </div>
+
+                            <div class="col-12 d-flex justify-content-end gap-2 pt-2">
+                                <button mat-flat-button color="primary" type="button" (click)="searchJobHistory()">
+                                    Search
+                                </button>
+                                <button mat-stroked-button color="warn" type="button" (click)="clear()">
+                                    Clear
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </mat-expansion-panel>
+                <app-table #scheduledLogsTable *ngIf="scheduledLogs" [tableData]="scheduledLogs" [pageSize]="50">
+                </app-table>
+            </mat-accordion>
+        </section>
+    </mat-tab>
+</mat-tab-group>

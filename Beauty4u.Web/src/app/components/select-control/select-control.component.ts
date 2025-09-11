@@ -35,6 +35,7 @@ export class SelectControlComponent implements OnChanges, ControlValueAccessor {
   @Input() selectItems: ItemValue[] = [];
   @Input() addAll = true;
   @Input() defaultValue: any;
+  @Input() includeCodeInDisplay = true;
 
   control = new FormControl(); // UI control
   filteredItems: ItemValue[] = [];

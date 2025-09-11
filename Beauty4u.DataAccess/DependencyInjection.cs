@@ -45,6 +45,7 @@ namespace Beauty4u.DataAccess
             services.AddScoped<IItemGroupRepository, B4uItemGroupRepository>();
             services.AddScoped<IPromotionRepository, B4uPromotionRepository>();
             services.AddScoped<IBrandRepository, B4uBrandRepository>();
+            services.AddScoped<IScheduledJobsRepository, B4uScheduledJobsRepository>();
             return services;
         }
     }

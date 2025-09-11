@@ -1,0 +1,51 @@
+/* Divider */
+.sidebar-divider {
+    height: 1px;
+    margin: 0.5rem 0;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Section Caption */
+.nav-caption {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #666;
+}
+
+/* Menu Items */
+.menu-list-item {
+    border-radius: 0.5rem;
+    cursor: pointer;
+
+    &.activeMenu {
+        background: rgba(25, 118, 210, 0.15);
+        color: #1976d2;
+        font-weight: 600;
+    }
+
+    &.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}
+
+/* Chips */
+.item-chip {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    line-height: 1;
+}
+
+/* Child indentation */
+.child-nav .menu-list-item {
+    padding-left: 2.5rem !important;
+    font-size: 0.875rem;
+}
+
+.child-nav .child-nav .menu-list-item {
+    padding-left: 3.5rem !important;
+    font-size: 0.8125rem;
+    color: #666;
+}

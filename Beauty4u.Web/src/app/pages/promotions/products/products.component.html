@@ -1,0 +1,167 @@
+<mat-accordion class="w-100">
+    <mat-expansion-panel [expanded]="true" class="m-0">
+
+        <!-- Panel Summary with Filter Chips -->
+        <mat-expansion-panel-header class="py-1 min-h-10">
+            <mat-panel-title class="text-primary fw-medium small">
+                Search Filters
+            </mat-panel-title>
+            <mat-panel-description>
+                <mat-chip-listbox aria-label="Selected Filters" class="d-flex flex-wrap gap-1 small">
+                    <mat-chip *ngIf="productSearchForm.value.itemGroupCode" color="primary" selected>
+                        Category: {{ productSearchForm.value.itemGroupCode.name }}
+                    </mat-chip>
+                    <mat-chip *ngIf="productSearchForm.value.vendor?.displayText" color="primary" selected>
+                        Vendor: {{ productSearchForm.value.vendor.displayText }}
+                    </mat-chip>
+                    <mat-chip *ngIf="productSearchForm.value.styleCode" color="primary" selected>
+                        Style: {{ productSearchForm.value.styleCode }}
+                    </mat-chip>
+                    <mat-chip *ngIf="productSearchForm.value.styleDesc" color="primary" selected>
+                        Desc: {{ productSearchForm.value.styleDesc }}
+                    </mat-chip>
+                    <mat-chip *ngIf="productSearchForm.value.brand" color="primary" selected>
+                        Brand: {{ productSearchForm.value.brand }}
+                    </mat-chip>
+                    <mat-chip *ngIf="productSearchForm.value.color" color="primary" selected>
+                        Color: {{ productSearchForm.value.color }}
+                    </mat-chip>
+                    <mat-chip *ngIf="productSearchForm.value.size" color="primary" selected>
+                        Size: {{ productSearchForm.value.size }}
+                    </mat-chip>
+                    <mat-chip *ngIf="productSearchForm.value.upc" color="primary" selected>
+                        UPC: {{ productSearchForm.value.upc }}
+                    </mat-chip>
+                    <mat-chip *ngIf="productSearchForm.value.sku" color="primary" selected>
+                        SKU: {{ productSearchForm.value.sku }}
+                    </mat-chip>
+                </mat-chip-listbox>
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <!-- Panel Body -->
+        <form [formGroup]="productSearchForm" class="container-fluid py-3 small">
+            <div class="row g-3">
+
+                <!-- Column 1 -->
+                <div class="col-md-6">
+                    <label class="fw-medium text-primary">Category:</label>
+                    <app-item-group-select
+                        [selectedValue]="productSearchForm.get('itemGroupCode')!"></app-item-group-select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="fw-medium text-primary">Vendor:</label>
+                    <app-vendor-select [formGroup]="productSearchForm" formControlName="vendor"></app-vendor-select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="fw-medium">Style Code:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="styleCode" />
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="fw-medium">Description:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="styleDesc" />
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="fw-medium">Brand:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="brand" />
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="fw-medium">Color:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="color" />
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="fw-medium">Size:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="size" />
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="fw-medium">UPC:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="upc" />
+                    </mat-form-field>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="fw-medium">SKU:</label>
+                    <mat-form-field appearance="outline" class="w-100 m-0">
+                        <input matInput formControlName="sku" />
+                    </mat-form-field>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="col-12 d-flex justify-content-end gap-2 pt-2">
+                    <button mat-flat-button color="primary" type="button" (click)="search()" class="py-1 px-3 small">
+                        Search
+                    </button>
+                    <button mat-stroked-button color="warn" type="button" (click)="clear()" class="py-1 px-3 small">
+                        Clear
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </mat-expansion-panel>
+
+    <app-table [tableData]="output" [pageSize]="50" [methodList]="{ getPromotions: getPromotions.bind(this) }"
+        [enableRowTransfer]="enableRowTransfer" (rowTransferred)="onRowTransferred($event)"
+        (rowsTransferred)="onRowsTransferred($event)" [transferLabel]="transferLabel"
+        [enableRowDelete]="enableRowDelete" (rowDeleted)="onRowsDeleted($event)"
+        [slideInContent]="customContent"></app-table>
+
+    <ng-template #customContent let-name="name">
+        <div class="container-fluid py-3">
+            <div class="row g-3">
+                <h2>{{ selectedProduct?.styleDesc }}</h2>
+            </div>
+            <div class="row g-3">
+                <!-- Left Column -->
+                <div class="col-md-6">
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Vendor:</label>
+                        <div>({{ selectedProduct?.vendorCode }}) {{ selectedProduct?.vendorName }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Sku:</label>
+                        <div>{{ selectedProduct?.sku }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Style Code:</label>
+                        <div>{{ selectedProduct?.styleCode }}</div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-6">
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">Brand:</label>
+                        <div>{{ selectedProduct?.brand }}</div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="fw-semibold text-muted">UPC:</label>
+                        <div>{{ selectedProduct?.upc }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <hr class="my-3">
+            <app-table [tableData]="productPromotions" [pageSize]="50"></app-table>
+        </div>
+    </ng-template>
+</mat-accordion>
