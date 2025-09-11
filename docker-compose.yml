@@ -1,0 +1,62 @@
+version: '3.9'
+
+services:
+  beauty4u_jobs:
+    build:
+      context: .
+      dockerfile: Dockerfile.jobs
+    container_name: beauty4u_jobs
+    ports:
+      - "5100:80"
+    restart: always
+
+  beauty4u_hq:
+    build:
+      context: .
+      dockerfile: Dockerfile.webapi
+    container_name: beauty4u_hq
+    environment:
+      - DOTNET_ENVIRONMENT=Production
+      - APPSETTINGS=appsettings.HQ.json
+    volumes:
+      - ./configs/appsettings.HQ.json:/app/appsettings.json
+    ports:
+      - "5200:80"
+    restart: always
+
+  beauty4u_th:
+    build:
+      context: .
+      dockerfile: Dockerfile.webapi
+    container_name: beauty4u_th
+    environment:
+      - DOTNET_ENVIRONMENT=Production
+      - APPSETTINGS=appsettings.TH.json
+    volumes:
+      - ./configs/appsettings.TH.json:/app/appsettings.json
+    ports:
+      - "5300:80"
+    restart: always
+
+  beauty4u_oh:
+    build:
+      context: .
+      dockerfile: Dockerfile.webapi
+    container_name: beauty4u_oh
+    environment:
+      - DOTNET_ENVIRONMENT=Production
+      - APPSETTINGS=appsettings.OH.json
+    volumes:
+      - ./configs/appsettings.OH.json:/app/appsettings.json
+    ports:
+      - "5400:80"
+    restart: always
+
+  beauty4u_web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: beauty4u_web
+    ports:
+      - "5500:80"
+    restart: always
