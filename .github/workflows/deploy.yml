@@ -34,7 +34,8 @@ jobs:
 
       # --- Build Angular Web ---
       - name: Build Angular Web
-        run: docker build -f Beauty4u.Web/Dockerfile -t beauty4u_web:latest .
+        run: docker build -f Beauty4u.Web/Dockerfile -t beauty4u_web:latest Beauty4u.Web
+
 
       # --- Save Images ---
       - name: Save Docker Images
