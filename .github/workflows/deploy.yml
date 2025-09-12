@@ -45,6 +45,15 @@ jobs:
           
       - name: Verify Docker images saved as tar files
         run: ls -lh *.tar
+        
+      - name: Check files in workspace
+          run: |
+            echo "Current directory:"
+            pwd
+            echo "Listing files:"
+            ls -lh
+            echo "Check specifically for docker-compose.yml:"
+            ls -l docker-compose.yml || echo "docker-compose.yml NOT found!"
 
       # --- Copy to Azure VM ---
       - name: Copy to Azure VM
