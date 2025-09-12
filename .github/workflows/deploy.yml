@@ -21,20 +21,20 @@ jobs:
 
       # --- Build API ---
       - name: Build API
-        run: docker build -t beauty4u_api:latest ./src/Beauty4u.WebApi
+        run: docker build -t beauty4u_api:latest ./Beauty4u.WebApi
 
       # --- Build Jobs ---
       - name: Build Jobs
-        run: docker build -t beauty4u_jobs:latest ./src/Beauty4u.Jobs
+        run: docker build -t beauty4u_jobs:latest ./Beauty4u.Jobs
 
       # --- Angular API_BASE_URL ---
       - name: Inject API Base URL
         run: |
-          sed -i "s|API_BASE_URL_PLACEHOLDER|${{ vars.APIBASEURL }}|g" src/Beauty4u.Web/src/environments/environment.prod.ts
+          sed -i "s|API_BASE_URL_PLACEHOLDER|${{ vars.APIBASEURL }}|g" Beauty4u.Web/src/environments/environment.prod.ts
 
       # --- Build Angular Web ---
       - name: Build Angular Web
-        run: docker build -t beauty4u_web:latest ./src/Beauty4u.Web
+        run: docker build -t beauty4u_web:latest ./Beauty4u.Web
 
       # --- Save Images ---
       - name: Save Docker Images
