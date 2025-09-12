@@ -21,11 +21,11 @@ jobs:
 
       # --- Build API ---
       - name: Build API
-        run: docker build -t beauty4u_api:latest ./Beauty4u.WebApi
+        run: docker build -t beauty4u_api:latest .
 
       # --- Build Jobs ---
       - name: Build Jobs
-        run: docker build -t beauty4u_jobs:latest ./Beauty4u.Jobs
+        run: docker build -t beauty4u_jobs:latest .
 
       # --- Angular API_BASE_URL ---
       - name: Inject API Base URL
@@ -34,7 +34,7 @@ jobs:
 
       # --- Build Angular Web ---
       - name: Build Angular Web
-        run: docker build -t beauty4u_web:latest ./Beauty4u.Web
+        run: docker build -t beauty4u_web:latest .
 
       # --- Save Images ---
       - name: Save Docker Images
