@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { ConfigService } from '../config.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -12,9 +13,9 @@ export class AuthService {
   private refreshing = false;
   private refreshSubject = new BehaviorSubject<string | null>(null);
 
-  private authUrl = `${environment.apiBaseUrl}/v1/auth`;
+  private authUrl = `${this.config.apiBaseUrl}/v1/auth`;
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, private config: ConfigService) { }
 
   login(credentials: { username: string; password: string }): Observable<any> {
     return this.http.post<any>(`${this.authUrl}/login`, credentials).pipe(
