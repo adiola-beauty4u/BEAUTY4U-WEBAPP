@@ -47,18 +47,17 @@ jobs:
       - name: Verify Docker images saved as tar files
         run: ls -lh *.tar
 
-# --- Copy to Azure VM ---
-- name: Copy to Azure VM
-  uses: appleboy/scp-action@v0.1.7
-  with:
-    host: ${{ secrets.AZURE_VM_IP }}
-    username: ${{ secrets.AZURE_VM_USER }}
-    password: ${{ secrets.AZURE_VM_PASSWORD }}
-    source: 
+      # --- Copy to Azure VM ---
+      - name: Copy to Azure VM
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.AZURE_VM_IP }}
+          username: ${{ secrets.AZURE_VM_USER }}
+          password: ${{ secrets.AZURE_VM_PASSWORD }}
+          source: 
       - '*.tar'
       - 'docker-compose.yml'
     target: "${{ vars.DEPLOY_BASE_FOLDER }}"
-
 
       # --- Deploy ---
       - name: Deploy on Azure VM
