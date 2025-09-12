@@ -55,7 +55,7 @@ builder.Services.AddApiVersioning(options =>
 });
 
 builder.Services.AddBusinessDI(builder.Configuration);
-var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string>()?.Split(",".ToCharArray());
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",

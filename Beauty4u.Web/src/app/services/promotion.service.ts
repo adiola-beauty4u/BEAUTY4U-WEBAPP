@@ -7,16 +7,15 @@ import { PromotionSearchParams } from 'src/interfaces/promotion-search-request';
 import { PromotionRequest } from 'src/interfaces/promotion-request';
 import { GetProductPromotionRequest } from 'src/interfaces/get-product-promotion-request';
 import { PromotionTransferRequest } from 'src/interfaces/promotion-transfer-request';
-import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PromotionService {
 
-  private promotionsUrl = `${this.config.apiBaseUrl}/v1/promotions`;
+  private promotionsUrl = `${environment.apiBaseUrl}/v1/promotions`;
 
-  constructor(private http: HttpClient, private config: ConfigService) { }
+  constructor(private http: HttpClient) { }
 
   searchProductPromotionsBySku(sku: string): Observable<any> {
     return this.http.get(this.promotionsUrl + '/search-by-sku?sku=' + sku);

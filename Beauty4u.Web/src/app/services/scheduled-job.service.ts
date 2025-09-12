@@ -6,14 +6,13 @@ import { QueuedJob } from 'src/interfaces/queued-job';
 import { TableData } from 'src/interfaces/table-data';
 import { ScheduledJob } from 'src/interfaces/scheduled-job';
 import { ScheduledJobLogSearchParams } from 'src/interfaces/scheduled-job-logs-search';
-import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ScheduledJobService {
-  private promotionsUrl = `${this.config.apiBaseUrl}/v1/jobscheduler`;
-  constructor(private http: HttpClient, private config: ConfigService) { }
+  private promotionsUrl = `${environment.apiBaseUrl}/v1/jobscheduler`;
+  constructor(private http: HttpClient) { }
 
   getQueuedJobs(): Observable<TableData> {
     return this.http.get<TableData>(this.promotionsUrl);

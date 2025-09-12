@@ -8,15 +8,14 @@ import { TransferProductSearchResult } from 'src/interfaces/transfer-product-sea
 import { ProductTransferRequest } from 'src/interfaces/product-transfer-request';
 import { ProductSearchRequest } from 'src/interfaces/product-search-request';
 import { PromotionProductSearchParams } from 'src/interfaces/product-for-promotion-search-request';
-import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  private productUrl = `${this.config.apiBaseUrl}/v1/products`;
+  private productUrl = `${environment.apiBaseUrl}/v1/products`;
 
-  constructor(private http: HttpClient, private config: ConfigService) { }
+  constructor(private http: HttpClient) { }
 
   uploadBulkProductRegistration(product: BulkProduct): Observable<any> {
     const formData = new FormData();

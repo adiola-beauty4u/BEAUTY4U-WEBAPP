@@ -1,12 +1,15 @@
-name: Deploy to Azure VM
+name: Deploy Beauty4U
 
 on:
   workflow_dispatch:
     inputs:
       environment:
-        description: "Select environment (preprod_hq, preprod_th, preprod_oh)"
+        description: "Choose environment"
         required: true
-        type: environment
+        default: "preprod_hq"
+        type: choice
+        options:
+          - preprod_hq
 
 jobs:
   build-and-deploy:
@@ -14,74 +17,82 @@ jobs:
     environment: ${{ github.event.inputs.environment }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # Build all Docker images
-      - name: Build API Docker image
-        run: docker build -f docker/api.Dockerfile -t beauty4u/${{ vars.BEAUTY4U_API }}:latest .
+      # --- Build API ---
+      - name: Build API
+        run: docker build -t beauty4u_api:latest ./src/Beauty4u.WebApi
 
-      - name: Build Jobs Docker image
-        run: docker build -f docker/jobs.Dockerfile -t beauty4u/${{ vars.BEAUTY4U_JOBS }}:latest .
+      # --- Build Jobs ---
+      - name: Build Jobs
+        run: docker build -t beauty4u_jobs:latest ./src/Beauty4u.Jobs
 
-      - name: Build Web Docker image
-        run: docker build -f docker/web.Dockerfile -t beauty4u/${{ vars.BEAUTY4U_UI }}:latest .
-
-      - name: Save Docker images
+      # --- Angular API_BASE_URL ---
+      - name: Inject API Base URL
         run: |
-          docker save beauty4u/${{ vars.BEAUTY4U_API }}:latest -o api.tar
-          docker save beauty4u/${{ vars.BEAUTY4U_JOBS }}:latest -o jobs.tar
-          docker save beauty4u/${{ vars.BEAUTY4U_UI }}:latest -o web.tar
+          sed -i "s|API_BASE_URL_PLACEHOLDER|${{ vars.APIBASEURL }}|g" src/Beauty4u.Web/src/environments/environment.prod.ts
 
-      - name: Copy Docker images and compose file to VM
+      # --- Build Angular Web ---
+      - name: Build Angular Web
+        run: docker build -t beauty4u_web:latest ./src/Beauty4u.Web
+
+      # --- Save Images ---
+      - name: Save Docker Images
+        run: |
+          docker save beauty4u_api:latest -o beauty4u_api.tar
+          docker save beauty4u_jobs:latest -o beauty4u_jobs.tar
+          docker save beauty4u_web:latest -o beauty4u_web.tar
+
+      # --- Copy to Azure VM ---
+      - name: Copy to Azure VM
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.AZURE_VM_IP }}
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
-          source: "*.tar,docker/docker-compose.tpl.yml"
-          target: "/home/${{ secrets.AZURE_VM_USER }}/deploy"
+          source: "*.tar docker-compose.yml"
+          target: "~/beauty4u"
 
-      - name: Run on VM
-        uses: appleboy/ssh-action@v1.1.0
+      # --- Deploy ---
+      - name: Deploy on Azure VM
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.AZURE_VM_IP }}
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
           script: |
-            cd /home/${{ secrets.AZURE_VM_USER }}/deploy
-            docker load -i api.tar
-            docker load -i jobs.tar
-            docker load -i web.tar
+            cd ~/beauty4u
+            docker load -i beauty4u_api.tar
+            docker load -i beauty4u_jobs.tar
+            docker load -i beauty4u_web.tar
 
-            # Generate .env from GitHub Environment
-            echo "DOTNET_ENVIRONMENT=${{ vars.DOTNET_ENVIRONMENT }}" > .env
             echo "B4UCONNECTION=${{ secrets.B4UCONNECTION }}" >> .env
-			echo "DBUSER=${{ secrets.DBUSER }}" >> .env
-			echo "DBPASSWORD=${{ secrets.DBPASSWORD }}" >> .env
-			echo "JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }}" >> .env
-			echo "JWT_ISSUER=${{ secrets.JWT_ISSUER }}" >> .env
+            
+            echo "API_PORT=${{ vars.BEAUTY4U_API_PORT }}" > .env
+            echo "API_CONTAINER_NAME=${{ vars.BEAUTY4U_API }}" >> .env
+            
+            echo "JOBS_PORT=${{ vars.BEAUTY4U_JOBS_PORT }}" >> .env
+            echo "JOBS_CONTAINER_NAME=${{ vars.BEAUTY4U_JOBS }}" >> .env
+            
+            echo "WEB_PORT=${{ vars.BEAUTY4U_UI_PORT }}" >> .env
+            echo "WEB_CONTAINER_NAME=${{ vars.BEAUTY4U_UI }}" >> .env
+            
+            echo "DBUSER=${{ secrets.DBUSER }}" >> .env
+            echo "DBPASSWORD=${{ secrets.DBPASSWORD }}" >> .env
+            
+            echo "JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }}" >> .env
+            echo "JWT_ISSUER=${{ secrets.JWT_ISSUER }}" >> .env
             echo "JWT_KEY=${{ secrets.JWT_KEY }}" >> .env
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
             
-			echo "BEAUTY4U_API=${{ vars.BEAUTY4U_API }}" >> .env
-			echo "BEAUTY4U_API_PORT=${{ vars.BEAUTY4U_API_PORT }}" >> .env
-			echo "BEAUTY4U_JOBS=${{ vars.BEAUTY4U_JOBS }}" >> .env
-			echo "BEAUTY4U_JOBS_PORT=${{ vars.BEAUTY4U_JOBS_PORT }}" >> .env
-			echo "BEAUTY4U_UI=${{ vars.BEAUTY4U_UI }}" >> .env
-			echo "BEAUTY4U_UI_PORT=${{ vars.BEAUTY4U_UI_PORT }}" >> .env
-			
-			
-            echo "APIBASEURL=${{ vars.APIBASEURL }}" >> .env
+            echo "JWT_ACCESSTOKENEXPIRYMINUTES=${{ vars.JWT_ACCESSTOKENEXPIRYMINUTES }}" >> .env
+            echo "JWT_REFRESHTOKENEXPIRYDAYS=${{ vars.JWT_REFRESHTOKENEXPIRYDAYS }}" >> .env
+
+            echo "SCHEDULERAPI=${{ vars.SCHEDULERAPI }}" >> .env
             
-			echo "CORS_ALLOWEDORIGINS=${{ vars.CORS_ALLOWEDORIGINS }}" >> .env
-			echo "HQAPI=${{ vars.HQAPI }}" >> .env
-			echo "ISHQ=${{ vars.ISHQ }}" >> .env
-			echo "JWT_ACCESSTOKENEXPIRYMINUTES=${{ vars.JWT_ACCESSTOKENEXPIRYMINUTES }}" >> .env
-			echo "JWT_REFRESHTOKENEXPIRYDAYS=${{ vars.JWT_REFRESHTOKENEXPIRYDAYS }}" >> .env
-			echo "SCHEDULERAPI=${{ vars.SCHEDULERAPI }}" >> .env
+            echo "HQAPI=${{ vars.HQAPI }}" >> .env
+            echo "ISHQ=${{ vars.HQ_ISHQ }}" >> .env
+            
+            echo "CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}" >> .env
 
-            echo "DEPLOY_USER=${{ secrets.AZURE_VM_USER }}" >> .env
-
-            # Deploy services
-            docker compose -f docker-compose.tpl.yml --env-file .env up -d --force-recreate
+            docker compose up -d

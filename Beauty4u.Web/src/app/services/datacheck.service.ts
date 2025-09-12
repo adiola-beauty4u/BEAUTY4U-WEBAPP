@@ -1,7 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,9 +8,9 @@ import { ConfigService } from './config.service';
 
 
 export class DataCheckService {
-  private apiUrl = `${this.config.apiBaseUrl}/v1/DataCheck/read-csv`;
+  private apiUrl = `${environment.apiBaseUrl}/v1/DataCheck/read-csv`;
 
-  constructor(private http: HttpClient, private config: ConfigService) {}
+  constructor(private http: HttpClient) {}
 
   uploadCsvFile(file: File) {
     const formData = new FormData();
