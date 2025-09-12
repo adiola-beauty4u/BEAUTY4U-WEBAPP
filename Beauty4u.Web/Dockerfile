@@ -6,5 +6,5 @@ COPY . .
 RUN npm run build -- --configuration production
 
 FROM nginx:alpine
-COPY --from=build /app/dist/beauty4u-web /usr/share/nginx/html
+COPY --from=build /app/dist/beauty4u_web /usr/share/nginx/html
 EXPOSE 80
