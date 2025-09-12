@@ -51,7 +51,7 @@ jobs:
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
           source: "*.tar docker-compose.yml"
-          target: "~/beauty4u"
+          target: "${{ vars.DEPLOY_BASE_FOLDER }}"
 
       # --- Deploy ---
       - name: Deploy on Azure VM
