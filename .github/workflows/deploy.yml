@@ -58,6 +58,7 @@ jobs:
           password: ${{ secrets.AZURE_VM_PASSWORD }}
           source: beauty4u_api.tar
           target: "${{ vars.DEPLOY_BASE_FOLDER }}"
+          tar_exec: ""
           debug: true
       # --- Copy Jobs tar ---
       - name: Copy Jobs tar to Azure VM
@@ -68,6 +69,7 @@ jobs:
           password: ${{ secrets.AZURE_VM_PASSWORD }}
           source: beauty4u_jobs.tar
           target: "${{ vars.DEPLOY_BASE_FOLDER }}"
+          tar_exec: ""
           debug: true
       # --- Copy Web tar ---
       - name: Copy Web tar to Azure VM
@@ -78,6 +80,7 @@ jobs:
           password: ${{ secrets.AZURE_VM_PASSWORD }}
           source: beauty4u_web.tar
           target: "${{ vars.DEPLOY_BASE_FOLDER }}"
+          tar_exec: ""
           debug: true
       # --- Copy docker-compose.yml ---
       - name: Copy docker-compose.yml to Azure VM
