@@ -56,7 +56,7 @@ jobs:
           host: ${{ secrets.AZURE_VM_IP }}
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
-          source: "beauty4u_api.tar beauty4u_jobs.tar beauty4u_web.tar docker-compose.yml"
+          source: "Beauty4u.WebApi/beauty4u_api.tar Beauty4u.Jobs/beauty4u_jobs.tar Beauty4u.Web/beauty4u_web.tar docker-compose.yml"
           target: "${{ vars.DEPLOY_BASE_FOLDER }}"
 
       # --- Deploy ---
