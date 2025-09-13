@@ -21,35 +21,51 @@ jobs:
 
       # --- Build API ---
       - name: Build API
-        run: docker build -f Beauty4u.WebApi/Dockerfile -t beauty4u_api:latest .
+        run: |
+          docker build -f Beauty4u.WebApi/Dockerfile -t beauty4u_api:latest Beauty4u.WebApi
+          IMAGE_SIZE=$(docker image inspect beauty4u_api:latest --format='{{.Size}}')
+          echo "API image size: $IMAGE_SIZE"
+          if [ "$IMAGE_SIZE" -eq 0 ]; then
+            echo "❌ beauty4u_api:latest image is empty!"
+            exit 1
+          fi
 
       # --- Build Jobs ---
       - name: Build Jobs
-        run: docker build -f Beauty4u.Jobs/Dockerfile -t beauty4u_jobs:latest .
+        run: |
+          docker build -f Beauty4u.Jobs/Dockerfile -t beauty4u_jobs:latest Beauty4u.Jobs
+          IMAGE_SIZE=$(docker image inspect beauty4u_jobs:latest --format='{{.Size}}')
+          echo "Jobs image size: $IMAGE_SIZE"
+          if [ "$IMAGE_SIZE" -eq 0 ]; then
+            echo "❌ beauty4u_jobs:latest image is empty!"
+            exit 1
+          fi
 
-      # --- Angular API_BASE_URL ---
+      # --- Inject API Base URL for Angular ---
       - name: Inject API Base URL
         run: |
           sed -i "s|API_BASE_URL_PLACEHOLDER|${{ vars.APIBASEURL }}|g" Beauty4u.Web/src/environments/environment.prod.ts
+
       # --- Build Angular Web ---
       - name: Build Angular Web
-        run: docker build -f Beauty4u.Web/Dockerfile -t beauty4u_web:latest Beauty4u.Web
+        run: |
+          docker build -f Beauty4u.Web/Dockerfile -t beauty4u_web:latest Beauty4u.Web
+          IMAGE_SIZE=$(docker image inspect beauty4u_web:latest --format='{{.Size}}')
+          echo "Web image size: $IMAGE_SIZE"
+          if [ "$IMAGE_SIZE" -eq 0 ]; then
+            echo "❌ beauty4u_web:latest image is empty!"
+            exit 1
+          fi
 
-- name: Set working directory
-  run: cd $GITHUB_WORKSPACE
-
-      # --- Save Images ---
+      # --- Save Docker Images as tar ---
       - name: Save Docker Images
         run: |
           docker save beauty4u_api:latest -o beauty4u_api.tar
           docker save beauty4u_jobs:latest -o beauty4u_jobs.tar
           docker save beauty4u_web:latest -o beauty4u_web.tar
           
-      - name: Verify Docker images saved as tar files
-        run: readlink -f *.tar
-        
-      - name: Check files in workspace
-        run: readlink -f *.yml
+      - name: Verify tar files
+        run: ls -lh *.tar
 
       # --- Copy to Azure VM ---
       - name: Copy to Azure VM
@@ -70,35 +86,31 @@ jobs:
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
           script: |
-            cd ~/beauty4u
+            cd ${{ vars.DEPLOY_BASE_FOLDER }}
             docker load -i beauty4u_api.tar
             docker load -i beauty4u_jobs.tar
             docker load -i beauty4u_web.tar
-            echo "B4UCONNECTION=${{ secrets.B4UCONNECTION }}" >> .env
-            
-            echo "API_PORT=${{ vars.BEAUTY4U_API_PORT }}" > .env
-            echo "API_CONTAINER_NAME=${{ vars.BEAUTY4U_API }}" >> .env
-            
-            echo "JOBS_PORT=${{ vars.BEAUTY4U_JOBS_PORT }}" >> .env
-            echo "JOBS_CONTAINER_NAME=${{ vars.BEAUTY4U_JOBS }}" >> .env
-            
-            echo "WEB_PORT=${{ vars.BEAUTY4U_UI_PORT }}" >> .env
-            echo "WEB_CONTAINER_NAME=${{ vars.BEAUTY4U_UI }}" >> .env
-            
-            echo "DBUSER=${{ secrets.DBUSER }}" >> .env
-            echo "DBPASSWORD=${{ secrets.DBPASSWORD }}" >> .env
-            
-            echo "JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }}" >> .env
-            echo "JWT_ISSUER=${{ secrets.JWT_ISSUER }}" >> .env
-            echo "JWT_KEY=${{ secrets.JWT_KEY }}" >> .env
-            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-            
-            echo "JWT_ACCESSTOKENEXPIRYMINUTES=${{ vars.JWT_ACCESSTOKENEXPIRYMINUTES }}" >> .env
-            echo "JWT_REFRESHTOKENEXPIRYDAYS=${{ vars.JWT_REFRESHTOKENEXPIRYDAYS }}" >> .env
-            echo "SCHEDULERAPI=${{ vars.SCHEDULERAPI }}" >> .env
-            
-            echo "HQAPI=${{ vars.HQAPI }}" >> .env
-            echo "ISHQ=${{ vars.HQ_ISHQ }}" >> .env
-            
-            echo "CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}" >> .env
+
+            cat <<EOF > .env
+B4UCONNECTION=${{ secrets.B4UCONNECTION }}
+API_PORT=${{ vars.BEAUTY4U_API_PORT }}
+API_CONTAINER_NAME=${{ vars.BEAUTY4U_API }}
+JOBS_PORT=${{ vars.BEAUTY4U_JOBS_PORT }}
+JOBS_CONTAINER_NAME=${{ vars.BEAUTY4U_JOBS }}
+WEB_PORT=${{ vars.BEAUTY4U_UI_PORT }}
+WEB_CONTAINER_NAME=${{ vars.BEAUTY4U_UI }}
+DBUSER=${{ secrets.DBUSER }}
+DBPASSWORD=${{ secrets.DBPASSWORD }}
+JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }}
+JWT_ISSUER=${{ secrets.JWT_ISSUER }}
+JWT_KEY=${{ secrets.JWT_KEY }}
+JWT_SECRET=${{ secrets.JWT_SECRET }}
+JWT_ACCESSTOKENEXPIRYMINUTES=${{ vars.JWT_ACCESSTOKENEXPIRYDAYS }}
+JWT_REFRESHTOKENEXPIRYDAYS=${{ vars.JWT_REFRESHTOKENEXPIRYDAYS }}
+SCHEDULERAPI=${{ vars.SCHEDULERAPI }}
+HQAPI=${{ vars.HQAPI }}
+ISHQ=${{ vars.HQ_ISHQ }}
+CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}
+EOF
+
             docker compose up -d
