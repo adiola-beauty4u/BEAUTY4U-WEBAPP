@@ -44,10 +44,10 @@ jobs:
           docker save beauty4u_web:latest -o beauty4u_web.tar
           
       - name: Verify Docker images saved as tar files
-        run: ls -lh *.tar
+        run: readlink -f *.tar
         
       - name: Check files in workspace
-        run: ls -lh *.yml
+        run: readlink -f *.yml
 
       # --- Copy to Azure VM ---
       - name: Copy to Azure VM
