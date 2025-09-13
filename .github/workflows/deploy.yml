@@ -17,7 +17,8 @@ jobs:
     environment: ${{ github.event.inputs.environment }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       # --- Build API ---
       - name: Build API
@@ -63,11 +64,11 @@ jobs:
           docker save beauty4u_api:latest -o beauty4u_api.tar
           docker save beauty4u_jobs:latest -o beauty4u_jobs.tar
           docker save beauty4u_web:latest -o beauty4u_web.tar
-          
+
       - name: Verify tar files
         run: ls -lh *.tar
 
-      # --- Copy to Azure VM ---
+      # --- Copy files to Azure VM ---
       - name: Copy to Azure VM
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -78,7 +79,7 @@ jobs:
           target: "${{ vars.DEPLOY_BASE_FOLDER }}"
           debug: true
 
-      # --- Deploy ---
+      # --- Deploy on Azure VM ---
       - name: Deploy on Azure VM
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -87,10 +88,13 @@ jobs:
           password: ${{ secrets.AZURE_VM_PASSWORD }}
           script: |
             cd ${{ vars.DEPLOY_BASE_FOLDER }}
+
+            # Load Docker images
             docker load -i beauty4u_api.tar
             docker load -i beauty4u_jobs.tar
             docker load -i beauty4u_web.tar
 
+            # Generate .env file
             cat <<EOF > .env
 B4UCONNECTION=${{ secrets.B4UCONNECTION }}
 API_PORT=${{ vars.BEAUTY4U_API_PORT }}
@@ -105,7 +109,7 @@ JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }}
 JWT_ISSUER=${{ secrets.JWT_ISSUER }}
 JWT_KEY=${{ secrets.JWT_KEY }}
 JWT_SECRET=${{ secrets.JWT_SECRET }}
-JWT_ACCESSTOKENEXPIRYMINUTES=${{ vars.JWT_ACCESSTOKENEXPIRYDAYS }}
+JWT_ACCESSTOKENEXPIRYMINUTES=${{ vars.JWT_ACCESSTOKENEXPIRYMINUTES }}
 JWT_REFRESHTOKENEXPIRYDAYS=${{ vars.JWT_REFRESHTOKENEXPIRYDAYS }}
 SCHEDULERAPI=${{ vars.SCHEDULERAPI }}
 HQAPI=${{ vars.HQAPI }}
@@ -113,4 +117,5 @@ ISHQ=${{ vars.HQ_ISHQ }}
 CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}
 EOF
 
+            # Start containers
             docker compose up -d
