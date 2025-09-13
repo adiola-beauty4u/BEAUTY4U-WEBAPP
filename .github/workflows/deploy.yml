@@ -67,35 +67,34 @@ jobs:
           script: |
             cd ${{ vars.DEPLOY_FOLDER }}
 
-            rem --- Extract tar files using bsdtar ---
-            bsdtar -xf beauty4u_api.tar -C .
-            bsdtar -xf beauty4u_jobs.tar -C .
-            bsdtar -xf beauty4u_web.tar -C .
+            echo "Loading docker images..."
+            docker load -i beauty4u_api.tar
+            docker load -i beauty4u_jobs.tar
+            docker load -i beauty4u_web.tar
 
-            rem --- Import into Docker manually (if needed) ---
-            docker import beauty4u_api:latest
-            docker import beauty4u_jobs:latest
-            docker import beauty4u_web:latest
+            echo "Recreating .env file..."
+            (
+            echo B4UCONNECTION=${{ secrets.B4UCONNECTION }}
+            echo API_PORT=5100
+            echo API_CONTAINER_NAME=beauty4u_hq
+            echo JOBS_PORT=6100
+            echo JOBS_CONTAINER_NAME=beauty4u_jobs
+            echo WEB_PORT=8101
+            echo WEB_CONTAINER_NAME=beauty4u_web
+            echo DBUSER=${{ secrets.DBUSER }}
+            echo DBPASSWORD=${{ secrets.DBPASSWORD }}
+            echo JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }}
+            echo JWT_ISSUER=${{ secrets.JWT_ISSUER }}
+            echo JWT_KEY=${{ secrets.JWT_KEY }}
+            echo JWT_SECRET=${{ secrets.JWT_SECRET }}
+            echo JWT_ACCESSTOKENEXPIRYMINUTES=60
+            echo JWT_REFRESHTOKENEXPIRYDAYS=7
+            echo SCHEDULERAPI=http://localhost:6100
+            echo HQAPI=${{ vars.HQAPI }}
+            echo ISHQ=${{ vars.HQSETTINGS_ISHQ }}
+            echo CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}
+            ) > .env
 
-            echo B4UCONNECTION=${{ secrets.B4UCONNECTION }} >> .env
-            echo API_PORT=5100 > .env
-            echo API_CONTAINER_NAME=beauty4u_hq >> .env
-            echo JOBS_PORT=6100 >> .env
-            echo JOBS_CONTAINER_NAME=beauty4u_jobs >> .env
-            echo WEB_PORT=8101 >> .env
-            echo WEB_CONTAINER_NAME=beauty4u_web >> .env
-            echo DBUSER=${{ secrets.DBUSER }} >> .env
-            echo DBPASSWORD=${{ secrets.DBPASSWORD }} >> .env
-            echo JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }} >> .env
-            echo JWT_ISSUER=${{ secrets.JWT_ISSUER }} >> .env
-            echo JWT_KEY=${{ secrets.JWT_KEY }} >> .env
-            echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
-            echo JWT_ACCESSTOKENEXPIRYMINUTES=60 >> .env
-            echo JWT_REFRESHTOKENEXPIRYDAYS=7 >> .env
-            echo SCHEDULERAPI=http://***:6100 >> .env
-            echo HQAPI=http://***:5100 >> .env
-            echo ISHQ=${{ vars.HQSETTINGS_ISHQ }} >> .env
-            echo CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }} >> .env
-
+            echo "Starting containers..."
+            docker compose down || true
             docker compose up -d
-
