@@ -66,9 +66,16 @@ jobs:
           port: 22
           script: |
             cd ${{ vars.DEPLOY_FOLDER }}
-            docker load -i beauty4u_api.tar
-            docker load -i beauty4u_jobs.tar
-            docker load -i beauty4u_web.tar
+
+            rem --- Extract tar files using bsdtar ---
+            bsdtar -xf beauty4u_api.tar -C .
+            bsdtar -xf beauty4u_jobs.tar -C .
+            bsdtar -xf beauty4u_web.tar -C .
+
+            rem --- Import into Docker manually (if needed) ---
+            docker import beauty4u_api:latest
+            docker import beauty4u_jobs:latest
+            docker import beauty4u_web:latest
 
             echo B4UCONNECTION=${{ secrets.B4UCONNECTION }} >> .env
             echo API_PORT=5100 > .env
