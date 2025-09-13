@@ -49,18 +49,44 @@ jobs:
       - name: Check files in workspace
         run: readlink -f *.yml
 
-      # --- Copy to Azure VM ---
-      - name: Copy to Azure VM
+      # --- Copy API tar ---
+      - name: Copy API tar to Azure VM
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.AZURE_VM_IP }}
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
-          source: |
-                 beauty4u_api.tar
-                 beauty4u_jobs.tar
-                 beauty4u_web.tar
-                 docker-compose.yml
+          source: beauty4u_api.tar
+          target: "${{ vars.DEPLOY_BASE_FOLDER }}"
+          debug: true
+      # --- Copy Jobs tar ---
+      - name: Copy Jobs tar to Azure VM
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.AZURE_VM_IP }}
+          username: ${{ secrets.AZURE_VM_USER }}
+          password: ${{ secrets.AZURE_VM_PASSWORD }}
+          source: beauty4u_jobs.tar
+          target: "${{ vars.DEPLOY_BASE_FOLDER }}"
+          debug: true
+      # --- Copy Web tar ---
+      - name: Copy Web tar to Azure VM
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.AZURE_VM_IP }}
+          username: ${{ secrets.AZURE_VM_USER }}
+          password: ${{ secrets.AZURE_VM_PASSWORD }}
+          source: beauty4u_web.tar
+          target: "${{ vars.DEPLOY_BASE_FOLDER }}"
+          debug: true
+      # --- Copy docker-compose.yml ---
+      - name: Copy docker-compose.yml to Azure VM
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.AZURE_VM_IP }}
+          username: ${{ secrets.AZURE_VM_USER }}
+          password: ${{ secrets.AZURE_VM_PASSWORD }}
+          source: docker-compose.yml
           target: "${{ vars.DEPLOY_BASE_FOLDER }}"
           debug: true
 
