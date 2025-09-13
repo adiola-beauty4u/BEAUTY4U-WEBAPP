@@ -64,6 +64,22 @@ jobs:
           strip_components: 0
           tar_tmp_path: ""
           tar_exec: ""
+          tar: false
+
+      - name: Extract files on Azure VM
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AZURE_VM_IP }}
+          username: ${{ secrets.AZURE_VM_USER }}
+          password: ${{ secrets.AZURE_VM_PASSWORD }}
+          port: 22
+          script: |
+            cd F:/docker/hq
+            echo "Extracting archives..."
+            bsdtar -xf beauty4u_api.tar -C F:/docker/hq
+            bsdtar -xf beauty4u_jobs.tar -C F:/docker/hq
+            bsdtar -xf beauty4u_web.tar -C F:/docker/hq
+            echo "✅ Extraction complete"
 
       # --- Deploy ---
       - name: Deploy on Azure VM
