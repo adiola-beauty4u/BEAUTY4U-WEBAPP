@@ -49,42 +49,58 @@ jobs:
       - name: Check files in workspace
         run: readlink -f *.yml
 
-      # --- Copy to Azure VM ---
-      - name: Copy files to Azure VM
+            # --- Copy API tar ---
+      - name: Copy API to Azure VM
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.AZURE_VM_IP }}
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
           port: 22
-          source: |
-            beauty4u_api.tar
-            beauty4u_jobs.tar
-            beauty4u_web.tar
-            docker-compose.yml
+          source: beauty4u_api.tar
           target: "${{ vars.DEPLOY_FOLDER }}"
           overwrite: true
           debug: true
-          strip_components: 0
-          tar_exec: ""   # ✅ disable tar/untar
 
-      # --- Extract and cleanup on Azure VM ---
-      - name: Extract files on Azure VM
-        uses: appleboy/ssh-action@master
+      # --- Copy Jobs tar ---
+      - name: Copy Jobs to Azure VM
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.AZURE_VM_IP }}
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
           port: 22
-          script: |
-            cd "${{ vars.DEPLOY_FOLDER }}"
-            echo "Extracting archives..."
-            bsdtar -xf beauty4u_api.tar -C "${{ vars.DEPLOY_FOLDER }}"
-            bsdtar -xf beauty4u_jobs.tar -C "${{ vars.DEPLOY_FOLDER }}"
-            bsdtar -xf beauty4u_web.tar -C "${{ vars.DEPLOY_FOLDER }}"
-            echo "Cleaning up tar files..."
-            del beauty4u_api.tar beauty4u_jobs.tar beauty4u_web.tar
-            echo "✅ Extraction and cleanup complete"
+          source: beauty4u_jobs.tar
+          target: "${{ vars.DEPLOY_FOLDER }}"
+          overwrite: true
+          debug: true
+
+      # --- Copy Web tar ---
+      - name: Copy Web to Azure VM
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.AZURE_VM_IP }}
+          username: ${{ secrets.AZURE_VM_USER }}
+          password: ${{ secrets.AZURE_VM_PASSWORD }}
+          port: 22
+          source: beauty4u_web.tar
+          target: "${{ vars.DEPLOY_FOLDER }}"
+          overwrite: true
+          debug: true
+
+      # --- Copy docker-compose.yml ---
+      - name: Copy docker-compose.yml to Azure VM
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.AZURE_VM_IP }}
+          username: ${{ secrets.AZURE_VM_USER }}
+          password: ${{ secrets.AZURE_VM_PASSWORD }}
+          port: 22
+          source: docker-compose.yml
+          target: "${{ vars.DEPLOY_FOLDER }}"
+          overwrite: true
+          debug: true
+
             
       # --- Deploy ---
       - name: Deploy on Azure VM
