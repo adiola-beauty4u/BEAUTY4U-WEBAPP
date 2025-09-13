@@ -62,7 +62,7 @@ jobs:
           overwrite: true
           debug: true
           strip_components: 0
-          tar_tmp_path: /dev/null
+          tar_tmp_path: ""
 
       - name: Move files to deploy folder
         uses: appleboy/ssh-action@master
