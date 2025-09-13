@@ -63,6 +63,7 @@ jobs:
           debug: true
           strip_components: 0
           tar_tmp_path: ""
+          tar_exec: ""
 
       # --- Deploy ---
       - name: Deploy on Azure VM
