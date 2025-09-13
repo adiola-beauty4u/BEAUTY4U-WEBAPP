@@ -61,6 +61,7 @@ jobs:
           target: "${{ vars.DEPLOY_BASE_FOLDER }}"
           overwrite: true
           debug: true
+          tar_tmp_path: ""
       # --- Deploy ---
       - name: Deploy on Azure VM
         uses: appleboy/ssh-action@v1.2.0
