@@ -47,7 +47,7 @@ jobs:
         run: ls -lh *.tar
         
       - name: Check files in workspace
-          run: ls -l docker-compose.yml || echo "docker-compose.yml NOT found!"
+        run: ls -lh *.yml
 
       # --- Copy to Azure VM ---
       - name: Copy to Azure VM
