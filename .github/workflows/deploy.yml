@@ -35,6 +35,10 @@ jobs:
       - name: Build Angular Web
         run: docker build -f Beauty4u.Web/Dockerfile -t beauty4u_web:latest Beauty4u.Web
 
+      - name: Set working directory
+	run: cd $GITHUB_WORKSPACE
+
+
 
       # --- Save Images ---
       - name: Save Docker Images
