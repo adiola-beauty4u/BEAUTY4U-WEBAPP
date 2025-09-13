@@ -61,6 +61,8 @@ jobs:
           target: "${{ vars.DEPLOY_FOLDER }}"
           overwrite: true
           debug: true
+          strip_components: 0
+          tar_exec: false
 
       # --- Copy Jobs tar ---
       - name: Copy Jobs to Azure VM
