@@ -49,50 +49,22 @@ jobs:
       - name: Check files in workspace
         run: readlink -f *.yml
 
-      # --- Copy API tar ---
-      - name: Copy API tar to Azure VM
-        uses: appleboy/scp-action@v0.1.7
+      # --- Copy to Azure VM ---
+      - name: Copy files to Azure VM
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.AZURE_VM_IP }}
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
-          source: beauty4u_api.tar
+          port: 22
+          source: |
+            beauty4u_api.tar
+            beauty4u_jobs.tar
+            beauty4u_web.tar
+            docker-compose.yml
           target: "${{ vars.DEPLOY_BASE_FOLDER }}"
-          tar_exec: ""
+          overwrite: true
           debug: true
-      # --- Copy Jobs tar ---
-      - name: Copy Jobs tar to Azure VM
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.AZURE_VM_IP }}
-          username: ${{ secrets.AZURE_VM_USER }}
-          password: ${{ secrets.AZURE_VM_PASSWORD }}
-          source: beauty4u_jobs.tar
-          target: "${{ vars.DEPLOY_BASE_FOLDER }}"
-          tar_exec: ""
-          debug: true
-      # --- Copy Web tar ---
-      - name: Copy Web tar to Azure VM
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.AZURE_VM_IP }}
-          username: ${{ secrets.AZURE_VM_USER }}
-          password: ${{ secrets.AZURE_VM_PASSWORD }}
-          source: beauty4u_web.tar
-          target: "${{ vars.DEPLOY_BASE_FOLDER }}"
-          tar_exec: ""
-          debug: true
-      # --- Copy docker-compose.yml ---
-      - name: Copy docker-compose.yml to Azure VM
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.AZURE_VM_IP }}
-          username: ${{ secrets.AZURE_VM_USER }}
-          password: ${{ secrets.AZURE_VM_PASSWORD }}
-          source: docker-compose.yml
-          target: "${{ vars.DEPLOY_BASE_FOLDER }}"
-          debug: true
-
       # --- Deploy ---
       - name: Deploy on Azure VM
         uses: appleboy/ssh-action@v1.2.0
