@@ -56,7 +56,7 @@ jobs:
             publish/jobs/**
             publish/web/**
             docker-compose.yml
-          target: "${{ vars.DEPLOY_BASE_FOLDER }}"
+          target: "${{ vars.DEPLOY_FOLDER }}"
           overwrite: true
           debug: true
 
