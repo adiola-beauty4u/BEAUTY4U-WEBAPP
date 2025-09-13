@@ -19,40 +19,37 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # --- Install .NET 9 SDK ---
-      - name: Setup .NET 9
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '9.0.x'
+      # --- Build API ---
+      - name: Build API
+        run: docker build -f Beauty4u.WebApi/Dockerfile -t beauty4u_api:latest .
 
-      # --- Verify installed SDK ---
-      - run: dotnet --info
-
-      # --- Publish API ---
-      - name: Publish API
-        run: dotnet publish ./Beauty4u.WebApi/Beauty4u.WebApi.csproj -c Release -o ./publish/webapi
-
-      # --- Publish Jobs ---
-      - name: Publish Jobs
-        run: dotnet publish ./Beauty4u.Jobs/Beauty4u.Jobs.csproj -c Release -o ./publish/jobs
+      # --- Build Jobs ---
+      - name: Build Jobs
+        run: docker build -f Beauty4u.Jobs/Dockerfile -t beauty4u_jobs:latest .
 
       # --- Angular API_BASE_URL ---
       - name: Inject API Base URL
         run: |
           sed -i "s|API_BASE_URL_PLACEHOLDER|${{ vars.APIBASEURL }}|g" Beauty4u.Web/src/environments/environment.prod.ts
-
       # --- Build Angular Web ---
       - name: Build Angular Web
+        run: docker build -f Beauty4u.Web/Dockerfile -t beauty4u_web:latest Beauty4u.Web
+
+
+      # --- Save Images ---
+      - name: Save Docker Images
         run: |
-          cd Beauty4u.Web
-          npm ci
-          npm run build -- --configuration production --output-path=../publish/web
+          docker save beauty4u_api:latest -o beauty4u_api.tar
+          docker save beauty4u_jobs:latest -o beauty4u_jobs.tar
+          docker save beauty4u_web:latest -o beauty4u_web.tar
+          
+      - name: Verify Docker images saved as tar files
+        run: readlink -f *.tar
+        
+      - name: Check files in workspace
+        run: readlink -f *.yml
 
-      # --- Verify publish folders ---
-      - name: Check publish outputs
-        run: ls -R ./publish
-
-      # --- Copy publish outputs + compose file to VM ---
+      # --- Copy to Azure VM ---
       - name: Copy files to Azure VM
         uses: appleboy/scp-action@master
         with:
@@ -60,12 +57,11 @@ jobs:
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
           port: 22
-          source: "publish/webapi/**,publish/jobs/**,publish/web/**,docker-compose.yml"
-          target: "${{ vars.DEPLOY_FOLDER }}"
+          source: "beauty4u_api.tar,beauty4u_jobs.tar,beauty4u_web.tar,docker-compose.yml"
+          target: "${{ vars.DEPLOY_BASE_FOLDER }}"
           overwrite: true
           debug: true
-
-      # --- Deploy on VM ---
+      # --- Deploy ---
       - name: Deploy on Azure VM
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -73,13 +69,13 @@ jobs:
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
           script: |
-            cd ${{ vars.DEPLOY_BASE_FOLDER }}
-            
-            # Recreate .env each deployment
-            rm -f .env
+            cd ~/beauty4u
+            docker load -i beauty4u_api.tar
+            docker load -i beauty4u_jobs.tar
+            docker load -i beauty4u_web.tar
             echo "B4UCONNECTION=${{ secrets.B4UCONNECTION }}" >> .env
             
-            echo "API_PORT=${{ vars.BEAUTY4U_API_PORT }}" >> .env
+            echo "API_PORT=${{ vars.BEAUTY4U_API_PORT }}" > .env
             echo "API_CONTAINER_NAME=${{ vars.BEAUTY4U_API }}" >> .env
             
             echo "JOBS_PORT=${{ vars.BEAUTY4U_JOBS_PORT }}" >> .env
@@ -104,7 +100,4 @@ jobs:
             echo "ISHQ=${{ vars.HQ_ISHQ }}" >> .env
             
             echo "CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}" >> .env
-
-            # Restart containers with latest publish outputs
-            docker compose down
-            docker compose up -d --build
+            docker compose up -d
