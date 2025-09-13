@@ -63,36 +63,32 @@ jobs:
           host: ${{ secrets.AZURE_VM_IP }}
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
+          port: 22
           script: |
-            cd ~/beauty4u
+            cd ${{ vars.DEPLOY_FOLDER }}
             docker load -i beauty4u_api.tar
             docker load -i beauty4u_jobs.tar
             docker load -i beauty4u_web.tar
-            echo "B4UCONNECTION=${{ secrets.B4UCONNECTION }}" >> .env
-            
-            echo "API_PORT=${{ vars.BEAUTY4U_API_PORT }}" > .env
-            echo "API_CONTAINER_NAME=${{ vars.BEAUTY4U_API }}" >> .env
-            
-            echo "JOBS_PORT=${{ vars.BEAUTY4U_JOBS_PORT }}" >> .env
-            echo "JOBS_CONTAINER_NAME=${{ vars.BEAUTY4U_JOBS }}" >> .env
-            
-            echo "WEB_PORT=${{ vars.BEAUTY4U_UI_PORT }}" >> .env
-            echo "WEB_CONTAINER_NAME=${{ vars.BEAUTY4U_UI }}" >> .env
-            
-            echo "DBUSER=${{ secrets.DBUSER }}" >> .env
-            echo "DBPASSWORD=${{ secrets.DBPASSWORD }}" >> .env
-            
-            echo "JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }}" >> .env
-            echo "JWT_ISSUER=${{ secrets.JWT_ISSUER }}" >> .env
-            echo "JWT_KEY=${{ secrets.JWT_KEY }}" >> .env
-            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-            
-            echo "JWT_ACCESSTOKENEXPIRYMINUTES=${{ vars.JWT_ACCESSTOKENEXPIRYMINUTES }}" >> .env
-            echo "JWT_REFRESHTOKENEXPIRYDAYS=${{ vars.JWT_REFRESHTOKENEXPIRYDAYS }}" >> .env
-            echo "SCHEDULERAPI=${{ vars.SCHEDULERAPI }}" >> .env
-            
-            echo "HQAPI=${{ vars.HQAPI }}" >> .env
-            echo "ISHQ=${{ vars.HQ_ISHQ }}" >> .env
-            
-            echo "CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}" >> .env
+
+            echo B4UCONNECTION=${{ secrets.B4UCONNECTION }} >> .env
+            echo API_PORT=5100 > .env
+            echo API_CONTAINER_NAME=beauty4u_hq >> .env
+            echo JOBS_PORT=6100 >> .env
+            echo JOBS_CONTAINER_NAME=beauty4u_jobs >> .env
+            echo WEB_PORT=8101 >> .env
+            echo WEB_CONTAINER_NAME=beauty4u_web >> .env
+            echo DBUSER=${{ secrets.DBUSER }} >> .env
+            echo DBPASSWORD=${{ secrets.DBPASSWORD }} >> .env
+            echo JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }} >> .env
+            echo JWT_ISSUER=${{ secrets.JWT_ISSUER }} >> .env
+            echo JWT_KEY=${{ secrets.JWT_KEY }} >> .env
+            echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
+            echo JWT_ACCESSTOKENEXPIRYMINUTES=60 >> .env
+            echo JWT_REFRESHTOKENEXPIRYDAYS=7 >> .env
+            echo SCHEDULERAPI=http://***:6100 >> .env
+            echo HQAPI=http://***:5100 >> .env
+            echo ISHQ=${{ vars.HQSETTINGS_ISHQ }} >> .env
+            echo CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }} >> .env
+
             docker compose up -d
+
