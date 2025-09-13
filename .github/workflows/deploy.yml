@@ -19,6 +19,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # --- Install .NET 9 SDK ---
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      # --- Verify installed SDK ---
+      - run: dotnet --info
+
       # --- Publish API ---
       - name: Publish API
         run: dotnet publish ./Beauty4u.WebApi/Beauty4u.WebApi.csproj -c Release -o ./publish/webapi
