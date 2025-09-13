@@ -58,29 +58,12 @@ jobs:
           password: ${{ secrets.AZURE_VM_PASSWORD }}
           port: 22
           source: "beauty4u_api.tar,beauty4u_jobs.tar,beauty4u_web.tar,docker-compose.yml"
-          target: "./"
+          target: "${{ vars.DEPLOY_FOLDER }}"
           overwrite: true
           debug: true
           strip_components: 0
           tar_tmp_path: ""
 
-      - name: Move files to deploy folder
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.AZURE_VM_IP }}
-          username: ${{ secrets.AZURE_VM_USER }}
-          password: ${{ secrets.AZURE_VM_PASSWORD }}
-          port: 22
-          script: |
-            powershell -Command "
-              if (-Not (Test-Path '${{ vars.DEPLOY_FOLDER }}')) {
-                New-Item -ItemType Directory -Path '${{ vars.DEPLOY_FOLDER }}' | Out-Null
-              }
-              Move-Item -Force \$env:USERPROFILE\beauty4u_api.tar '${{ vars.DEPLOY_FOLDER }}\beauty4u_api.tar'
-              Move-Item -Force \$env:USERPROFILE\beauty4u_jobs.tar '${{ vars.DEPLOY_FOLDER }}\beauty4u_jobs.tar'
-              Move-Item -Force \$env:USERPROFILE\beauty4u_web.tar '${{ vars.DEPLOY_FOLDER }}\beauty4u_web.tar'
-              Move-Item -Force \$env:USERPROFILE\docker-compose.yml '${{ vars.DEPLOY_FOLDER }}\docker-compose.yml'
-            "
       # --- Deploy ---
       - name: Deploy on Azure VM
         uses: appleboy/ssh-action@v1.2.0
