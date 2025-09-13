@@ -57,14 +57,18 @@ jobs:
           username: ${{ secrets.AZURE_VM_USER }}
           password: ${{ secrets.AZURE_VM_PASSWORD }}
           port: 22
-          source: "beauty4u_api.tar,beauty4u_jobs.tar,beauty4u_web.tar,docker-compose.yml"
+          source: |
+            beauty4u_api.tar
+            beauty4u_jobs.tar
+            beauty4u_web.tar
+            docker-compose.yml
           target: "${{ vars.DEPLOY_FOLDER }}"
           overwrite: true
           debug: true
           strip_components: 0
-          tar_tmp_path: ""
-          tar_exec: false
+          tar_exec: ""   # ✅ disable tar/untar
 
+      # --- Extract and cleanup on Azure VM ---
       - name: Extract files on Azure VM
         uses: appleboy/ssh-action@master
         with:
@@ -73,15 +77,15 @@ jobs:
           password: ${{ secrets.AZURE_VM_PASSWORD }}
           port: 22
           script: |
-            cd F:/docker/hq
+            cd "${{ vars.DEPLOY_FOLDER }}"
             echo "Extracting archives..."
-            bsdtar -xf beauty4u_api.tar -C F:/docker/hq
-            bsdtar -xf beauty4u_jobs.tar -C F:/docker/hq
-            bsdtar -xf beauty4u_web.tar -C F:/docker/hq
+            bsdtar -xf beauty4u_api.tar -C "${{ vars.DEPLOY_FOLDER }}"
+            bsdtar -xf beauty4u_jobs.tar -C "${{ vars.DEPLOY_FOLDER }}"
+            bsdtar -xf beauty4u_web.tar -C "${{ vars.DEPLOY_FOLDER }}"
             echo "Cleaning up tar files..."
             del beauty4u_api.tar beauty4u_jobs.tar beauty4u_web.tar
             echo "✅ Extraction and cleanup complete"
-
+            
       # --- Deploy ---
       - name: Deploy on Azure VM
         uses: appleboy/ssh-action@v1.2.0
