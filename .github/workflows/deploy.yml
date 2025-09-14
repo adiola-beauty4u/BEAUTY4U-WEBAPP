@@ -31,10 +31,10 @@ jobs:
       - name: Inject API Base URL
         run: |
           sed -i "s|API_BASE_URL_PLACEHOLDER|${{ vars.APIBASEURL }}|g" Beauty4u.Web/src/environments/environment.prod.ts
+
       # --- Build Angular Web ---
       - name: Build Angular Web
         run: docker build -f Beauty4u.Web/Dockerfile -t beauty4u_web:latest Beauty4u.Web
-
 
       # --- Save Images ---
       - name: Save Docker Images
@@ -42,22 +42,17 @@ jobs:
           docker save beauty4u_api:latest -o beauty4u_api.tar
           docker save beauty4u_jobs:latest -o beauty4u_jobs.tar
           docker save beauty4u_web:latest -o beauty4u_web.tar
-          
-      - name: Verify Docker images saved as tar files
-        run: readlink -f *.tar
-        
-      - name: Check files in workspace
-        run: readlink -f *.yml
 
+      # --- Copy files to Windows VM ---
       - name: Copy files with scp
         run: |
           sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
           scp -o StrictHostKeyChecking=no \
           beauty4u_api.tar beauty4u_jobs.tar beauty4u_web.tar docker-compose.yml \
           ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }}:"${{ vars.DEPLOY_FOLDER }}"
-            
-      # --- Deploy ---
-      - name: Deploy on Azure VM
+
+      # --- Deploy on Windows VM using PowerShell ---
+      - name: Deploy on Windows VM
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.AZURE_VM_IP }}
@@ -65,52 +60,58 @@ jobs:
           password: ${{ secrets.AZURE_VM_PASSWORD }}
           port: 22
           script: |
-            cd ${{ vars.DEPLOY_FOLDER }}
+            powershell -Command "
+            Set-Location '${{ vars.DEPLOY_FOLDER }}';
 
-            echo "📦 Loading docker images..."
-            docker load -i beauty4u_api.tar
-            docker load -i beauty4u_jobs.tar
-            docker load -i beauty4u_web.tar
+            Write-Host '📦 Loading docker images...';
+            docker load -i beauty4u_api.tar;
+            docker load -i beauty4u_jobs.tar;
+            docker load -i beauty4u_web.tar;
 
-            echo "⚙️ Writing .env file..."
-            echo B4UCONNECTION=${{ secrets.B4UCONNECTION }} > .env
-            echo API_PORT=5100 >> .env
-            echo API_CONTAINER_NAME=beauty4u_hq >> .env
-            echo JOBS_PORT=6100 >> .env
-            echo JOBS_CONTAINER_NAME=beauty4u_jobs >> .env
-            echo WEB_PORT=8101 >> .env
-            echo WEB_CONTAINER_NAME=beauty4u_web >> .env
-            echo DBUSER=${{ secrets.DBUSER }} >> .env
-            echo DBPASSWORD=${{ secrets.DBPASSWORD }} >> .env
-            echo JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }} >> .env
-            echo JWT_ISSUER=${{ secrets.JWT_ISSUER }} >> .env
-            echo JWT_KEY=${{ secrets.JWT_KEY }} >> .env
-            echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
-            echo JWT_ACCESSTOKENEXPIRYMINUTES=60 >> .env
-            echo JWT_REFRESHTOKENEXPIRYDAYS=7 >> .env
-            echo SCHEDULERAPI=http://***:6100 >> .env
-            echo HQAPI=http://***:5100 >> .env
-            echo ISHQ=${{ vars.HQSETTINGS_ISHQ }} >> .env
-            echo CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }} >> .env
+            Write-Host '⚙️ Writing .env file...';
+            $envContent = @'
+            B4UCONNECTION=${{ secrets.B4UCONNECTION }}
+            API_PORT=5100
+            API_CONTAINER_NAME=beauty4u_hq
+            JOBS_PORT=6100
+            JOBS_CONTAINER_NAME=beauty4u_jobs
+            WEB_PORT=8101
+            WEB_CONTAINER_NAME=beauty4u_web
+            DBUSER=${{ secrets.DBUSER }}
+            DBPASSWORD=${{ secrets.DBPASSWORD }}
+            JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }}
+            JWT_ISSUER=${{ secrets.JWT_ISSUER }}
+            JWT_KEY=${{ secrets.JWT_KEY }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            JWT_ACCESSTOKENEXPIRYMINUTES=60
+            JWT_REFRESHTOKENEXPIRYDAYS=7
+            SCHEDULERAPI=http://***:6100
+            HQAPI=http://***:5100
+            ISHQ=${{ vars.HQSETTINGS_ISHQ }}
+            CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}
+            '@;
 
-            echo "🚀 Starting containers..."
-            docker compose up -d
+            $envContent | Out-File -FilePath '.env' -Encoding UTF8;
 
-            echo "⏳ Waiting for containers to be healthy..."
-            for c in beauty4u_hq beauty4u_jobs beauty4u_web; do
-              for i in {1..10}; do
-                STATUS=$(docker inspect --format='{{.State.Health.Status}}' $c 2>/dev/null || echo "starting")
-                echo "$c -> $STATUS"
-                if [ "$STATUS" = "healthy" ]; then
-                  break
-                fi
-                sleep 10
-              done
-              if [ "$STATUS" != "healthy" ]; then
-                echo "❌ $c did not become healthy in time. Showing logs..."
-                docker logs $c
-                exit 1
-              fi
-            done
+            Write-Host '🚀 Starting containers...';
+            docker compose up -d;
 
-            echo "✅ All containers are healthy!"
+            Write-Host '⏳ Waiting for containers to be healthy...';
+            $containers = @('beauty4u_hq', 'beauty4u_jobs', 'beauty4u_web');
+            foreach ($c in $containers) {
+                $i = 0;
+                do {
+                    $status = $(docker inspect --format='{{.State.Health.Status}}' $c 2>$null);
+                    Write-Host "$c -> $status";
+                    if ($status -eq 'healthy') { break }
+                    Start-Sleep -Seconds 10;
+                    $i++;
+                } while ($i -lt 10);
+                if ($status -ne 'healthy') {
+                    Write-Host "❌ $c did not become healthy in time. Showing logs...";
+                    docker logs $c;
+                    exit 1;
+                }
+            }
+            Write-Host '✅ All containers are healthy!';
+            "
