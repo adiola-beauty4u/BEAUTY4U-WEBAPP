@@ -50,13 +50,9 @@ jobs:
       # --- Load Docker images on Windows VM ---
       - name: Load Docker images on Windows VM
         run: |
-          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} "powershell -Command `
-            Write-Host '📦 Loading Docker images...'; `
-            docker load --input 'C:/deploy_folder/beauty4u_api.tar'; `
-            docker load --input 'C:/deploy_folder/beauty4u_jobs.tar'; `
-            docker load --input 'C:/deploy_folder/beauty4u_web.tar'; `
-            Write-Host '🖼 Images after load:'; `
-            docker images -a"
+          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
+            ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} "powershell -File 'F:\docker\hq\load-images.ps1'"
+
 
       # --- Deploy on Windows VM ---
       - name: Deploy on Windows VM via sshpass
