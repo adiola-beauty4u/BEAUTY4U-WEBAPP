@@ -5,10 +5,8 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 
 WORKDIR /src
 
-# Copy the solution file
+# Copy solution and project files
 COPY New_Beauty4U.sln ./
-
-# Copy only .csproj files for faster restore
 COPY Beauty4u.ApiAccess/Beauty4u.ApiAccess.csproj Beauty4u.ApiAccess/
 COPY Beauty4u.Business/Beauty4u.Business.csproj Beauty4u.Business/
 COPY Beauty4u.Common/Beauty4u.Common.csproj Beauty4u.Common/
@@ -19,13 +17,13 @@ COPY Beauty4u.Models/Beauty4u.Models.csproj Beauty4u.Models/
 COPY Beauty4u.Jobs/Beauty4u.Jobs.csproj Beauty4u.Jobs/
 COPY Beauty4u.WebApi/Beauty4u.WebApi.csproj Beauty4u.WebApi/
 
-# Restore NuGet packages
+# Restore packages
 RUN dotnet restore New_Beauty4U.sln
 
-# Copy the rest of the source code
+# Copy all source
 COPY . .
 
-# Build and publish the WebAPI project
+# Publish WebApi project
 RUN dotnet publish Beauty4u.WebApi/Beauty4u.WebApi.csproj \
     -c Release \
     -o /app/publish \
@@ -38,12 +36,14 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 
 WORKDIR /app
 
-# Copy published files
 COPY --from=build /app/publish .
 
-# Expose port (assuming Kestrel default)
-EXPOSE 5000
-EXPOSE 5001
+# Default port, overridden via ASPNETCORE_URLS env
+ARG API_PORT=5100
+EXPOSE $API_PORT
 
-# Run the API
+# Persist DataProtection keys
+RUN mkdir -p /root/.aspnet/DataProtection-Keys
+VOLUME /root/.aspnet/DataProtection-Keys
+
 ENTRYPOINT ["dotnet", "Beauty4u.WebApi.dll"]

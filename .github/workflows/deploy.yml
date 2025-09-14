@@ -17,105 +17,117 @@ jobs:
     environment: ${{ github.event.inputs.environment }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       # --- Build API ---
       - name: Build API
-        run: |
-          docker build -f Beauty4u.WebApi/Dockerfile -t beauty4u_api:latest Beauty4u.WebApi
-          IMAGE_SIZE=$(docker image inspect beauty4u_api:latest --format='{{.Size}}')
-          echo "API image size: $IMAGE_SIZE"
-          if [ "$IMAGE_SIZE" -eq 0 ]; then
-            echo "❌ beauty4u_api:latest image is empty!"
-            exit 1
-          fi
+        run: docker build -f Beauty4u.WebApi/Dockerfile -t beauty4u_api:latest .
 
       # --- Build Jobs ---
       - name: Build Jobs
-        run: |
-          docker build -f Beauty4u.Jobs/Dockerfile -t beauty4u_jobs:latest Beauty4u.Jobs
-          IMAGE_SIZE=$(docker image inspect beauty4u_jobs:latest --format='{{.Size}}')
-          echo "Jobs image size: $IMAGE_SIZE"
-          if [ "$IMAGE_SIZE" -eq 0 ]; then
-            echo "❌ beauty4u_jobs:latest image is empty!"
-            exit 1
-          fi
+        run: docker build -f Beauty4u.Jobs/Dockerfile -t beauty4u_jobs:latest .
 
-      # --- Inject API Base URL for Angular ---
+      # --- Build Angular Web ---
       - name: Inject API Base URL
         run: |
           sed -i "s|API_BASE_URL_PLACEHOLDER|${{ vars.APIBASEURL }}|g" Beauty4u.Web/src/environments/environment.prod.ts
-
-      # --- Build Angular Web ---
       - name: Build Angular Web
-        run: |
-          docker build -f Beauty4u.Web/Dockerfile -t beauty4u_web:latest Beauty4u.Web
-          IMAGE_SIZE=$(docker image inspect beauty4u_web:latest --format='{{.Size}}')
-          echo "Web image size: $IMAGE_SIZE"
-          if [ "$IMAGE_SIZE" -eq 0 ]; then
-            echo "❌ beauty4u_web:latest image is empty!"
-            exit 1
-          fi
+        run: docker build -f Beauty4u.Web/Dockerfile -t beauty4u_web:latest Beauty4u.Web
 
-      # --- Save Docker Images as tar ---
+      # --- Save Docker Images ---
       - name: Save Docker Images
         run: |
           docker save beauty4u_api:latest -o beauty4u_api.tar
           docker save beauty4u_jobs:latest -o beauty4u_jobs.tar
           docker save beauty4u_web:latest -o beauty4u_web.tar
+      # --- Copy images and docker-compose.yml to Windows VM ---
+      - name: Copy files with scp
+        run: |
+          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
+          scp -o StrictHostKeyChecking=no \
+          beauty4u_api.tar beauty4u_jobs.tar beauty4u_web.tar docker-compose.yml \
+          ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }}:"${{ vars.DEPLOY_FOLDER }}"
+      # --- Load Docker images on Windows VM ---
+      - name: Load Docker images on Windows VM
+        run: |
+          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
+            ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
+            "powershell -NoProfile -ExecutionPolicy Bypass -Command \"& 'F:\docker\hq\load-images.ps1'\""
 
-      - name: Verify tar files
-        run: ls -lh *.tar
-
-      # --- Copy files to Azure VM ---
-      - name: Copy to Azure VM
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.AZURE_VM_IP }}
-          username: ${{ secrets.AZURE_VM_USER }}
-          password: ${{ secrets.AZURE_VM_PASSWORD }}
-          source: "beauty4u_api.tar beauty4u_jobs.tar beauty4u_web.tar docker-compose.yml"
-          target: "${{ vars.DEPLOY_BASE_FOLDER }}"
-          debug: true
-
-      # --- Deploy on Azure VM ---
-      - name: Deploy on Azure VM
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.AZURE_VM_IP }}
-          username: ${{ secrets.AZURE_VM_USER }}
-          password: ${{ secrets.AZURE_VM_PASSWORD }}
-          script: |
-            cd ${{ vars.DEPLOY_BASE_FOLDER }}
-
-            # Load Docker images
-            docker load -i beauty4u_api.tar
-            docker load -i beauty4u_jobs.tar
-            docker load -i beauty4u_web.tar
-
-            # Generate .env file safely
-            cat <<EOF > .env
-B4UCONNECTION='${{ secrets.B4UCONNECTION }}'
-API_PORT='${{ vars.BEAUTY4U_API_PORT }}'
-API_CONTAINER_NAME='${{ vars.BEAUTY4U_API }}'
-JOBS_PORT='${{ vars.BEAUTY4U_JOBS_PORT }}'
-JOBS_CONTAINER_NAME='${{ vars.BEAUTY4U_JOBS }}'
-WEB_PORT='${{ vars.BEAUTY4U_UI_PORT }}'
-WEB_CONTAINER_NAME='${{ vars.BEAUTY4U_UI }}'
-DBUSER='${{ secrets.DBUSER }}'
-DBPASSWORD='${{ secrets.DBPASSWORD }}'
-JWT_AUDIENCE='${{ secrets.JWT_AUDIENCE }}'
-JWT_ISSUER='${{ secrets.JWT_ISSUER }}'
-JWT_KEY='${{ secrets.JWT_KEY }}'
-JWT_SECRET='${{ secrets.JWT_SECRET }}'
-JWT_ACCESSTOKENEXPIRYMINUTES='${{ vars.JWT_ACCESSTOKENEXPIRYMINUTES }}'
-JWT_REFRESHTOKENEXPIRYDAYS='${{ vars.JWT_REFRESHTOKENEXPIRYDAYS }}'
-SCHEDULERAPI='${{ vars.SCHEDULERAPI }}'
-HQAPI='${{ vars.HQAPI }}'
-ISHQ='${{ vars.HQ_ISHQ }}'
-CORS_ALLOWED_ORIGINS='${{ vars.CORS_ALLOWED_ORIGINS }}'
-EOF
-
-            # Start containers
-            docker compose up -d
+      # --- Deploy on Windows VM ---
+      - name: Deploy on Windows VM via sshpass
+        run: |
+          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} "powershell -Command `
+            cd '${{ vars.DEPLOY_FOLDER }}'; `
+            Write-Host '📂 Listing files in deploy folder:'; `
+            dir; `
+            `
+            Write-Host '📦 Loading Docker images...'; `
+            docker load --input .\beauty4u_api.tar; `
+            docker load --input .\beauty4u_jobs.tar; `
+            docker load --input .\beauty4u_web.tar; `
+            `
+            Write-Host '🖼 Docker images after load:'; `
+            docker images -a; `
+            `
+            Write-Host '⚙️ Stopping and removing old containers if exist...'; `
+            docker stop beauty4u_hq 2>$null || Write-Host 'beauty4u_hq not running'; `
+            docker rm beauty4u_hq 2>$null || Write-Host 'beauty4u_hq not found'; `
+            docker stop beauty4u_jobs 2>$null || Write-Host 'beauty4u_jobs not running'; `
+            docker rm beauty4u_jobs 2>$null || Write-Host 'beauty4u_jobs not found'; `
+            docker stop beauty4u_web 2>$null || Write-Host 'beauty4u_web not running'; `
+            docker rm beauty4u_web 2>$null || Write-Host 'beauty4u_web not found'; `
+            `
+            Write-Host '🚀 Starting containers with environment variables...'; `
+            docker run -d --name beauty4u_hq -p 5100:5100 `
+              -e DOTNET_ENVIRONMENT=Production `
+              -e ASPNETCORE_URLS=http://+:5100 `
+              -e B4UCONNECTION='${{ secrets.B4UCONNECTION }}' `
+              -e DBUSER='${{ secrets.DBUSER }}' `
+              -e DBPASSWORD='${{ secrets.DBPASSWORD }}' `
+              -e JWT_AUDIENCE='${{ secrets.JWT_AUDIENCE }}' `
+              -e JWT_ISSUER='${{ secrets.JWT_ISSUER }}' `
+              -e JWT_KEY='${{ secrets.JWT_KEY }}' `
+              -e JWT_SECRET='${{ secrets.JWT_SECRET }}' `
+              -e JWT_ACCESSTOKENEXPIRYMINUTES=60 `
+              -e JWT_REFRESHTOKENEXPIRYDAYS=7 `
+              -e SCHEDULERAPI='http://***:6100' `
+              -e HQAPI='http://***:5100' `
+              -e ISHQ='${{ vars.HQSETTINGS_ISHQ }}' `
+              -e CORS_ALLOWED_ORIGINS='${{ vars.CORS_ALLOWED_ORIGINS }}' `
+              beauty4u_api:latest; `
+            `
+            docker run -d --name beauty4u_jobs -p 6100:6100 `
+              -e DOTNET_ENVIRONMENT=Production `
+              -e ASPNETCORE_URLS=http://+:6100 `
+              -e ConnectionStrings__B4UConnection='${{ secrets.B4UCONNECTION }}' `
+              -e DbConnectionAccess__User='${{ secrets.DBUSER }}' `
+              -e DbConnectionAccess__Password='${{ secrets.DBPASSWORD }}' `
+              -e Jwt__Key='${{ secrets.JWT_KEY }}' `
+              -e Jwt__Issuer='${{ secrets.JWT_ISSUER }}' `
+              -e Jwt__Audience='${{ secrets.JWT_AUDIENCE }}' `
+              -e Jwt__Secret='${{ secrets.JWT_SECRET }}' `
+              -e Jwt__AccessTokenExpiryMinutes=60 `
+              -e Jwt__RefreshTokenExpiryDays=7 `
+              -e SchedulerApi='http://***:6100' `
+              beauty4u_jobs:latest; `
+            `
+            docker run -d --name beauty4u_web -p 8101:80 `
+              beauty4u_web:latest; `
+            `
+            Write-Host '⏳ Waiting for containers to be healthy...'; `
+            foreach ($c in @('beauty4u_hq','beauty4u_jobs','beauty4u_web')) { `
+              $healthy = $false; `
+              for ($i=0; $i -lt 10; $i++) { `
+                $status = (docker inspect --format='{{.State.Health.Status}}' $c 2>$null) `
+                if ($status -eq 'healthy') { $healthy = $true; break; } `
+                Write-Host "$c -> $status"; `
+                Start-Sleep -Seconds 10; `
+              } `
+              if (-not $healthy) { `
+                Write-Host "❌ $c did not become healthy in time. Showing logs..."; `
+                docker logs $c; exit 1; `
+              } `
+            } `
+            Write-Host '✅ All containers are healthy!'"
+    
