@@ -3,6 +3,7 @@ using AutoMapper;
 using Beauty4u.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace Beauty4u.WebApi.Controllers.v1
 {
@@ -38,8 +39,9 @@ namespace Beauty4u.WebApi.Controllers.v1
         [HttpGet("config-values")]
         public async Task<IActionResult> ConfigValues(string configSection)
         {
+            var conn = _configuration.GetConnectionString("B4uConnection");
             var value = _configuration.GetSection(configSection).Get<string>();
-            return Ok(new { sectionName = configSection, value = value });
+            return Ok(new { connection = conn, sectionName = configSection, value = value });
         }
     }
 }
