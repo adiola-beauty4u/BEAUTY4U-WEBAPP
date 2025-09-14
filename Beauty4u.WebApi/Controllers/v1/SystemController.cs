@@ -12,10 +12,12 @@ namespace Beauty4u.WebApi.Controllers.v1
     public class SystemController : ControllerBase
     {
         private readonly ISystemSetupService _systemSetupService;
+        private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
-        public SystemController(ISystemSetupService systemSetupService, IMapper mapper)
+        public SystemController(ISystemSetupService systemSetupService, IMapper mapper, IConfiguration configuration)
         {
             _systemSetupService = systemSetupService;
+            _configuration = configuration;
             _mapper = mapper;
         }
 
@@ -34,11 +36,10 @@ namespace Beauty4u.WebApi.Controllers.v1
         }
 
         [HttpGet("config-values")]
-        public async Task<IActionResult> ConfigValues(IConfiguration configuration)
+        public async Task<IActionResult> ConfigValues(string configSection)
         {
-            var connection = configuration.GetConnectionString("B4uConnection");
-            var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string>()!.Split(",".ToCharArray());
-            return Ok(new { connection = connection, allowedOrigins = allowedOrigins });
+            var value = _configuration.GetSection(configSection).Get<string>();
+            return Ok(new { sectionName = configSection, value = value });
         }
     }
 }
