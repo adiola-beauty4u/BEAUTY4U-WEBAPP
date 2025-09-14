@@ -51,8 +51,8 @@ jobs:
       - name: Load Docker images on Windows VM
         run: |
           sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
-            ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} "powershell -ExecutionPolicy Bypass -File 'F:\docker\hq\load-images.ps1'"
-
+            ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
+            "powershell -NoProfile -ExecutionPolicy Bypass -Command \"& 'F:\docker\hq\load-images.ps1'\""
 
       # --- Deploy on Windows VM ---
       - name: Deploy on Windows VM via sshpass
