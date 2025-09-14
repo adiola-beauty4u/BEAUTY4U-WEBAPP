@@ -1,5 +1,8 @@
 version: "3.9"
 
+volumes:
+  dpkeys: {}   # Persist DataProtection keys
+
 services:
   beauty4u_api:
     image: beauty4u_api:latest
@@ -24,6 +27,8 @@ services:
       HqSettings__IsHq: ${ISHQ}
       HqSettings__HqApi: ${HQAPI}
       SchedulerApi: ${SCHEDULERAPI}
+    volumes:
+      - dpkeys:/root/.aspnet/DataProtection-Keys
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:${API_PORT}/health || exit 1"]
