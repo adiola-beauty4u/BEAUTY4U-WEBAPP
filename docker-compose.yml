@@ -3,19 +3,28 @@ version: "3.9"
 services:
   beauty4u_api:
     image: beauty4u_api:latest
-    container_name: ${API_CONTAINER_NAME}
+    container_name: beauty4u_hq
     ports:
-      - "${API_PORT}:${API_PORT}"
-    env_file:
-      - .env
+      - "5100:5100"
     environment:
       DOTNET_ENVIRONMENT: Production
-      ASPNETCORE_URLS: "http://+:${API_PORT}"
-    volumes:
-      - dpkeys:/root/.aspnet/DataProtection-Keys
+      ASPNETCORE_URLS: "http://+:5100"
+      ConnectionStrings__B4UConnection: "Your_Connection_String"
+      DbConnectionAccess__User: "Your_DB_User"
+      DbConnectionAccess__Password: "Your_DB_Password"
+      Jwt__Key: "Your_JWT_Key"
+      Jwt__Issuer: "Your_JWT_Issuer"
+      Jwt__Audience: "Your_JWT_Audience"
+      Jwt__Secret: "Your_JWT_Secret"
+      Jwt__AccessTokenExpiryMinutes: 60
+      Jwt__RefreshTokenExpiryDays: 7
+      SchedulerApi: "http://localhost:6100"
+      HQAPI: "http://localhost:5100"
+      HqSettings__IsHq: "true"
+      Cors__AllowedOrigins: "*"
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:${API_PORT}/health || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:5100/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -23,17 +32,25 @@ services:
 
   beauty4u_jobs:
     image: beauty4u_jobs:latest
-    container_name: ${JOBS_CONTAINER_NAME}
+    container_name: beauty4u_jobs
     ports:
-      - "${JOBS_PORT}:${JOBS_PORT}"
-    env_file:
-      - .env
+      - "6100:6100"
     environment:
       DOTNET_ENVIRONMENT: Production
-      ASPNETCORE_URLS: "http://+:${JOBS_PORT}"
+      ASPNETCORE_URLS: "http://+:6100"
+      ConnectionStrings__B4UConnection: "Your_Connection_String"
+      DbConnectionAccess__User: "Your_DB_User"
+      DbConnectionAccess__Password: "Your_DB_Password"
+      Jwt__Key: "Your_JWT_Key"
+      Jwt__Issuer: "Your_JWT_Issuer"
+      Jwt__Audience: "Your_JWT_Audience"
+      Jwt__Secret: "Your_JWT_Secret"
+      Jwt__AccessTokenExpiryMinutes: 60
+      Jwt__RefreshTokenExpiryDays: 7
+      SchedulerApi: "http://localhost:6100"
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:${JOBS_PORT}/health || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:6100/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -41,15 +58,10 @@ services:
 
   beauty4u_web:
     image: beauty4u_web:latest
-    container_name: ${WEB_CONTAINER_NAME}
+    container_name: beauty4u_web
     ports:
-      - "${WEB_PORT}:80"
-    env_file:
-      - .env
+      - "8101:80"
     restart: always
     depends_on:
       beauty4u_api:
         condition: service_healthy
-
-volumes:
-  dpkeys:
