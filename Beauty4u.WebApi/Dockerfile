@@ -5,7 +5,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 
 WORKDIR /src
 
-# Copy solution and csproj files
+# Copy the solution and project files
 COPY New_Beauty4U.sln ./
 COPY Beauty4u.ApiAccess/Beauty4u.ApiAccess.csproj Beauty4u.ApiAccess/
 COPY Beauty4u.Business/Beauty4u.Business.csproj Beauty4u.Business/
@@ -23,7 +23,7 @@ RUN dotnet restore New_Beauty4U.sln
 # Copy the rest of the source code
 COPY . .
 
-# Publish WebAPI project
+# Build and publish the WebAPI project
 RUN dotnet publish Beauty4u.WebApi/Beauty4u.WebApi.csproj \
     -c Release \
     -o /app/publish \
@@ -39,8 +39,13 @@ WORKDIR /app
 # Copy published files
 COPY --from=build /app/publish .
 
-# Expose the same port as ASPNETCORE_URLS from docker-compose
-EXPOSE 5100
+# Expose the port used in .env
+ARG API_PORT=5100
+EXPOSE $API_PORT
+
+# Persist DataProtection keys
+RUN mkdir -p /root/.aspnet/DataProtection-Keys
+VOLUME /root/.aspnet/DataProtection-Keys
 
 # Run the API
 ENTRYPOINT ["dotnet", "Beauty4u.WebApi.dll"]
