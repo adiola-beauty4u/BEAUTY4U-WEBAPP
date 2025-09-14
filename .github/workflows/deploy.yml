@@ -28,7 +28,7 @@ jobs:
           password: ${{ secrets.AZURE_VM_PASSWORD }}
           port: 22
           script: |
-            cd C:\path\to\deploy\folder
+            cd ${{ vars.DEPLOY_FOLDER }}
 
             echo "📦 Cloning repo..."
             git clone https://github.com/<your-repo>.git repo || echo "repo exists"
@@ -60,7 +60,7 @@ jobs:
               -e SCHEDULERAPI=http://***:6100 `
               -e HQAPI=http://***:5100 `
               -e ISHQ=${{ vars.HQSETTINGS_ISHQ }} `
-              -e CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }} `
+              -e CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWEDORIGINS }} `
               beauty4u_api:latest
 
             # Jobs container
@@ -81,6 +81,10 @@ jobs:
               -e Jwt__AccessTokenExpiryMinutes=60 `
               -e Jwt__RefreshTokenExpiryDays=7 `
               -e SchedulerApi=http://***:6100 `
+              -e SCHEDULERAPI=http://***:6100 `
+              -e HQAPI=http://***:5100 `
+              -e ISHQ=${{ vars.HQSETTINGS_ISHQ }} `
+              -e CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWEDORIGINS }} `
               beauty4u_jobs:latest
 
             # Web container
