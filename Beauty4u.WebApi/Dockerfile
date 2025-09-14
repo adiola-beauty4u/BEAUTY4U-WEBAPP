@@ -5,7 +5,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 
 WORKDIR /src
 
-# Copy the solution and project files
+# Copy solution and project files
 COPY New_Beauty4U.sln ./
 COPY Beauty4u.ApiAccess/Beauty4u.ApiAccess.csproj Beauty4u.ApiAccess/
 COPY Beauty4u.Business/Beauty4u.Business.csproj Beauty4u.Business/
@@ -17,13 +17,13 @@ COPY Beauty4u.Models/Beauty4u.Models.csproj Beauty4u.Models/
 COPY Beauty4u.Jobs/Beauty4u.Jobs.csproj Beauty4u.Jobs/
 COPY Beauty4u.WebApi/Beauty4u.WebApi.csproj Beauty4u.WebApi/
 
-# Restore NuGet packages
+# Restore packages
 RUN dotnet restore New_Beauty4U.sln
 
-# Copy the rest of the source code
+# Copy all source
 COPY . .
 
-# Build and publish the WebAPI project
+# Publish WebApi project
 RUN dotnet publish Beauty4u.WebApi/Beauty4u.WebApi.csproj \
     -c Release \
     -o /app/publish \
@@ -36,10 +36,9 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 
 WORKDIR /app
 
-# Copy published files
 COPY --from=build /app/publish .
 
-# Expose the port used in .env
+# Default port, overridden via ASPNETCORE_URLS env
 ARG API_PORT=5100
 EXPOSE $API_PORT
 
@@ -47,5 +46,4 @@ EXPOSE $API_PORT
 RUN mkdir -p /root/.aspnet/DataProtection-Keys
 VOLUME /root/.aspnet/DataProtection-Keys
 
-# Run the API
 ENTRYPOINT ["dotnet", "Beauty4u.WebApi.dll"]
