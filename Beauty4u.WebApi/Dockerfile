@@ -5,10 +5,8 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 
 WORKDIR /src
 
-# Copy the solution file
+# Copy solution and csproj files
 COPY New_Beauty4U.sln ./
-
-# Copy only .csproj files for faster restore
 COPY Beauty4u.ApiAccess/Beauty4u.ApiAccess.csproj Beauty4u.ApiAccess/
 COPY Beauty4u.Business/Beauty4u.Business.csproj Beauty4u.Business/
 COPY Beauty4u.Common/Beauty4u.Common.csproj Beauty4u.Common/
@@ -25,7 +23,7 @@ RUN dotnet restore New_Beauty4U.sln
 # Copy the rest of the source code
 COPY . .
 
-# Build and publish the WebAPI project
+# Publish WebAPI project
 RUN dotnet publish Beauty4u.WebApi/Beauty4u.WebApi.csproj \
     -c Release \
     -o /app/publish \
@@ -41,9 +39,8 @@ WORKDIR /app
 # Copy published files
 COPY --from=build /app/publish .
 
-# Expose port (assuming Kestrel default)
-EXPOSE 5000
-EXPOSE 5001
+# Expose the same port as ASPNETCORE_URLS from docker-compose
+EXPOSE 5100
 
 # Run the API
 ENTRYPOINT ["dotnet", "Beauty4u.WebApi.dll"]
