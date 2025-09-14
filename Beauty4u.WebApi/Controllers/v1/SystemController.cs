@@ -36,7 +36,9 @@ namespace Beauty4u.WebApi.Controllers.v1
         [HttpGet("config-values")]
         public async Task<IActionResult> ConfigValues(IConfiguration configuration)
         {
-            return Ok(configuration.GetConnectionString("B4uConnection"));
+            var connection = configuration.GetConnectionString("B4uConnection");
+            var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string>()!.Split(",".ToCharArray());
+            return Ok(new { connection = connection, allowedOrigins = allowedOrigins });
         }
     }
 }
