@@ -1,8 +1,5 @@
 version: "3.9"
 
-volumes:
-  dpkeys: {}   # Persist DataProtection keys
-
 services:
   beauty4u_api:
     image: beauty4u_api:latest
@@ -14,19 +11,6 @@ services:
     environment:
       DOTNET_ENVIRONMENT: Production
       ASPNETCORE_URLS: "http://+:${API_PORT}"
-      ConnectionStrings__B4UConnection: ${B4UCONNECTION}
-      DbConnectionAccess__User: ${DBUSER}
-      DbConnectionAccess__Password: ${DBPASSWORD}
-      Jwt__Key: ${JWT_KEY}
-      Jwt__Issuer: ${JWT_ISSUER}
-      Jwt__Audience: ${JWT_AUDIENCE}
-      Jwt__Secret: ${JWT_SECRET}
-      Jwt__AccessTokenExpiryMinutes: ${JWT_ACCESSTOKENEXPIRYMINUTES}
-      Jwt__RefreshTokenExpiryDays: ${JWT_REFRESHTOKENEXPIRYDAYS}
-      Cors__AllowedOrigins: ${CORS_ALLOWEDORIGINS}
-      HqSettings__IsHq: ${ISHQ}
-      HqSettings__HqApi: ${HQAPI}
-      SchedulerApi: ${SCHEDULERAPI}
     volumes:
       - dpkeys:/root/.aspnet/DataProtection-Keys
     restart: always
@@ -47,19 +31,6 @@ services:
     environment:
       DOTNET_ENVIRONMENT: Production
       ASPNETCORE_URLS: "http://+:${JOBS_PORT}"
-      ConnectionStrings__B4UConnection: ${B4UCONNECTION}
-      DbConnectionAccess__User: ${DBUSER}
-      DbConnectionAccess__Password: ${DBPASSWORD}
-      Jwt__Key: ${JWT_KEY}
-      Jwt__Issuer: ${JWT_ISSUER}
-      Jwt__Audience: ${JWT_AUDIENCE}
-      Jwt__Secret: ${JWT_SECRET}
-      Jwt__AccessTokenExpiryMinutes: ${JWT_ACCESSTOKENEXPIRYMINUTES}
-      Jwt__RefreshTokenExpiryDays: ${JWT_REFRESHTOKENEXPIRYDAYS}
-      Cors__AllowedOrigins: ${CORS_ALLOWEDORIGINS}
-      HqSettings__IsHq: ${ISHQ}
-      HqSettings__HqApi: ${HQAPI}
-      SchedulerApi: ${SCHEDULERAPI}
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:${JOBS_PORT}/health || exit 1"]
@@ -79,3 +50,6 @@ services:
     depends_on:
       beauty4u_api:
         condition: service_healthy
+
+volumes:
+  dpkeys:
