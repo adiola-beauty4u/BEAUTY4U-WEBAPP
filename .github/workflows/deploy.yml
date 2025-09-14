@@ -67,13 +67,7 @@ jobs:
           script: |
             powershell -Command "
             Set-Location '${{ vars.DEPLOY_FOLDER }}';
-
-            Write-Host '📦 Loading docker images...';
-            docker load -i beauty4u_api.tar;
-            docker load -i beauty4u_jobs.tar;
-            docker load -i beauty4u_web.tar;
-
-            Write-Host '⚙️ Writing .env file...';
+      
             $envContent = @'
             B4UCONNECTION=${{ secrets.B4UCONNECTION }}
             API_PORT=5100
@@ -94,9 +88,12 @@ jobs:
             HQAPI=http://***:5100
             ISHQ=${{ vars.HQSETTINGS_ISHQ }}
             CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}
-            '@;
+            '@
+      
+            $envContent | Out-File -FilePath '.env' -Encoding UTF8
+            Write-Host '.env file created successfully!'
+            "
 
-            $envContent | Out-File -FilePath '.env' -Encoding UTF8;
 
             Write-Host '🚀 Starting containers...';
             docker compose up -d;
