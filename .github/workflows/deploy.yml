@@ -58,9 +58,10 @@ jobs:
           script: |
             cd ${{ vars.DEPLOY_FOLDER }}
             echo "📦 Loading Docker images..."
-            docker load -i .\beauty4u_api.tar
-            docker load -i .\beauty4u_jobs.tar
-            docker load -i .\beauty4u_web.tar
+            docker load --input .\beauty4u_api.tar
+            docker load --input .\beauty4u_jobs.tar
+            docker load --input .\beauty4u_web.tar
+
             echo "🚀 Starting containers with runtime environment variables..."
             # --- WebApi ---
             docker stop beauty4u_hq 2>$null || true
