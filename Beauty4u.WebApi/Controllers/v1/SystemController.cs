@@ -32,5 +32,11 @@ namespace Beauty4u.WebApi.Controllers.v1
             var sysCodes = await _systemSetupService.GetSysCodesByClassAsync(sysCodeClass);
             return Ok(sysCodes);
         }
+
+        [HttpGet("config-values")]
+        public async Task<IActionResult> ConfigValues(IConfiguration configuration)
+        {
+            return Ok(configuration.GetConnectionString("B4uConnection"));
+        }
     }
 }
