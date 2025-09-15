@@ -19,7 +19,7 @@ RUN npm run build -- --configuration production
 FROM nginx:alpine
 
 # Copy built files to nginx
-COPY --from=build /app/dist/beauty4u-web/browser /usr/share/nginx/html
+COPY --from=build /app/dist/beauty4u_web/browser /usr/share/nginx/html
 
 # Expose default HTTP port
 EXPOSE 80
