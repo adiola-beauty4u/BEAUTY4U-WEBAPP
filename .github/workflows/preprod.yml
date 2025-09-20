@@ -51,13 +51,6 @@ jobs:
           docker save beauty4u_jobs:latest -o beauty4u_jobs.tar
           docker save beauty4u_web:latest -o beauty4u_web.tar
 
-
-      - name: Prepare Files
-        run: |
-          cp beauty4u_api.tar beauty4u_hq.tar
-          cp beauty4u_api.tar beauty4u_th.tar
-          cp beauty4u_api.tar beauty4u_oh.tar
-
      # --- Copy & Load Docker images in one go ---
       - name: Copy & Load Docker images to Windows VM
         run: |
