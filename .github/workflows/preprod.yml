@@ -54,3 +54,18 @@ jobs:
           scp -o StrictHostKeyChecking=no \
           beauty4u_hq.tar beauty4u_th.tar beauty4u_oh.tar beauty4u_jobs.tar beauty4u_web.tar docker-compose.yml \
           ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }}:"${{ vars.DEPLOY_FOLDER }}"
+
+      # -- Load Docker Files
+      - name: Load Docker images on Windows VM
+        run: |
+          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
+          ssh -o StrictHostKeyChecking=no ${{
+            secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
+            "powershell -Command \"
+              cd '${{ vars.DEPLOY_FOLDER }}';
+              docker load -i beauty4u_hq.tar;
+              docker load -i beauty4u_th.tar;
+              docker load -i beauty4u_oh.tar;
+              docker load -i beauty4u_jobs.tar;
+              docker load -i beauty4u_web.tar;
+            \""
