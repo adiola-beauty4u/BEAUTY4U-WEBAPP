@@ -56,16 +56,13 @@ jobs:
           ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }}:"${{ vars.DEPLOY_FOLDER }}"
 
       # -- Load Docker Files
-      - name: Load Docker images on Windows VM
+      - name: Load Docker images on Azure Windows VM
         run: |
-          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
-          ssh -o StrictHostKeyChecking=no ${{
-            secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
-            "powershell -Command \"
-              cd '${{ vars.DEPLOY_FOLDER }}';
-              docker load -i beauty4u_hq.tar;
-              docker load -i beauty4u_th.tar;
-              docker load -i beauty4u_oh.tar;
-              docker load -i beauty4u_jobs.tar;
-              docker load -i beauty4u_web.tar;
-            \""
+          az vm run-command invoke \
+            --resource-group ${{ secrets.AZURE_VM_RESOURCE_GROUP }} \
+            --name ${{ secrets.AZURE_VM_NAME }} \
+            --command-id RunPowerShellScript \
+            --scripts "
+              cd '${{ vars.DEPLOY_FOLDER }}'
+              Get-ChildItem *.tar | ForEach-Object { docker load -i \$_.FullName }
+            "
