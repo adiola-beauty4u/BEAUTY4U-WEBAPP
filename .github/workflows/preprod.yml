@@ -56,21 +56,32 @@ jobs:
           ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }}:"${{ vars.DEPLOY_FOLDER }}"
 
       # -- Load Docker Files
-      - name: Deploy on Windows VM via sshpass
+      - name: Load Docker images on Windows VM
         run: |
-          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
-            ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
-            "powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command \"
-              cd '${{ vars.DEPLOY_FOLDER }}';
-              Write-Host '📂 Listing files in deploy folder:';
-              Get-ChildItem;
-              Write-Host '📦 Loading Docker images...';
-              docker load --input .\\beauty4u_hq.tar;
-              docker load --input .\\beauty4u_th.tar;
-              docker load --input .\\beauty4u_oh.tar;
-              docker load --input .\\beauty4u_jobs.tar;
-              docker load --input .\\beauty4u_web.tar;
-              Write-Host '🖼 Docker images after load:';
-              docker images -a
-            \""
-
+          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
+            ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
+            powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command - <<'PWSH'
+          $DeployFolder = '${{ vars.DEPLOY_FOLDER }}'
+      
+          function Write-Log($msg) { Write-Host "[INFO] $msg" }
+          function Write-ErrorLog($msg) { Write-Host "[ERROR] $msg"; exit 1 }
+      
+          Write-Log "📥 Loading Docker images from $DeployFolder..."
+      
+          foreach ($image in @("beauty4u_hq", "beauty4u_th", "beauty4u_oh", "beauty4u_jobs", "beauty4u_web")) {
+              $tar = Join-Path $DeployFolder "$image.tar"
+              if (-Not (Test-Path $tar)) {
+                  Write-ErrorLog "File not found: $tar"
+              }
+      
+              try {
+                  Write-Log "Loading $tar..."
+                  docker load --input $tar 2>&1 | ForEach-Object { Write-Log $_ }
+              } catch {
+                  Write-ErrorLog "Failed to load $tar: $_"
+              }
+          }
+      
+          Write-Log "✅ Docker images after load:"
+          docker images -a
+          PWSH
