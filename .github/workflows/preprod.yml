@@ -37,9 +37,20 @@ jobs:
       # --- Save Docker Images ---
       - name: Save Docker Images
         run: |
-          docker save beauty4u_api:latest -o beauty4u_api.tar
+          # API image gets multiple tags
+          docker tag beauty4u_api:latest beauty4u_hq:latest
+          docker tag beauty4u_api:latest beauty4u_th:latest
+          docker tag beauty4u_api:latest beauty4u_oh:latest
+      
+          # Save each tagged image
+          docker save beauty4u_hq:latest -o beauty4u_hq.tar
+          docker save beauty4u_th:latest -o beauty4u_th.tar
+          docker save beauty4u_oh:latest -o beauty4u_oh.tar
+      
+          # Other images
           docker save beauty4u_jobs:latest -o beauty4u_jobs.tar
           docker save beauty4u_web:latest -o beauty4u_web.tar
+
 
       - name: Prepare Files
         run: |
