@@ -65,16 +65,19 @@ jobs:
       
           sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
 
-      # --- Stop beauty4u_hq container
-      - name: Stop beauty4u_hq container
+      - name: Cleanup old containers and images
         run: |
-          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" scp -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }}:"${{ vars.DEPLOY_FOLDER }}"
-          echo "📦 Removing ..."
-          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
-            ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
-            "docker stop beauty4u_hq.tar" \
-            "docker rm beauty4u_hq.tar" \
-      
-          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
-            ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
-            "docker images -a"
+          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
+          ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} powershell -NoProfile -Command "
+            \$targets = @('beauty4u_hq', 'beauty4u_th', 'beauty4u_oh', 'beauty4u_jobs', 'beauty4u_web');
+    
+            Write-Host '📦 Stopping and removing containers...';
+            foreach (\$t in \$targets) {
+              if (docker ps -a --format '{{.Names}}' | Select-String -Pattern \"^\$t\$\" -Quiet) {
+                docker stop \$t;
+                docker rm \$t;
+                Write-Host 'Stopped and removed container:' \$t;
+              }
+            }
+            "
+
