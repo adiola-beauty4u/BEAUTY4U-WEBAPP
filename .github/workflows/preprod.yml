@@ -64,5 +64,17 @@ jobs:
           done
       
           sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
+
+      # --- Stop beauty4u_hq container
+      - name: Stop beauty4u_hq container
+        run: |
+          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" scp -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }}:"${{ vars.DEPLOY_FOLDER }}"
+          echo "📦 Removing ..."
+          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
+            ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
+            "docker stop beauty4u_hq.tar" \
+            "docker rm beauty4u_hq.tar" \
+      
+          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
             ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
             "docker images -a"
