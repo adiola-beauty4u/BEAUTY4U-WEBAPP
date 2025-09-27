@@ -77,4 +77,4 @@ jobs:
           sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
             ssh -o StrictHostKeyChecking=no \
             ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
-            "docker stop beauty4u_web || true; docker rm beauty4u_web || true"
+            "docker stop beauty4u_web || true; docker rm -f beauty4u_web || true"
