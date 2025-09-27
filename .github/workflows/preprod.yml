@@ -94,12 +94,7 @@ jobs:
           sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
             ssh -o StrictHostKeyChecking=no \
             ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
-            "docker stop beauty4u_web || true;"
-            
-          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
-            ssh -o StrictHostKeyChecking=no \
-            ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
-            "docker rm -f beauty4u_web || true"
+            "if (docker ps -a -q -f name=beauty4u_web) { docker stop beauty4u_web; docker rm -f beauty4u_web }"
 
           sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
             ssh -o StrictHostKeyChecking=no \
