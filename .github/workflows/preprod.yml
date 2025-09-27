@@ -124,9 +124,9 @@ jobs:
               --memory-reservation=1g \
               -e DOTNET_ENVIRONMENT=Production \
               -e ASPNETCORE_URLS=http://+:5100 \
-              -e B4UCONNECTION='${{ secrets.B4UCONNECTION }}' \
+              -e \"B4UCONNECTION=${{ secrets.B4UCONNECTION }}\" \
               -e DBUSER='${{ secrets.DBUSER }}' \
-              -e DBPASSWORD='${{ secrets.DBPASSWORD }}' \
+              -e \"DBPASSWORD=${{ secrets.DBPASSWORD }}\" \
               -e JWT_AUDIENCE='${{ secrets.JWT_AUDIENCE }}' \
               -e JWT_ISSUER='${{ secrets.JWT_ISSUER }}' \
               -e JWT_KEY='${{ secrets.JWT_KEY }}' \
