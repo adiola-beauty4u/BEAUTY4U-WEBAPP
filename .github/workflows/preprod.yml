@@ -47,7 +47,7 @@ jobs:
         run: |
           sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" scp -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }}:"${{ vars.DEPLOY_FOLDER }}"
       
-          for tar in beauty4u_jobs.tar beauty4u_web.tar beauty4u_hq.tar beauty4u_th.tar beauty4u_oh.tar beauty4u_um.tar beauty4u_ch.tar beauty4u_wm.tar beauty4u_cv.tar beauty4u_pw.tar beauty4u_wb.tar beauty4u_wd.tar beauty4u_gb.tar beauty4u_bw.tar beauty4u_gt.tar beauty4u_wo.tar; do
+          for tar in beauty4u_jobs.tar beauty4u_web.tar beauty4u_api.tar; do
             echo "📦 Loading $tar ..."
             sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
               ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
