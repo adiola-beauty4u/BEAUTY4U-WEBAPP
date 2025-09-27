@@ -41,22 +41,44 @@ jobs:
           docker tag beauty4u_api:latest beauty4u_hq:latest
           docker tag beauty4u_api:latest beauty4u_th:latest
           docker tag beauty4u_api:latest beauty4u_oh:latest
+          docker tag beauty4u_api:latest beauty4u_um:latest
+          docker tag beauty4u_api:latest beauty4u_ch:latest
+          docker tag beauty4u_api:latest beauty4u_wm:latest
+          docker tag beauty4u_api:latest beauty4u_cv:latest
+          docker tag beauty4u_api:latest beauty4u_pw:latest
+          docker tag beauty4u_api:latest beauty4u_wb:latest
+          docker tag beauty4u_api:latest beauty4u_wd:latest
+          docker tag beauty4u_api:latest beauty4u_gb:latest
+          docker tag beauty4u_api:latest beauty4u_bw:latest
+          docker tag beauty4u_api:latest beauty4u_gt:latest
+          docker tag beauty4u_api:latest beauty4u_wo:latest
       
           # Save each tagged image
           docker save beauty4u_hq:latest -o beauty4u_hq.tar
           docker save beauty4u_th:latest -o beauty4u_th.tar
           docker save beauty4u_oh:latest -o beauty4u_oh.tar
+          docker save beauty4u_um:latest -o beauty4u_um.tar
+          docker save beauty4u_ch:latest -o beauty4u_ch.tar
+          docker save beauty4u_wm:latest -o beauty4u_wm.tar
+          docker save beauty4u_cv:latest -o beauty4u_cv.tar
+          docker save beauty4u_pw:latest -o beauty4u_pw.tar
+          docker save beauty4u_wb:latest -o beauty4u_wb.tar
+          docker save beauty4u_wd:latest -o beauty4u_wd.tar
+          docker save beauty4u_gb:latest -o beauty4u_gb.tar
+          docker save beauty4u_bw:latest -o beauty4u_bw.tar
+          docker save beauty4u_gt:latest -o beauty4u_gt.tar
+          docker save beauty4u_wo:latest -o beauty4u_wo.tar
       
           # Other images
           docker save beauty4u_jobs:latest -o beauty4u_jobs.tar
           docker save beauty4u_web:latest -o beauty4u_web.tar
 
-     # --- Copy & Load Docker images in one go ---
+      # --- Copy & Load Docker images in one go ---
       - name: Copy & Load Docker images to Windows VM
         run: |
           sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" scp -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }}:"${{ vars.DEPLOY_FOLDER }}"
       
-          for tar in beauty4u_hq.tar beauty4u_th.tar beauty4u_oh.tar beauty4u_jobs.tar beauty4u_web.tar; do
+          for tar in beauty4u_jobs.tar beauty4u_web.tar beauty4u_hq.tar beauty4u_th.tar beauty4u_oh.tar beauty4u_um.tar beauty4u_ch.tar beauty4u_wm.tar beauty4u_cv.tar beauty4u_pw.tar beauty4u_wb.tar beauty4u_wd.tar beauty4u_gb.tar beauty4u_bw.tar beauty4u_gt.tar beauty4u_wo.tar; do
             echo "📦 Loading $tar ..."
             sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
               ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
