@@ -11,15 +11,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Copy & Load Docker images to Windows VM
+      - name: Copy docker-compose.yml and cleanup containers
         run: |
-          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" scp -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }}:"${{ vars.DEPLOY_FOLDER }}"
-      
-          for contner in beauty4u_web; do
-            echo "📦 Removing $contner ..."
-            sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
-              ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
-              "docker stop" < $contner
-          done
-      
+          # Copy docker-compose.yml to remote VM
           sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
+            scp -o StrictHostKeyChecking=no docker-compose.yml \
+            ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }}:docker-compose.yml
+      
+          # Stop & remove containers
+          for container in beauty4u_web; do
+            echo "📦 Removing $container ..."
+            sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
+              ssh -o StrictHostKeyChecking=no \
+              ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
+              "docker stop $container || true && docker rm $container || true"
+          done
+
