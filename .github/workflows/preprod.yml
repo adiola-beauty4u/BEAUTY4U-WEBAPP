@@ -87,30 +87,26 @@ jobs:
       
           sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
 
-      - name: Copy & Cleanup Docker containers on Windows VM
-        run: |
-          # Copy docker-compose.yml to VM
-          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" scp -o StrictHostKeyChecking=no \
-            docker-compose.yml \
-            ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }}:"${{ vars.DEPLOY_FOLDER }}"
-      
+      - name: Run Docker container for beauty4u_web
+        run: |      
           # Stop & remove beauty4u_web container instead of loading images
           echo "Stopping and removing beauty4u_web ..."
           sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
             ssh -o StrictHostKeyChecking=no \
             ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
-            "docker stop beauty4u_web || true; docker rm -f beauty4u_web || true"
-
-      - name: Cleanup Docker containers on Windows VM
-        run: |
-          # Copy docker-compose.yml to VM
-          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" scp -o StrictHostKeyChecking=no \
-            docker-compose.yml \
-            ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }}:"${{ vars.DEPLOY_FOLDER }}"
-      
-          # Stop & remove beauty4u_web container instead of loading images
-          echo "Stopping and removing beauty4u_web ..."
+            "docker stop beauty4u_web || true;"
+            
           sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
             ssh -o StrictHostKeyChecking=no \
             ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
             "docker rm -f beauty4u_web || true"
+
+          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
+            ssh -o StrictHostKeyChecking=no \
+            ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
+            "docker run -d \
+              --name beauty4u_web \
+              --memory=1g \
+              --memory-reservation=1g \
+              -p 8101:80 \
+              beauty4u_web:latest"
