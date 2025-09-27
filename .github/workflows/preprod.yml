@@ -106,5 +106,5 @@ jobs:
               -e HQAPI='http://***:5100' \
               -e ISHQ='${{ vars.HQSETTINGS_ISHQ }}' \
               -e CORS_ALLOWED_ORIGINS='${{ vars.CORS_ALLOWEDORIGINS }}' \
-              -p 5100:80 \
+              -p 5100:5100 \
               beauty4u_api:latest"
