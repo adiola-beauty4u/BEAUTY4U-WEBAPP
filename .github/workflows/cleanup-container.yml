@@ -11,24 +11,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Stop & Remove old containers on Windows VM
+      - name: Copy & Load Docker images to Windows VM
         run: |
+          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" scp -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }}:"${{ vars.DEPLOY_FOLDER }}"
+      
+          for contner in beauty4u_web; do
+            echo "📦 Removing $contner ..."
+            sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
+              ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
+              "docker stop" < $tar
+          done
+      
           sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
-            ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} powershell -NoProfile -Command '
-              `$API_CONTAINER_NAME = "beauty4u_api"
-              `$JOBS_CONTAINER_NAME = "beauty4u_jobs"
-              `$WEB_CONTAINER_NAME  = "beauty4u_web"
-      
-              function Write-Log([string] `$msg) {
-                Write-Host "[INFO] `$msg"
-              }
-              function Write-ErrorLog([string] `$msg) {
-                Write-Host "[ERROR] `$msg"
-              }
-      
-              foreach (`$container in @(`$API_CONTAINER_NAME, `$JOBS_CONTAINER_NAME, `$WEB_CONTAINER_NAME)) {
-                  Write-Log "🛑 Stopping and removing container `$container..."
-                  try { docker stop `$container 2>&1 | ForEach-Object { Write-Log `$_ } } catch { Write-ErrorLog "Failed to stop `$container: `$_" }
-                  try { docker rm `$container 2>&1 | ForEach-Object { Write-Log `$_ } } catch { Write-ErrorLog "Failed to remove `$container: `$_" }
-              }
-            '
