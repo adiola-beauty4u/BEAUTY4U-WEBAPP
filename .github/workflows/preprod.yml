@@ -105,3 +105,37 @@ jobs:
               --memory-reservation=1g \
               -p 8101:80 \
               beauty4u_web:latest"
+
+      - name: Run Docker container for beauty4u_hq
+        run: |      
+          # Stop & remove beauty4u_web container instead of loading images
+          echo "Stopping and removing beauty4u_web ..."
+          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
+            ssh -o StrictHostKeyChecking=no \
+            ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
+            "powershell -Command \"if (docker ps -a -q -f name=beauty4u_hq) { docker stop beauty4u_hq; docker rm -f beauty4u_hq }\""
+
+          sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" \
+            ssh -o StrictHostKeyChecking=no \
+            ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
+            "docker run -d \
+              --name beauty4u_hq \
+              --memory=1g \
+              --memory-reservation=1g \
+              -e DOTNET_ENVIRONMENT=Production \
+              -e ASPNETCORE_URLS=http://+:5100 \
+              -e B4UCONNECTION='${{ secrets.B4UCONNECTION }}' \
+              -e DBUSER='${{ secrets.DBUSER }}' \
+              -e DBPASSWORD='${{ secrets.DBPASSWORD }}' \
+              -e JWT_AUDIENCE='${{ secrets.JWT_AUDIENCE }}' \
+              -e JWT_ISSUER='${{ secrets.JWT_ISSUER }}' \
+              -e JWT_KEY='${{ secrets.JWT_KEY }}' \
+              -e JWT_SECRET='${{ secrets.JWT_SECRET }}' \
+              -e JWT_ACCESSTOKENEXPIRYMINUTES=${{ vars.JWT_ACCESSTOKENEXPIRYMINUTES }} \
+              -e JWT_REFRESHTOKENEXPIRYDAYS=${{ vars.JWT_REFRESHTOKENEXPIRYDAYS }} \
+              -e SCHEDULERAPI='http://***:6100' \
+              -e HQAPI='http://***:5100' \
+              -e ISHQ='${{ vars.HQSETTINGS_ISHQ }}' \
+              -e CORS_ALLOWED_ORIGINS='${{ vars.CORS_ALLOWEDORIGINS }}' \
+              -p 5100:80 \
+              beauty4u_hq:latest"
