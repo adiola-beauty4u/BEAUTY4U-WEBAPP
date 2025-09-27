@@ -26,10 +26,12 @@ jobs:
               `$targets = "beauty4u_hq","beauty4u_th","beauty4u_oh","beauty4u_jobs","beauty4u_web";
               Write-Host "📦 Stopping and removing containers...";
               foreach (`$t in `$targets) {
-                if ((docker ps -a --format "{{.Names}}") -contains `$t) {
-                  docker stop `$t;
-                  docker rm `$t;
-                  Write-Host "Stopped and removed container: `$t";
+                `$matches = docker ps -a --format "{{.Names}}" | Where-Object { $_ -like "*`$t*" }
+                foreach (`$m in `$matches) {
+                  docker stop `$m;
+                  docker rm `$m;
+                  Write-Host "Stopped and removed container: `$m";
                 }
               }
             '
+
