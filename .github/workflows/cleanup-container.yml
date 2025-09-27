@@ -1,37 +1,34 @@
-name: Cleanup Container
+name: Cleanup Containers
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: "Choose environment"
-        required: true
-        default: "preprod_hq"
-        type: choice
-        options:
-          - preprod_hq
 
 jobs:
-  build-and-deploy:
+  cleanup:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment }}
 
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Cleanup old beauty4u containers
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Stop & Remove old containers on Windows VM
         run: |
           sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
             ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} powershell -NoProfile -Command '
-              `$targets = "beauty4u_hq","beauty4u_th","beauty4u_oh","beauty4u_jobs","beauty4u_web";
-              Write-Host "📦 Stopping and removing containers...";
-              foreach (`$t in `$targets) {
-                `$matches = docker ps -a --format "{{.Names}}" | Where-Object { $_ -like "*`$t*" }
-                foreach (`$m in `$matches) {
-                  docker stop `$m;
-                  docker rm `$m;
-                  Write-Host "Stopped and removed container: `$m";
-                }
+              `$API_CONTAINER_NAME = "beauty4u_api"
+              `$JOBS_CONTAINER_NAME = "beauty4u_jobs"
+              `$WEB_CONTAINER_NAME  = "beauty4u_web"
+
+              function Write-Log([string] `$msg) {
+                Write-Host "[INFO] `$msg"
+              }
+              function Write-ErrorLog([string] `$msg) {
+                Write-Host "[ERROR] `$msg"
+              }
+
+              foreach (`$container in @(`$API_CONTAINER_NAME, `$JOBS_CONTAINER_NAME, `$WEB_CONTAINER_NAME)) {
+                  Write-Log "🛑 Stopping and removing container `$container..."
+                  try { docker stop `$container 2>&1 | ForEach-Object { Write-Log `$_ } } catch { Write-ErrorLog "Failed to stop `$container: `$_" }
+                  try { docker rm `$container 2>&1 | ForEach-Object { Write-Log `$_ } } catch { Write-ErrorLog "Failed to remove `$container: `$_" }
               }
             '
-
