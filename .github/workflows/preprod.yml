@@ -36,40 +36,9 @@ jobs:
 
       # --- Save Docker Images ---
       - name: Save Docker Images
-        run: |
-          # API image gets multiple tags
-          docker tag beauty4u_api:latest beauty4u_hq:latest
-          docker tag beauty4u_api:latest beauty4u_th:latest
-          docker tag beauty4u_api:latest beauty4u_oh:latest
-          docker tag beauty4u_api:latest beauty4u_um:latest
-          docker tag beauty4u_api:latest beauty4u_ch:latest
-          docker tag beauty4u_api:latest beauty4u_wm:latest
-          docker tag beauty4u_api:latest beauty4u_cv:latest
-          docker tag beauty4u_api:latest beauty4u_pw:latest
-          docker tag beauty4u_api:latest beauty4u_wb:latest
-          docker tag beauty4u_api:latest beauty4u_wd:latest
-          docker tag beauty4u_api:latest beauty4u_gb:latest
-          docker tag beauty4u_api:latest beauty4u_bw:latest
-          docker tag beauty4u_api:latest beauty4u_gt:latest
-          docker tag beauty4u_api:latest beauty4u_wo:latest
-      
+        run: |      
           # Save each tagged image
-          docker save beauty4u_hq:latest -o beauty4u_hq.tar
-          docker save beauty4u_th:latest -o beauty4u_th.tar
-          docker save beauty4u_oh:latest -o beauty4u_oh.tar
-          docker save beauty4u_um:latest -o beauty4u_um.tar
-          docker save beauty4u_ch:latest -o beauty4u_ch.tar
-          docker save beauty4u_wm:latest -o beauty4u_wm.tar
-          docker save beauty4u_cv:latest -o beauty4u_cv.tar
-          docker save beauty4u_pw:latest -o beauty4u_pw.tar
-          docker save beauty4u_wb:latest -o beauty4u_wb.tar
-          docker save beauty4u_wd:latest -o beauty4u_wd.tar
-          docker save beauty4u_gb:latest -o beauty4u_gb.tar
-          docker save beauty4u_bw:latest -o beauty4u_bw.tar
-          docker save beauty4u_gt:latest -o beauty4u_gt.tar
-          docker save beauty4u_wo:latest -o beauty4u_wo.tar
-      
-          # Other images
+          docker save beauty4u_api:latest -o beauty4u_api.tar
           docker save beauty4u_jobs:latest -o beauty4u_jobs.tar
           docker save beauty4u_web:latest -o beauty4u_web.tar
 
@@ -138,4 +107,4 @@ jobs:
               -e ISHQ='${{ vars.HQSETTINGS_ISHQ }}' \
               -e CORS_ALLOWED_ORIGINS='${{ vars.CORS_ALLOWEDORIGINS }}' \
               -p 5100:80 \
-              beauty4u_hq:latest"
+              beauty4u_api:latest"
