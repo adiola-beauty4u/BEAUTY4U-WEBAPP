@@ -94,18 +94,18 @@ jobs:
               -e DOTNET_ENVIRONMENT=Production \
               -e ASPNETCORE_URLS=http://+:5100 \
               -e \"ConnectionStrings__B4UConnection=${{ secrets.B4UCONNECTION }}\" \
-              -e \"CDbConnectionAccess__User=${{ secrets.DBUSER }}\" \
+              -e \"DbConnectionAccess__User=${{ secrets.DBUSER }}\" \
               -e \"DbConnectionAccess__Password=${{ secrets.DBPASSWORD }}\" \
-              -e \"CJwt__Audience=${{ secrets.JWT_AUDIENCE }}\" \
-              -e \"CJwt__Issuer=${{ secrets.JWT_ISSUER }}\" \
-              -e \"CJwt__Key=${{ secrets.JWT_KEY }}\" \
-              -e \"CJwt__Secret=${{ secrets.JWT_SECRET }}\" \
-              -e \"CJwt__AccessTokenExpiryMinutes=${{ vars.JWT_ACCESSTOKENEXPIRYMINUTES }}\" \
-              -e \"CJwt__RefreshTokenExpiryDays=${{ vars.JWT_REFRESHTOKENEXPIRYDAYS }}\" \
-              -e \"CSchedulerApi=http://***:6100\" \
-              -e \"CHqSettings__HqApi=http://***:5100\" \
-              -e \"CHqSettings__IsHq=${{ vars.HQSETTINGS_ISHQ }}\" \
-              -e \"CCors__AllowedOrigins=${{ vars.CORS_ALLOWEDORIGINS }}\" \
+              -e \"Jwt__Audience=${{ secrets.JWT_AUDIENCE }}\" \
+              -e \"Jwt__Issuer=${{ secrets.JWT_ISSUER }}\" \
+              -e \"Jwt__Key=${{ secrets.JWT_KEY }}\" \
+              -e \"Jwt__Secret=${{ secrets.JWT_SECRET }}\" \
+              -e \"Jwt__AccessTokenExpiryMinutes=${{ vars.JWT_ACCESSTOKENEXPIRYMINUTES }}\" \
+              -e \"Jwt__RefreshTokenExpiryDays=${{ vars.JWT_REFRESHTOKENEXPIRYDAYS }}\" \
+              -e \"SchedulerApi=http://***:6100\" \
+              -e \"HqSettings__HqApi=http://***:5100\" \
+              -e \"HqSettings__IsHq=${{ vars.HQSETTINGS_ISHQ }}\" \
+              -e \"Cors__AllowedOrigins=${{ vars.CORS_ALLOWEDORIGINS }}\" \
               -p 5100:5100 \
               beauty4u_api:latest"
 
@@ -128,18 +128,18 @@ jobs:
               -e DOTNET_ENVIRONMENT=Production \
               -e ASPNETCORE_URLS=http://+:5101 \
               -e \"ConnectionStrings__B4UConnection=${{ secrets.TH_B4UCONNECTION }}\" \
-              -e \"CDbConnectionAccess__User=${{ secrets.DBUSER }}\" \
+              -e \"DbConnectionAccess__User=${{ secrets.DBUSER }}\" \
               -e \"DbConnectionAccess__Password=${{ secrets.DBPASSWORD }}\" \
-              -e \"CJwt__Audience=${{ secrets.JWT_AUDIENCE }}\" \
-              -e \"CJwt__Issuer=${{ secrets.JWT_ISSUER }}\" \
-              -e \"CJwt__Key=${{ secrets.JWT_KEY }}\" \
-              -e \"CJwt__Secret=${{ secrets.JWT_SECRET }}\" \
-              -e \"CJwt__AccessTokenExpiryMinutes=${{ vars.JWT_ACCESSTOKENEXPIRYMINUTES }}\" \
-              -e \"CJwt__RefreshTokenExpiryDays=${{ vars.JWT_REFRESHTOKENEXPIRYDAYS }}\" \
-              -e \"CSchedulerApi=http://***:6100\" \
-              -e \"CHqSettings__HqApi=http://***:5100\" \
-              -e \"CHqSettings__IsHq=${{ vars.HQSETTINGS_ISHQ }}\" \
-              -e \"CCors__AllowedOrigins=${{ vars.CORS_ALLOWEDORIGINS }}\" \
+              -e \"Jwt__Audience=${{ secrets.JWT_AUDIENCE }}\" \
+              -e \"Jwt__Issuer=${{ secrets.JWT_ISSUER }}\" \
+              -e \"Jwt__Key=${{ secrets.JWT_KEY }}\" \
+              -e \"Jwt__Secret=${{ secrets.JWT_SECRET }}\" \
+              -e \"Jwt__AccessTokenExpiryMinutes=${{ vars.JWT_ACCESSTOKENEXPIRYMINUTES }}\" \
+              -e \"Jwt__RefreshTokenExpiryDays=${{ vars.JWT_REFRESHTOKENEXPIRYDAYS }}\" \
+              -e \"SchedulerApi=http://***:6100\" \
+              -e \"HqSettings__HqApi=http://***:5100\" \
+              -e \"HqSettings__IsHq=${{ vars.HQSETTINGS_ISHQ }}\" \
+              -e \"Cors__AllowedOrigins=${{ vars.CORS_ALLOWEDORIGINS }}\" \
               -p 5101:5101 \
               beauty4u_api:latest"
 
@@ -162,17 +162,17 @@ jobs:
               -e DOTNET_ENVIRONMENT=Production \
               -e ASPNETCORE_URLS=http://+:5102 \
               -e \"ConnectionStrings__B4UConnection=${{ secrets.OH_B4UCONNECTION }}\" \
-              -e \"CDbConnectionAccess__User=${{ secrets.DBUSER }}\" \
+              -e \"DbConnectionAccess__User=${{ secrets.DBUSER }}\" \
               -e \"DbConnectionAccess__Password=${{ secrets.DBPASSWORD }}\" \
-              -e \"CJwt__Audience=${{ secrets.JWT_AUDIENCE }}\" \
-              -e \"CJwt__Issuer=${{ secrets.JWT_ISSUER }}\" \
-              -e \"CJwt__Key=${{ secrets.JWT_KEY }}\" \
-              -e \"CJwt__Secret=${{ secrets.JWT_SECRET }}\" \
-              -e \"CJwt__AccessTokenExpiryMinutes=${{ vars.JWT_ACCESSTOKENEXPIRYMINUTES }}\" \
-              -e \"CJwt__RefreshTokenExpiryDays=${{ vars.JWT_REFRESHTOKENEXPIRYDAYS }}\" \
-              -e \"CSchedulerApi=http://***:6100\" \
-              -e \"CHqSettings__HqApi=http://***:5100\" \
-              -e \"CHqSettings__IsHq=${{ vars.HQSETTINGS_ISHQ }}\" \
-              -e \"CCors__AllowedOrigins=${{ vars.CORS_ALLOWEDORIGINS }}\" \
+              -e \"Jwt__Audience=${{ secrets.JWT_AUDIENCE }}\" \
+              -e \"Jwt__Issuer=${{ secrets.JWT_ISSUER }}\" \
+              -e \"Jwt__Key=${{ secrets.JWT_KEY }}\" \
+              -e \"Jwt__Secret=${{ secrets.JWT_SECRET }}\" \
+              -e \"Jwt__AccessTokenExpiryMinutes=${{ vars.JWT_ACCESSTOKENEXPIRYMINUTES }}\" \
+              -e \"Jwt__RefreshTokenExpiryDays=${{ vars.JWT_REFRESHTOKENEXPIRYDAYS }}\" \
+              -e \"SchedulerApi=http://***:6100\" \
+              -e \"HqSettings__HqApi=http://***:5100\" \
+              -e \"HqSettings__IsHq=${{ vars.HQSETTINGS_ISHQ }}\" \
+              -e \"Cors__AllowedOrigins=${{ vars.CORS_ALLOWEDORIGINS }}\" \
               -p 5102:5102 \
               beauty4u_api:latest"
