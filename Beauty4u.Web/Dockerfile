@@ -5,11 +5,9 @@ FROM node:22 AS build
 
 WORKDIR /app
 
-# Install dependencies
 COPY package*.json ./
 RUN npm install
 
-# Copy source and build
 COPY . .
 RUN npm run build -- --configuration production
 
@@ -18,11 +16,11 @@ RUN npm run build -- --configuration production
 # -------------------------
 FROM nginx:alpine
 
-# Copy built files to nginx
+# Copy built Angular app
 COPY --from=build /app/dist/beauty4u_web/browser /usr/share/nginx/html
 
-# Expose default HTTP port
-EXPOSE 80
+# Replace default nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Start Nginx
+EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
